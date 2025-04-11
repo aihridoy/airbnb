@@ -56,6 +56,8 @@ This project is a full-stack web application mimicking core Airbnb functionaliti
    npm start
 ### ENV File
 
+.env.local:
+```
 MONGODB_CONNECTION_STRING=
 IMGBB_API_KEY=
 GOOGLE_CLIENT_ID=
