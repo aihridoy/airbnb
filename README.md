@@ -1,34 +1,48 @@
-# Dummy Users for Project
+# AirBnB: Hotel Booking App
 
-Here are some dummy users with their respective email and password for testing purposes.
+A feature-rich Airbnb clone built with **Next.js**, **React**, and **MongoDB**, delivering a seamless user experience for property rentals and bookings. Explore, book, and manage listings with ease!
 
-## Users List
+## 📖 Overview
 
-### User 1
-- **Name**: Shay Martinez
-- **Email**: neqygak@mailinator.com
-- **Password**: Pa$$w0rd!
-- **Location**: Fugiat qui nemo a cu
+This project is a full-stack web application mimicking core Airbnb functionalities, including property listings, user authentication, booking management, and responsive design. It showcases modern web development practices with a focus on scalability and performance.
 
-### User 2
-- **Name**: Brandon Rodriguez
-- **Email**: dipinob@mailinator.com
-- **Password**: Pa$$w0rd!
-- **Location**: Ratione vel cumque d
+## ✨ Features
 
-### User 3
-- **Name**: Mia Matthews
-- **Email**: cute@mailinator.com
-- **Password**: Pa$$w0rd!
+- **User Authentication**: Secure sign-up/login via NextAuth with MongoDB integration.
+- **Property Listings**: Browse, filter, and search rental listings with dynamic data rendering.
+- **Booking System**: Seamless booking experience with date selection using `react-datepicker`.
+- **Responsive Design**: Mobile-friendly UI crafted with Tailwind CSS and Swiper for carousels.
+- **Social Sharing**: Integrated sharing options with `next-share` for enhanced user engagement.
+- **Notifications**: User feedback with `react-toastify` for smooth interactions.
+- **PDF Generation**: Generate booking confirmations using `pdf-lib` (optional feature).
+- **Image Optimization**: High-quality visuals with `sharp` for fast loading.
 
-### User 4
-- **Name**: Latifah Navarro
-- **Email**: nypixicimi@mailinator.com
-- **Password**: Pa$$w0rd!
-- **Location**: Ea sed necessitatibu
+## 🛠️ Tech Stack
 
-### User 5
-- **Name**: Candice Mendoza
-- **Email**: qedeqodotu@mailinator.com
-- **Password**: Pa$$w0rd!
-- **Location**: Odit et voluptas pro
+- **Frontend**: Next.js 14, React 18, Tailwind CSS
+- **Backend**: MongoDB, Mongoose, NextAuth
+- **Libraries**:
+  - `react-datepicker`: For booking date selection
+  - `swiper`: For image carousels
+  - `react-toastify`: For notifications
+  - `pdf-lib`: For PDF generation
+  - `next-share`: For social sharing
+  - `sharp`: For image optimization
+  - `date-fns`: For date manipulation
+  - `resend`: For email integration
+- **Tools**: ESLint, PostCSS
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- MongoDB (local or cloud instance)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/airbnb-clone.git
+   cd airbnb-clone
