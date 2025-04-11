@@ -1,6 +1,6 @@
 # AirBnB: Hotel Booking App
 
-![AirBnB Homepage](https://images.unsplash.com/photo-1607712617949-8c993d290809?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
+![AirBnB Homepage](https://i.ibb.co.com/VYRC3pY9/airbnb.png)
 
 A feature-rich Airbnb clone built with **Next.js**, **React**, and **MongoDB**, delivering a seamless user experience for property rentals and bookings. Explore, book, and manage listings with ease!
 
