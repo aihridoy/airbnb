@@ -46,3 +46,20 @@ This project is a full-stack web application mimicking core Airbnb functionaliti
    ```bash
    git clone https://github.com/your-username/airbnb-clone.git
    cd airbnb-clone
+2. **Install dependencies**:
+   ```bash
+   npm install
+   npm run dev
+3. **Build for Production**:
+   ```bash
+   npm run build
+   npm start
+### ENV File
+
+MONGODB_CONNECTION_STRING=
+IMGBB_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+AUTH_SECRET=
+NEXT_PUBLIC_API_BASE_URL=
+NEXT_PUBLIC_RESEND_API_KEY=
