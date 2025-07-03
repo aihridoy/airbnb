@@ -46,8 +46,8 @@ const HotelListing = () => {
     };
 
     const loadingSpinner = (
-        <div className="flex justify-center items-center h-96">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="flex justify-center items-center h-[650px]">
+            <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-2 border-blue-500"></div>
         </div>
     );
 
@@ -57,7 +57,7 @@ const HotelListing = () => {
 
     return (
         <>
-            <section className="px-6">
+            <section className="mt-10 px-6 min-h-screen">
                 <div className="max-w-7xl mx-auto">
                     {loading ? (
                         loadingSpinner
@@ -78,11 +78,13 @@ const HotelListing = () => {
                         </div>
                     )}
                 </div>
-            </section>
 
-            <div className="mt-8 flex justify-center">
+                <div className="mt-10 flex justify-center">
                 {hotels && <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />}
             </div>
+            </section>
+
+            
         </>
     );
 };
