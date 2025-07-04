@@ -19,6 +19,8 @@ const Sidebar = () => {
     { name: 'Profile', icon: <FaUser />, path: '/dashboard/profile' },
     { name: 'Bookings', icon: <FaList />, path: '/dashboard/bookings' },
     { name: 'Wishlists', icon: <FaCog />, path: '/dashboard/wishlists' },
+    { name: 'Hotels List', icon: <FaCog />, path: '/dashboard/hotels-list' },
+    { name: 'Bookings List', icon: <FaCog />, path: '/dashboard/bookings-list' },
     { name: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 
