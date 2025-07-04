@@ -12,7 +12,6 @@ export default async function ManageHotel() {
     }
 
     const { hotels } = await getAllHotels()
-    console.log(hotels.length)
     const { reviews } = await getReviews()
 
     return (
