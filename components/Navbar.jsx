@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import SignOutButton from "./SignOutButton";
 import { session } from "@/app/action";
 import { useSearch } from "@/contexts/SearchContext";
