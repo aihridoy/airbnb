@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaHome, FaUser, FaCog, FaList, FaSignOutAlt } from 'react-icons/fa';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
@@ -13,9 +14,11 @@ const Sidebar = () => {
 
   const navItems = [
     { name: 'Home', icon: <FaHome />, path: '/' },
-    { name: 'Profile', icon: <FaUser />, path: '/profile' },
-    { name: 'Listings', icon: <FaList />, path: '/listings' },
-    { name: 'Settings', icon: <FaCog />, path: '/settings' },
+    { name: 'Add Hotel', icon: <FaHome />, path: '/dashboard/create-hotel' },
+    { name: 'Manage Hotels', icon: <FaHome />, path: '/dashboard/manage-hotels' },
+    { name: 'Profile', icon: <FaUser />, path: '/dashboard/profile' },
+    { name: 'Bookings', icon: <FaList />, path: '/dashboard/bookings' },
+    { name: 'Wishlists', icon: <FaCog />, path: '/dashboard/wishlists' },
     { name: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 
@@ -52,13 +55,13 @@ const Sidebar = () => {
         <ul className="space-y-2">
           {navItems.map((item) => (
             <li key={item.name}>
-              <a
+              <Link
                 href={item.path}
                 className="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#026d62] transition-colors"
               >
                 <span className="text-xl">{item.icon}</span>
                 {isOpen && <span>{item.name}</span>}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
