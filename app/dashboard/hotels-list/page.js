@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from 'react'
-import { getAllHotels, getReviews, session } from '../../action'
+import { getAllHotels, getHotels, getReviews, session } from '../../action'
 import Link from 'next/link'
-import ManageHotelList from '@/components/ManageHotelList'
 import { redirect } from 'next/navigation'
+import HotelsList from '@/components/HotelsList'
 
 export default async function ManageHotel() {
     const authResult = await session();
@@ -11,14 +11,13 @@ export default async function ManageHotel() {
         redirect('/login');
     }
 
-    const { user } = authResult;
     const { hotels } = await getAllHotels()
+    console.log(hotels.length)
     const { reviews } = await getReviews()
-    const filteredHotels = hotels.filter(hotel => String(hotel.ownerId) === String(user.id))
 
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto px-4 py-8 overflow-y-hidden">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-zinc-800">Manage Hotels</h1>
                     <Link
@@ -28,7 +27,7 @@ export default async function ManageHotel() {
                         + Create Hotel
                     </Link>
                 </div>
-                <ManageHotelList filteredHotels={filteredHotels} reviews={reviews} />
+                <HotelsList filteredHotels={hotels} reviews={reviews} />
             </div>
         </>
     )

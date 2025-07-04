@@ -24,7 +24,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-[#02877A] text-white h-screen ${
+      className={`bg-[#02877A] text-white h-screen overflow-hidden ${
         isOpen ? 'w-64' : 'w-20'
       } flex flex-col transition-all duration-300 ease-in-out shadow-lg`}
     >
