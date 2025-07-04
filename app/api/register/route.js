@@ -6,7 +6,15 @@ export async function POST(req) {
     try {
         await dbConnect();
 
-        const { name, email, password, location } = await req.json();
+        const { name, email, password, location, role = "user" } = await req.json();
+
+        // Validate required fields only (role is optional with default)
+        if (!name || !email || !password || !location) {
+            return NextResponse.json(
+                { message: "Name, email, password, and location are required" },
+                { status: 400 }
+            );
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -21,6 +29,7 @@ export async function POST(req) {
             email,
             password,
             location,
+            role
         });
 
         return NextResponse.json(

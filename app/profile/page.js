@@ -6,7 +6,6 @@ import Link from "next/link";
 
 const Profile = async () => {
   const authResult = await session();
-  console.log("Auth Result:", authResult);
 
   if (!authResult || !authResult.user) {
     redirect("/login");
