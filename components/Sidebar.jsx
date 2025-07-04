@@ -22,6 +22,7 @@ const Sidebar = () => {
     { name: 'Hotels List', icon: <FaCog />, path: '/dashboard/hotels-list' },
     { name: 'Bookings List', icon: <FaCog />, path: '/dashboard/bookings-list' },
     { name: 'Wishlists List', icon: <FaCog />, path: '/dashboard/wishlists-list' },
+    { name: 'Users List', icon: <FaCog />, path: '/dashboard/users-list' },
     { name: 'Logout', icon: <FaSignOutAlt />, path: '/logout' },
   ];
 

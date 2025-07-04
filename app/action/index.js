@@ -352,3 +352,30 @@ export async function sendEmail({ to, subject, html }) {
     }
 };
 
+// Fixed action function
+export async function getUsers() {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
+            method: 'GET',
+            cache: 'no-store',
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        }
+        
+        return data;
+
+    } catch (error) {
+        console.error("Failed to load users:", error);
+        // Return error state instead of undefined
+        return {
+            success: false,
+            error: error.message || "Failed to fetch users",
+            users: []
+        };
+    }
+}
+
