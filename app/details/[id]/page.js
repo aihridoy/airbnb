@@ -32,7 +32,6 @@ export async function generateMetadata({ params }) {
 
 const HotelDetailsPage = async ({ params }) => {
     const authResult = await session();
-    console.log('authResult', authResult);
     const { id } = params;
     const { reviews } = await getReviews()
     const { wishlists } = await getWishlists()

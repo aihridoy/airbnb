@@ -24,13 +24,12 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const auth = await session();
-      console.log("Auth data:", auth);
       if (auth && auth.user) setUser(auth.user);
     };
     fetchUser();
   }, []);
 
-  const isAdmin = user?._doc?.role === "admin";
+  const isAdmin = user?.role === "admin";
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   // Master nav list with role tags
@@ -110,11 +109,11 @@ const Sidebar = () => {
         <div className="p-4 border-t border-[#026d62]">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#02877A] font-bold">
-              {(user._doc?.name || "U").charAt(0)}
+              {(user?.name || "U").charAt(0)}
             </div>
             <div>
-              <p className="font-medium truncate max-w-[10rem]">{user._doc?.name}</p>
-              <p className="text-sm text-gray-200 truncate max-w-[10rem]">{user._doc?.email}</p>
+              <p className="font-medium truncate max-w-[10rem]">{user?.name}</p>
+              <p className="text-sm text-gray-200 truncate max-w-[10rem]">{user?.email}</p>
             </div>
           </div>
         </div>

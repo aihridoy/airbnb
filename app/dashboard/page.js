@@ -1,17 +1,74 @@
 import Sidebar from "@/components/Sidebar";
 import React from "react";
 import { getAllHotels, getBookings, getWishlists, session } from "../action";
+import Link from "next/link";
+import {
+  FaHotel,
+  FaPlusSquare,
+  FaClipboardList,
+  FaHeart,
+  FaCalendarCheck,
+} from "react-icons/fa";
 
 const Dashboard = async () => {
   const auth = await session();
-  const isAdmin = auth?.user?._doc?.role === "admin";
-  const userId = auth?.user?._doc?.id;
-  const userName = auth?.user?._doc?.name;
+  const isAdmin = auth?.user?.role === "admin";
+  const userId = auth?.user?.id;
+  const userName = auth?.user?.name;
 
   // Fetch all data
   const { hotels } = await getAllHotels();
   const { bookings } = await getBookings();
   const { wishlists } = await getWishlists();
+
+  // quick action config: 
+  const quickActions = isAdmin
+  ? [
+      {
+        label: "View All Hotels",
+        path: "/dashboard/hotels-list",
+        Icon: FaHotel,
+        bg: "bg-blue-50 hover:bg-blue-100",
+        text: "text-blue-600",
+      },
+      {
+        label: "View All Bookings",
+        path: "/dashboard/bookings-list",
+        Icon: FaClipboardList,
+        bg: "bg-green-50 hover:bg-green-100",
+        text: "text-green-600",
+      },
+      {
+        label: "View All Wishlists",
+        path: "/dashboard/wishlists-list",
+        Icon: FaHeart,
+        bg: "bg-red-50 hover:bg-red-100",
+        text: "text-red-600",
+      },
+    ]
+  : [
+      {
+        label: "Add New Hotel",
+        path: "/dashboard/manage-hotels",
+        Icon: FaPlusSquare,
+        bg: "bg-blue-50 hover:bg-blue-100",
+        text: "text-blue-600",
+      },
+      {
+        label: "View My Bookings",
+        path: "/dashboard/bookings",
+        Icon: FaCalendarCheck,
+        bg: "bg-green-50 hover:bg-green-100",
+        text: "text-green-600",
+      },
+      {
+        label: "View My Wishlists",
+        path: "/dashboard/wishlists",
+        Icon: FaHeart,
+        bg: "bg-red-50 hover:bg-red-100",
+        text: "text-red-600",
+      },
+    ];
 
   // Filter data based on user role
   const filteredHotels = isAdmin
@@ -425,7 +482,7 @@ const Dashboard = async () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Quick Actions
           </h3>
@@ -485,7 +542,23 @@ const Dashboard = async () => {
               </span>
             </button>
           </div>
-        </div>
+        </div> */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {quickActions.map(({ label, path, Icon, bg, text }) => (
+      <Link
+        key={label}
+        href={path}
+        className={`flex items-center justify-center p-4 rounded-lg transition-colors ${bg}`}
+      >
+        <Icon className={`w-5 h-5 mr-2 ${text}`} />
+        <span className={`${text} font-medium`}>{label}</span>
+      </Link>
+    ))}
+  </div>
+</div>
       </div>
     </div>
   );
