@@ -134,7 +134,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-              <Link href="/dashboard">
+                <Link href="/dashboard">
                   <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                     <i className="fas fa-tachometer-alt"></i>
                     Dashboard
@@ -142,39 +142,43 @@ const Navbar = () => {
                 </Link>
 
                 <Link href="/add-hotel">
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                    <i className="fas fa-hotel"></i>
-                    Create Hotel
-                  </li>
-                </Link>
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-hotel"></i>
+                        Create Hotel
+                      </li>
+                    </Link>
 
-                <Link href="/manage-hotels">
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                    <i className="fas fa-tools"></i>
-                    Manage Hotels
-                  </li>
-                </Link>
+                {user?.role === "user" && (
+                  <>
+                    <Link href="/manage-hotels">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-tools"></i>
+                        Manage Hotels
+                      </li>
+                    </Link>
 
-                <Link href="/bookings">
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                    <i className="fas fa-book"></i>
-                    Bookings
-                  </li>
-                </Link>
+                    <Link href="/bookings">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-book"></i>
+                        Bookings
+                      </li>
+                    </Link>
 
-                <Link href="/wishlists">
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                    <i className="fas fa-heart"></i>
-                    Wishlists
-                  </li>
-                </Link>
+                    <Link href="/wishlists">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-heart"></i>
+                        Wishlists
+                      </li>
+                    </Link>
 
-                <Link href="/profile">
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                    <i className="fas fa-user"></i>
-                    Profile
-                  </li>
-                </Link>
+                    <Link href="/profile">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-user"></i>
+                        Profile
+                      </li>
+                    </Link>
+                  </>
+                )}
 
                 <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                   <SignOutButton />
