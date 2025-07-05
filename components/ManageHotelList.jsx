@@ -66,7 +66,7 @@ const ManageHotelList = ({ filteredHotels, reviews }) => {
                                         src={hotelImage}
                                         alt="Hotel Property"
                                         className="w-full h-48 object-cover rounded-md transition-all hover:scale-105"
-                                        unoptimized={true}
+                                        // unoptimized={true}
                                     />
                                     <div className="absolute top-4 right-4 bg-white/80 px-3 py-1 rounded-full text-sm font-semibold">
                                         <i className="fas fa-star text-yellow-500 mr-1"></i>

@@ -127,7 +127,7 @@ export default function PaymentSuccess() {
                             src={booking?.bookingDetails?.hotelImage}
                             alt="Property"
                             className="w-32 h-32 rounded-lg object-cover"
-                            unoptimized={true}
+                            // unoptimized={true}
                         />
                         <div>
                             <h2 className="text-2xl font-semibold mb-2">{booking?.bookingDetails?.title}</h2>

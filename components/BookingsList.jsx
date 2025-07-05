@@ -159,7 +159,7 @@ const BookingsList = ({ bookings }) => {
                           src={booking.bookingDetails.hotelImage}
                           alt="Property Thumbnail"
                           className="w-20 h-20 object-cover rounded-md"
-                          unoptimized={true}
+                          // unoptimized={true}
                         />
                       )}
                     </td>

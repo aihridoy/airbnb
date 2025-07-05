@@ -58,7 +58,7 @@ const HotelsList = ({ filteredHotels, reviews }) => {
                                               (acc, review) => acc + review.ratings,
                                               0
                                           ) / totalReviews
-                                        : "N/A";
+                                        : 0;
                                 const hotelImage =
                                     hotel.images &&
                                     hotel.images.length > 0 &&
@@ -74,7 +74,7 @@ const HotelsList = ({ filteredHotels, reviews }) => {
                                                     src={hotelImage}
                                                     alt="Hotel Property"
                                                     className="w-20 h-20 object-cover rounded-md"
-                                                    unoptimized={true}
+                                                    // unoptimized={true}
                                                 />
                                             )}
                                         </td>

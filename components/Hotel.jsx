@@ -14,7 +14,7 @@ const Hotel = ({ hotel, averageRating }) => {
                             src={hotelImage}
                             alt={hotel.title}
                             className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform"
-                            unoptimized={true}
+                            // unoptimized={true}
                         />
                         <div
                             className="absolute top-3 right-3 bg-white/80 px-3 py-1 rounded-full text-xs font-semibold"

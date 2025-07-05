@@ -32,10 +32,7 @@ export default function WishlistPage() {
         const wishlists = wishlistsData?.wishlists || [];
         const bookings = bookingsData?.bookings || [];
 
-        const filteredWishlists =
-          wishlists.length > 0
-            ? wishlists.filter((wishlist) => wishlist.userId === authResult?.user?.id)
-            : [];
+       const filteredWishlists = wishlists.length > 0 ? wishlists : [];
 
         const filteredNotBooked = filteredWishlists.filter(
           (wishlist) =>
@@ -109,7 +106,7 @@ export default function WishlistPage() {
                               width={80}
                               height={80}
                               className="w-20 h-20 object-cover rounded-md"
-                              unoptimized={true}
+                              // unoptimized={true}
                               loading="lazy"
                             />
                           </Link>
