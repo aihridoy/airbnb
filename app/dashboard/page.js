@@ -21,54 +21,54 @@ const Dashboard = async () => {
   const { bookings } = await getBookings();
   const { wishlists } = await getWishlists();
 
-  // quick action config: 
+  // quick action config:
   const quickActions = isAdmin
-  ? [
-      {
-        label: "View All Hotels",
-        path: "/dashboard/hotels-list",
-        Icon: FaHotel,
-        bg: "bg-blue-50 hover:bg-blue-100",
-        text: "text-blue-600",
-      },
-      {
-        label: "View All Bookings",
-        path: "/dashboard/bookings-list",
-        Icon: FaClipboardList,
-        bg: "bg-green-50 hover:bg-green-100",
-        text: "text-green-600",
-      },
-      {
-        label: "View All Wishlists",
-        path: "/dashboard/wishlists-list",
-        Icon: FaHeart,
-        bg: "bg-red-50 hover:bg-red-100",
-        text: "text-red-600",
-      },
-    ]
-  : [
-      {
-        label: "Add New Hotel",
-        path: "/dashboard/manage-hotels",
-        Icon: FaPlusSquare,
-        bg: "bg-blue-50 hover:bg-blue-100",
-        text: "text-blue-600",
-      },
-      {
-        label: "View My Bookings",
-        path: "/dashboard/bookings",
-        Icon: FaCalendarCheck,
-        bg: "bg-green-50 hover:bg-green-100",
-        text: "text-green-600",
-      },
-      {
-        label: "View My Wishlists",
-        path: "/dashboard/wishlists",
-        Icon: FaHeart,
-        bg: "bg-red-50 hover:bg-red-100",
-        text: "text-red-600",
-      },
-    ];
+    ? [
+        {
+          label: "View All Hotels",
+          path: "/dashboard/hotels-list",
+          Icon: FaHotel,
+          bg: "bg-blue-50 hover:bg-blue-100",
+          text: "text-blue-600",
+        },
+        {
+          label: "View All Bookings",
+          path: "/dashboard/bookings-list",
+          Icon: FaClipboardList,
+          bg: "bg-green-50 hover:bg-green-100",
+          text: "text-green-600",
+        },
+        {
+          label: "View All Wishlists",
+          path: "/dashboard/wishlists-list",
+          Icon: FaHeart,
+          bg: "bg-red-50 hover:bg-red-100",
+          text: "text-red-600",
+        },
+      ]
+    : [
+        {
+          label: "Add New Hotel",
+          path: "/dashboard/manage-hotels",
+          Icon: FaPlusSquare,
+          bg: "bg-blue-50 hover:bg-blue-100",
+          text: "text-blue-600",
+        },
+        {
+          label: "View My Bookings",
+          path: "/dashboard/bookings",
+          Icon: FaCalendarCheck,
+          bg: "bg-green-50 hover:bg-green-100",
+          text: "text-green-600",
+        },
+        {
+          label: "View My Wishlists",
+          path: "/dashboard/wishlists",
+          Icon: FaHeart,
+          bg: "bg-red-50 hover:bg-red-100",
+          text: "text-red-600",
+        },
+      ];
 
   // Filter data based on user role
   const filteredHotels = isAdmin
@@ -240,7 +240,7 @@ const Dashboard = async () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">
-                  {isAdmin ? "Total Revenue" : "My Revenue"}
+                  {isAdmin ? "Total Revenue" : "My Expenditure"}
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
                   ${totalRevenue.toLocaleString()}
@@ -482,83 +482,24 @@ const Dashboard = async () => {
         </div>
 
         {/* Quick Actions */}
-        {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Quick Actions
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-              <svg
-                className="w-5 h-5 mr-2 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-              <span className="text-blue-600 font-medium">
-                {isAdmin ? "View All Hotels" : "Add New Hotel"}
-              </span>
-            </button>
-            <button className="flex items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
-              <svg
-                className="w-5 h-5 mr-2 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <span className="text-green-600 font-medium">
-                {isAdmin ? "View All Bookings" : "View My Bookings"}
-              </span>
-            </button>
-            <button className="flex items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-              <svg
-                className="w-5 h-5 mr-2 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              <span className="text-red-600 font-medium">
-                {isAdmin ? "View All Wishlists" : "View My Wishlists"}
-              </span>
-            </button>
-          </div>
-        </div> */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-    {quickActions.map(({ label, path, Icon, bg, text }) => (
-      <Link
-        key={label}
-        href={path}
-        className={`flex items-center justify-center p-4 rounded-lg transition-colors ${bg}`}
-      >
-        <Icon className={`w-5 h-5 mr-2 ${text}`} />
-        <span className={`${text} font-medium`}>{label}</span>
-      </Link>
-    ))}
-  </div>
-</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {quickActions.map(({ label, path, Icon, bg, text }) => (
+              <Link
+                key={label}
+                href={path}
+                className={`flex items-center justify-center p-4 rounded-lg transition-colors ${bg}`}
+              >
+                <Icon className={`w-5 h-5 mr-2 ${text}`} />
+                <span className={`${text} font-medium`}>{label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
