@@ -39,7 +39,7 @@ const Sidebar = () => {
     { name: "Add Hotel", icon: FaPlusSquare, path: "/dashboard/create-hotel", roles: ["all"] },
     { name: "Hotels List", icon: FaHotel, path: "/dashboard/hotels-list", roles: ["admin"] },
     { name: "Bookings List", icon: FaClipboardList, path: "/dashboard/bookings-list", roles: ["admin"] },
-    { name: "Wishlists List", icon: FaHeart, path: "/dashboard/wishlists-list", roles: ["admin"] },
+    // { name: "Wishlists List", icon: FaHeart, path: "/dashboard/wishlists-list", roles: ["admin"] },
     { name: "Users List", icon: FaUsers, path: "/dashboard/users-list", roles: ["admin"] },
     { name: "Manage Hotels", icon: FaHotel, path: "/dashboard/manage-hotels", roles: ["user"] },
     { name: "Profile", icon: FaUserCircle, path: "/dashboard/profile", roles: ["user"] },
