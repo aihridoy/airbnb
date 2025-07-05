@@ -257,7 +257,7 @@ const Profile = async () => {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link
-              href="/wishlists"
+              href="/dashboard/wishlists"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
@@ -281,7 +281,7 @@ const Profile = async () => {
             </Link>
 
             <Link
-              href="/bookings"
+              href="/dashboard/bookings"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
@@ -305,7 +305,7 @@ const Profile = async () => {
             </Link>
 
             <Link
-              href="/add-hotel"
+              href="/dashboard/create-hotel"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
