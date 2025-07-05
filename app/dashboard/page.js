@@ -1,4 +1,3 @@
-import Sidebar from "@/components/Sidebar";
 import React from "react";
 import { getAllHotels, getBookings, getWishlists, session } from "../action";
 import Link from "next/link";
@@ -49,7 +48,7 @@ const Dashboard = async () => {
     : [
         {
           label: "Add New Hotel",
-          path: "/dashboard/manage-hotels",
+          path: "/dashboard/create-hotel",
           Icon: FaPlusSquare,
           bg: "bg-blue-50 hover:bg-blue-100",
           text: "text-blue-600",

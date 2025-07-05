@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { getBookings, getWishlists, session } from "../../action";
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import DeleteWishlistButton from "@/components/DeleteWishlistButton";
@@ -34,7 +33,6 @@ export default async function WishlistPage() {
 
   return (
     <>
-      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
         {wishlistNotBooked.length > 0 ? (

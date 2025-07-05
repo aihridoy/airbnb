@@ -1,13 +1,13 @@
 "use client";
 
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addHotel, getHotelById, session, updateHotelById } from '../action';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const HotelForm = () => {
     const router = useRouter();
@@ -28,8 +28,6 @@ const HotelForm = () => {
         description: false,
         serviceFee: false,
         cleaningFee: false,
-        serviceFee: false,
-        cleaningFee: false
     });
     const [formData, setFormData] = useState({
         title: '',
@@ -107,7 +105,7 @@ const HotelForm = () => {
             cleaningFee: '',
             ownerId: userId,
             hostName: hostName,
-        });;
+        });
     };
 
     function debounce(func, wait) {
@@ -171,8 +169,7 @@ const HotelForm = () => {
                 } else if (key === 'images') {
                     if (hotelId) {
                         form.append(key, JSON.stringify(value));
-                    }
-                    else {
+                    } else {
                         value.forEach((image) => {
                             form.append('images[]', image);
                         });
@@ -242,22 +239,21 @@ const HotelForm = () => {
         <>
             <Navbar />
             <form onSubmit={handleSubmit}>
-                <div className="max-w-7xl mx-auto px-6 py-8 relative">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative">
                     <button
                         type="submit"
-                        className={`px-4 py-2 rounded-lg absolute top-4 right-4 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:brightness-90'
-                            }`}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg absolute top-4 right-4 sm:right-6 text-sm sm:text-base ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:brightness-90'}`}
                         disabled={loading}
                     >
                         {loading ? (
-                            <i className="fas fa-spinner fa-spin mr-2"></i>
+                            <i className="fas fa-spinner fa-spin mr-1 sm:mr-2"></i>
                         ) : (
-                            <i className="fas fa-save mr-2"></i>
+                            <i className="fas fa-save mr-1 sm:mr-2"></i>
                         )}
                         {loading ? 'Saving...' : hotelId ? 'Update' : 'Publish'}
                     </button>
                     <div className="mb-6">
-                        <div className="flex items-center">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                             {isInputVisible.propertyName ? (
                                 <input
                                     type="text"
@@ -266,28 +262,28 @@ const HotelForm = () => {
                                     value={formData.title}
                                     onChange={handleChange}
                                     placeholder="Property Name"
-                                    className="mt-2 p-2 border border-primary rounded-lg"
+                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
                                 />
                             ) : (
-                                <h1 className="text-3xl font-bold mb-2 text-zinc-400 edit" id="propertyName">
+                                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 text-zinc-400">
                                     {hotelId && !formData.title && hotel?.title || formData.title || "Property Name"}
                                 </h1>
                             )}
                             {isInputVisible.propertyName ? (
                                 <button
                                     onClick={() => toggleInputVisibility("propertyName")}
-                                    className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                    className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                 >
                                     Save
                                 </button>
                             ) : (
                                 <i
                                     onClick={() => toggleInputVisibility("propertyName")}
-                                    className="fas fa-pencil-alt text-gray-400 ml-2 cursor-pointer text-sm hover:scale-110 transition-all"
+                                    className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                 ></i>
                             )}
                         </div>
-                        <div className="flex items-center text-gray-600">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-gray-600 mt-2">
                             {isInputVisible.propertyLocation ? (
                                 <input
                                     type="text"
@@ -296,332 +292,281 @@ const HotelForm = () => {
                                     value={formData.location}
                                     onChange={handleChange}
                                     placeholder="Property Location"
-                                    className="mt-2 p-2 border border-primary rounded-lg"
+                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
                                 />
                             ) : (
-                                <span className="edit text-gray-600">
+                                <span className="text-sm sm:text-base">
                                     {hotelId && !formData.location && hotel?.location || formData.location || "Property Location"}
                                 </span>
                             )}
                             {isInputVisible.propertyLocation ? (
                                 <button
                                     onClick={() => toggleInputVisibility("propertyLocation")}
-                                    className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                    className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                 >
                                     Save
                                 </button>
                             ) : (
                                 <i
                                     onClick={() => toggleInputVisibility("propertyLocation")}
-                                    className="fas fa-pencil-alt text-gray-400 ml-2 cursor-pointer text-sm hover:scale-110 transition-all"
+                                    className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                 ></i>
                             )}
                         </div>
                     </div>
 
-                    {/* images */}
-                    <div className="grid grid-cols-4 grid-rows-2 gap-4 mb-8 h-[500px]">
-                        <div className="col-span-2 row-span-2 relative">
-                            <Image
-                                width={600}
-                                height={400}
-                                src={hotelId && !formData.images[0] && hotel?.images[0] || formData.images[0] || "https://placehold.co/600x400"}
-                                alt="Main Room"
-                                className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
-                            />
-                            <input
-                                type="text"
-                                name="image0"
-                                placeholder="https://placehold.co/600x400"
-                                value={formData.images[0] || ""}
-                                onChange={handleChange}
-                                className="w-11/12 p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Image
-                                width={600}
-                                height={400}
-                                src={hotelId && !formData.images[1] && hotel?.images[1] || formData.images[1] || "https://placehold.co/600x400"}
-                                alt="Room 1"
-                                className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
-                            />
-                            <input
-                                type="text"
-                                name="image1"
-                                placeholder="https://placehold.co/600x400"
-                                value={formData.images[1] || ""}
-                                onChange={handleChange}
-                                className="text-sm w-11/12 p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Image
-                                width={600}
-                                height={400}
-                                src={hotelId && !formData.images[2] && hotel?.images[2] || formData.images[2] || "https://placehold.co/600x400"}
-                                alt="Room 1"
-                                className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
-                            />
-                            <input
-                                type="text"
-                                name="image2"
-                                placeholder="https://placehold.co/600x400"
-                                value={formData.images[2] || ""}
-                                onChange={handleChange}
-                                className="text-sm w-11/12 p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Image
-                                width={600}
-                                height={400}
-                                src={hotelId && !formData.images[3] && hotel?.images[3] || formData.images[3] || "https://placehold.co/600x400"}
-                                alt="Room 1"
-                                className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
-                            />
-                            <input
-                                type="text"
-                                name="image3"
-                                placeholder="https://placehold.co/600x400"
-                                value={formData.images[3] || ""}
-                                onChange={handleChange}
-                                className="text-sm w-11/12 p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Image
-                                width={600}
-                                height={400}
-                                src={hotelId && !formData.images[4] && hotel?.images[4] || formData.images[4] || "https://placehold.co/600x400"}
-                                alt="Room 1"
-                                className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
-                            />
-                            <input
-                                type="text"
-                                name="image4"
-                                placeholder="https://placehold.co/600x400"
-                                value={formData.images[4] || ""}
-                                onChange={handleChange}
-                                className="text-sm w-11/12 p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white"
-                            />
-                        </div>
+                    {/* Images */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8 h-auto sm:h-[300px] lg:h-[400px]">
+                        {[...Array(5)].map((_, index) => (
+                            <div key={index} className={index === 0 ? "col-span-1 sm:col-span-2 row-span-2" : "col-span-1"}>
+                                <div className="relative h-full">
+                                    <Image
+                                        width={600}
+                                        height={400}
+                                        src={
+                                            hotelId && !formData.images[index] && hotel?.images[index] ||
+                                            formData.images[index] ||
+                                            "https://placehold.co/600x400"
+                                        }
+                                        alt={`Room ${index}`}
+                                        className="w-full h-full object-cover rounded-lg"
+                                        sizes={index === 0 ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" : "(max-width: 640px) 100vw, 25vw"}
+                                        priority={index === 0}
+                                        unoptimized={true}
+                                    />
+                                    <input
+                                        type="text"
+                                        name={`image${index}`}
+                                        placeholder="https://placehold.co/600x400"
+                                        value={formData.images[index] || ""}
+                                        onChange={handleChange}
+                                        className="w-11/12 p-1.5 sm:p-2 border border-primary rounded-lg mt-2 absolute left-1/2 -translate-x-1/2 bottom-2 bg-white text-xs sm:text-sm"
+                                    />
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
-                    <div className="mb-4">
-                        {isInputVisible.propertyPrice ? (
-                            <input
-                                type="number"
-                                id="rent"
-                                name="rent"
-                                value={formData.rent}
-                                onChange={handleChange}
-                                placeholder="Property Rent"
-                                className="mt-2 p-2 border border-primary rounded-lg"
-                            />
-                        ) : (
-                            <span className="text-xl font-bold edit">
-                                {
-                                    hotelId
-                                        ? formData.rent
-                                            ? `$${formData.rent}`
-                                            : `$${hotel?.rent || "Price in USD"}`
-                                        : formData.rent
-                                            ? `$${formData.rent}`
-                                            : "Price in USD"
-                                }
-                            </span>
-                        )}
-                        {isInputVisible.propertyPrice ? (
-                            <button
-                                onClick={() => toggleInputVisibility("propertyPrice")}
-                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
-                            >
-                                Save
-                            </button>
-                        ) : (
-                            <i
-                                onClick={() => toggleInputVisibility("propertyPrice")}
-                                className="fas fa-pencil-alt text-gray-400 ml-2 cursor-pointer text-sm hover:scale-110 transition-all"
-                            ></i>
-                        )}
-                        <span className="text-gray-600 ml-1">per night</span>
+                    <div className="mb-4 sm:mb-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                            {isInputVisible.propertyPrice ? (
+                                <input
+                                    type="number"
+                                    id="rent"
+                                    name="rent"
+                                    value={formData.rent}
+                                    onChange={handleChange}
+                                    placeholder="Property Rent"
+                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                />
+                            ) : (
+                                <span className="text-lg sm:text-xl font-bold">
+                                    {
+                                        hotelId
+                                            ? formData.rent
+                                                ? `$${formData.rent}`
+                                                : `$${hotel?.rent || "Price in USD"}`
+                                            : formData.rent
+                                                ? `$${formData.rent}`
+                                                : "Price in USD"
+                                    }
+                                </span>
+                            )}
+                            {isInputVisible.propertyPrice ? (
+                                <button
+                                    onClick={() => toggleInputVisibility("propertyPrice")}
+                                    className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
+                                >
+                                    Save
+                                </button>
+                            ) : (
+                                <i
+                                    onClick={() => toggleInputVisibility("propertyPrice")}
+                                    className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
+                                ></i>
+                            )}
+                            <span className="text-gray-600 text-sm sm:text-base">per night</span>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-8">
-                        <div className="col-span-2">
-                            <div className="border-b pb-6 mb-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                        <div className="col-span-1 lg:col-span-2">
+                            <div className="border-b pb-4 sm:pb-6 mb-4 sm:mb-6">
                                 <div className="grid grid-cols-1 gap-4 text-gray-600">
-                                    <div className="flex items-center gap-2">
-                                        <i className="fas fa-person"></i>
-                                        {isInputVisible.guestCapacity ? (
-                                            <input
-                                                type="number"
-                                                id="guestCapacity"
-                                                name="guestCapacity"
-                                                value={formData.guestCapacity}
-                                                onChange={handleChange}
-                                                placeholder="Guest Capacity"
-                                                className="mt-2 p-2 border border-primary rounded-lg"
-                                            />
-                                        ) : (
-                                            <span className="edit">
-                                                {hotelId && !formData.guestCapacity && hotel?.guestCapacity || formData.guestCapacity || "How many Guests can Stay?"}
-                                            </span>
-                                        )}
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <i className="fas fa-person"></i>
+                                            {isInputVisible.guestCapacity ? (
+                                                <input
+                                                    type="number"
+                                                    id="guestCapacity"
+                                                    name="guestCapacity"
+                                                    value={formData.guestCapacity}
+                                                    onChange={handleChange}
+                                                    placeholder="Guest Capacity"
+                                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                                />
+                                            ) : (
+                                                <span className="text-sm sm:text-base">
+                                                    {hotelId && !formData.guestCapacity && hotel?.guestCapacity || formData.guestCapacity || "How many Guests can Stay?"}
+                                                </span>
+                                            )}
+                                        </div>
                                         {isInputVisible.guestCapacity ? (
                                             <button
                                                 onClick={() => toggleInputVisibility("guestCapacity")}
-                                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                                className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                             >
                                                 Save
                                             </button>
                                         ) : (
                                             <i
                                                 onClick={() => toggleInputVisibility("guestCapacity")}
-                                                className="fas fa-pencil-alt text-gray-400 ml-1 cursor-pointer text-sm hover:scale-110 transition-all"
+                                                className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                             ></i>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <i className="fas fa-door-open"></i>
-                                        {isInputVisible.bedroomCapacity ? (
-                                            <input
-                                                type="number"
-                                                id="bedroomCapacity"
-                                                name="bedroomCapacity"
-                                                value={formData.bedroomCapacity}
-                                                onChange={handleChange}
-                                                placeholder="Bedroom Capacity"
-                                                className="mt-2 p-2 border border-primary rounded-lg"
-                                            />
-                                        ) : (
-                                            <span className="edit">
-                                                {hotelId && !formData.bedroomCapacity && hotel?.bedroomCapacity || formData.bedroomCapacity || "How many Bedrooms?"}
-                                            </span>
-                                        )}
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <i className="fas fa-door-open"></i>
+                                            {isInputVisible.bedroomCapacity ? (
+                                                <input
+                                                    type="number"
+                                                    id="bedroomCapacity"
+                                                    name="bedroomCapacity"
+                                                    value={formData.bedroomCapacity}
+                                                    onChange={handleChange}
+                                                    placeholder="Bedroom Capacity"
+                                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                                />
+                                            ) : (
+                                                <span className="text-sm sm:text-base">
+                                                    {hotelId && !formData.bedroomCapacity && hotel?.bedroomCapacity || formData.bedroomCapacity || "How many Bedrooms?"}
+                                                </span>
+                                            )}
+                                        </div>
                                         {isInputVisible.bedroomCapacity ? (
                                             <button
                                                 onClick={() => toggleInputVisibility("bedroomCapacity")}
-                                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                                className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                             >
                                                 Save
                                             </button>
                                         ) : (
                                             <i
                                                 onClick={() => toggleInputVisibility("bedroomCapacity")}
-                                                className="fas fa-pencil-alt text-gray-400 ml-1 cursor-pointer text-sm hover:scale-110 transition-all"
+                                                className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                             ></i>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <i className="fas fa-bed"></i>
-                                        {isInputVisible.bedCapacity ? (
-                                            <input
-                                                type="number"
-                                                id="bedCapacity"
-                                                name="bedCapacity"
-                                                value={formData.bedCapacity}
-                                                onChange={handleChange}
-                                                placeholder="Bed Capacity"
-                                                className="mt-2 p-2 border border-primary rounded-lg"
-                                            />
-                                        ) : (
-                                            <span className="edit">
-                                                {hotelId && !formData.bedCapacity && hotel?.bedCapacity || formData.bedCapacity || "How many beds available?"}
-                                            </span>
-                                        )}
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <i className="fas fa-bed"></i>
+                                            {isInputVisible.bedCapacity ? (
+                                                <input
+                                                    type="number"
+                                                    id="bedCapacity"
+                                                    name="bedCapacity"
+                                                    value={formData.bedCapacity}
+                                                    onChange={handleChange}
+                                                    placeholder="Bed Capacity"
+                                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                                />
+                                            ) : (
+                                                <span className="text-sm sm:text-base">
+                                                    {hotelId && !formData.bedCapacity && hotel?.bedCapacity || formData.bedCapacity || "How many beds available?"}
+                                                </span>
+                                            )}
+                                        </div>
                                         {isInputVisible.bedCapacity ? (
                                             <button
                                                 onClick={() => toggleInputVisibility("bedCapacity")}
-                                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                                className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                             >
                                                 Save
                                             </button>
                                         ) : (
                                             <i
                                                 onClick={() => toggleInputVisibility("bedCapacity")}
-                                                className="fas fa-pencil-alt text-gray-400 ml-1 cursor-pointer text-sm hover:scale-110 transition-all"
+                                                className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                             ></i>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <i className="fas fa-broom"></i>
-                                        {isInputVisible.serviceFee ? (
-                                            <input
-                                                type="number"
-                                                id="serviceFee"
-                                                name="serviceFee"
-                                                value={formData.serviceFee}
-                                                onChange={handleChange}
-                                                placeholder="Service Fee"
-                                                className="mt-2 p-2 border border-primary rounded-lg"
-                                            />
-                                        ) : (
-                                            <span className="edit">
-                                                {hotelId && (!formData.serviceFee ? hotel?.serviceFee : formData.serviceFee)
-                                                    ? `$${formData.serviceFee || hotel?.serviceFee}`
-                                                    : "Service Fee"}
-                                            </span>
-                                        )}
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <i className="fas fa-broom"></i>
+                                            {isInputVisible.serviceFee ? (
+                                                <input
+                                                    type="number"
+                                                    id="serviceFee"
+                                                    name="serviceFee"
+                                                    value={formData.serviceFee}
+                                                    onChange={handleChange}
+                                                    placeholder="Service Fee"
+                                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                                />
+                                            ) : (
+                                                <span className="text-sm sm:text-base">
+                                                    {hotelId && (!formData.serviceFee ? hotel?.serviceFee : formData.serviceFee)
+                                                        ? `$${formData.serviceFee || hotel?.serviceFee}`
+                                                        : "Service Fee"}
+                                                </span>
+                                            )}
+                                        </div>
                                         {isInputVisible.serviceFee ? (
                                             <button
                                                 onClick={() => toggleInputVisibility("serviceFee")}
-                                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                                className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                             >
                                                 Save
                                             </button>
                                         ) : (
                                             <i
                                                 onClick={() => toggleInputVisibility("serviceFee")}
-                                                className="fas fa-pencil-alt text-gray-400 ml-1 cursor-pointer text-sm hover:scale-110 transition-all"
+                                                className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                             ></i>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <i className="fas fa-concierge-bell"></i>
-                                        {isInputVisible.cleaningFee ? (
-                                            <input
-                                                type="number"
-                                                id="cleaningFee"
-                                                name="cleaningFee"
-                                                value={formData.cleaningFee}
-                                                onChange={handleChange}
-                                                placeholder="Cleaning Fee"
-                                                className="mt-2 p-2 border border-primary rounded-lg"
-                                            />
-                                        ) : (
-                                            <span className="edit">
-                                                {hotelId && (!formData.cleaningFee ? hotel?.cleaningFee : formData.cleaningFee)
-                                                    ? `$${formData.cleaningFee || hotel?.cleaningFee}`
-                                                    : "Cleaning Fee"}
-
-                                            </span>
-                                        )}
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <i className="fas fa-concierge-bell"></i>
+                                            {isInputVisible.cleaningFee ? (
+                                                <input
+                                                    type="number"
+                                                    id="cleaningFee"
+                                                    name="cleaningFee"
+                                                    value={formData.cleaningFee}
+                                                    onChange={handleChange}
+                                                    placeholder="Cleaning Fee"
+                                                    className="w-full sm:w-auto mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                                />
+                                            ) : (
+                                                <span className="text-sm sm:text-base">
+                                                    {hotelId && (!formData.cleaningFee ? hotel?.cleaningFee : formData.cleaningFee)
+                                                        ? `$${formData.cleaningFee || hotel?.cleaningFee}`
+                                                        : "Cleaning Fee"}
+                                                </span>
+                                            )}
+                                        </div>
                                         {isInputVisible.cleaningFee ? (
                                             <button
                                                 onClick={() => toggleInputVisibility("cleaningFee")}
-                                                className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                                className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                             >
                                                 Save
                                             </button>
                                         ) : (
                                             <i
                                                 onClick={() => toggleInputVisibility("cleaningFee")}
-                                                className="fas fa-pencil-alt text-gray-400 ml-1 cursor-pointer text-sm hover:scale-110 transition-all"
+                                                className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                             ></i>
                                         )}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mb-6">
-                                <h3 className="text-xl font-semibold mb-4">About this place</h3>
-                                <div className="flex items-center">
+                            <div className="mb-4 sm:mb-6">
+                                <h3 className="text-lg sm:text-xl font-semibold mb-4">About this place</h3>
+                                <div className="flex flex-col sm:flex-row items-start gap-2">
                                     {isInputVisible.description ? (
                                         <textarea
                                             id="description"
@@ -629,33 +574,32 @@ const HotelForm = () => {
                                             value={formData.description}
                                             onChange={handleChange}
                                             placeholder="Write a short description about this place"
-                                            className="mt-2 p-2 border border-primary rounded-lg"
-                                            rows="8"
-                                            cols="64"
+                                            className="w-full mt-2 p-2 border border-primary rounded-lg text-sm sm:text-base"
+                                            rows="6"
                                         />
                                     ) : (
-                                        <p className="text-gray-700 leading-relaxed edit">
+                                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                                             {hotelId && !formData.description && hotel?.description || formData.description || "Write a short description about this place"}
                                         </p>
                                     )}
                                     {isInputVisible.description ? (
                                         <button
                                             onClick={() => toggleInputVisibility("description")}
-                                            className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                                            className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-sm"
                                         >
                                             Save
                                         </button>
                                     ) : (
                                         <i
                                             onClick={() => toggleInputVisibility("description")}
-                                            className="fas fa-pencil-alt text-gray-400 ml-2 cursor-pointer text-sm hover:scale-110 transition-all"
+                                            className="fas fa-pencil-alt text-gray-400 cursor-pointer text-sm hover:scale-110 transition-all"
                                         ></i>
                                     )}
                                 </div>
                             </div>
                             <div>
-                                <h3 className="text-xl font-semibold mb-4">What this place offers</h3>
-                                <div className="grid grid-cols-2 gap-4" id="amenities">
+                                <h3 className="text-lg sm:text-xl font-semibold mb-4">What this place offers</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" id="amenities">
                                     {['Beach access', 'Private pool', 'Free Wi-Fi', 'Kitchen', 'Free Parking', 'Fitness Center'].map(amenity => (
                                         <div key={amenity} className="flex items-center gap-2 cursor-pointer">
                                             <input
@@ -670,7 +614,7 @@ const HotelForm = () => {
                                                 className="mr-2"
                                             />
                                             <i className={`fa-solid ${getIconClass(amenity)}`}></i>
-                                            <label htmlFor={amenity}>{amenity}</label>
+                                            <label htmlFor={amenity} className="text-sm sm:text-base">{amenity}</label>
                                         </div>
                                     ))}
                                 </div>
