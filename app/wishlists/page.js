@@ -57,7 +57,7 @@ export default async function WishlistPage() {
                                                     layout="fill"
                                                     objectFit="cover"
                                                     className="transition-transform transform hover:scale-105 overflow-hidden rounded-t-2xl"
-                                                    unoptimized={true}
+                                                    // unoptimized={true}
                                                     loading="lazy"
                                                 />
                                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-20 flex items-end p-4">
