@@ -163,7 +163,7 @@ const BookingDetailsModal = ({ bookings }) => {
                                             src={booking?.bookingDetails?.hotelImage}
                                             alt="Property Thumbnail"
                                             className="w-24 h-24 object-cover rounded-md"
-                                            unoptimized={true}
+                                            // unoptimized={true}
                                         />
                                         <div>
                                             <h2 className="text-lg text-zinc-800 font-semibold">

@@ -1,7 +1,6 @@
 import React from "react";
-import { getAllHotels, getBookings, getWishlists, session } from "../action";
+import { getAllHotels, getBookings, getWishlists, session } from "../../action";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
 const Profile = async () => {
@@ -35,8 +34,6 @@ const Profile = async () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
           {/* Background Pattern */}
@@ -260,7 +257,7 @@ const Profile = async () => {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link
-              href="/wishlists"
+              href="/dashboard/wishlists"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
@@ -284,7 +281,7 @@ const Profile = async () => {
             </Link>
 
             <Link
-              href="/bookings"
+              href="/dashboard/bookings"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
@@ -308,7 +305,7 @@ const Profile = async () => {
             </Link>
 
             <Link
-              href="/add-hotel"
+              href="/dashboard/create-hotel"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">

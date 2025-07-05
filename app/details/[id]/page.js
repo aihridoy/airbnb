@@ -91,7 +91,7 @@ const HotelDetailsPage = async ({ params }) => {
                                 src={image}
                                 alt={`Room ${index}`}
                                 className="w-full h-full object-cover rounded-lg"
-                                unoptimized={true}
+                                // unoptimized={true}
                             />
                         </div>
                     ))}
