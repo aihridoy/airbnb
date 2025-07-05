@@ -171,7 +171,7 @@ const Navbar = () => {
                       </li>
                     </Link>
 
-                    <Link href="/profile">
+                    <Link href={`/profile/${user?.id}`}>
                       <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                         <i className="fas fa-user"></i>
                         Profile

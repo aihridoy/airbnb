@@ -1,15 +1,18 @@
 import React from "react";
-import { getAllHotels, getBookings, getWishlists, session } from "../action";
+import { getAllHotels, getBookings, getUserById, getWishlists, session } from "../../action";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
-const Profile = async () => {
+const Profile = async ({ params }) => {
+  const { id } = params;
   const authResult = await session();
 
   if (!authResult || !authResult.user) {
     redirect("/login");
   }
+
+  const { user } = await getUserById(id);
 
   const wishlistsData = await getWishlists();
   const bookingsData = await getBookings();
@@ -21,16 +24,16 @@ const Profile = async () => {
 
   const filteredWishlists =
     wishlists.length > 0
-      ? wishlists.filter((wishlist) => wishlist.userId === authResult?.user?.id)
+      ? wishlists.filter((wishlist) => wishlist.userId === id)
       : [];
 
   const filteredBookings =
     bookings.length > 0
-      ? bookings.filter((booking) => booking.userId === authResult?.user?.id)
+      ? bookings.filter((booking) => booking.userId === id)
       : [];
 
   const filteredHotels = hotels.filter(
-    (hotel) => String(hotel.ownerId) === String(authResult?.user?.id)
+    (hotel) => String(hotel.ownerId) === String(id)
   );
 
   return (
@@ -48,7 +51,7 @@ const Profile = async () => {
               <div className="relative">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-white">
                   <span className="text-white text-2xl font-bold">
-                    {authResult.user.name.charAt(0).toUpperCase()}
+                    {user?.name?.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
@@ -60,7 +63,7 @@ const Profile = async () => {
               <div className="flex-1 text-center sm:text-left">
                 <div className="mb-3">
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    {authResult.user.name}
+                    {user?.name}
                   </h1>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                     <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-600">
@@ -78,7 +81,7 @@ const Profile = async () => {
                         />
                       </svg>
                       <span className="text-sm font-medium">
-                        {authResult.user.email}
+                        {user?.email}
                       </span>
                     </div>
                     <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-600">
@@ -102,7 +105,7 @@ const Profile = async () => {
                         />
                       </svg>
                       <span className="text-sm font-medium">
-                        {authResult.user.location || "Location not set"}
+                        {user?.location || "Location not set"}
                       </span>
                     </div>
                   </div>
@@ -126,7 +129,7 @@ const Profile = async () => {
                   <span>
                     Member since{" "}
                     {new Date(
-                      authResult.user.createdAt || Date.now()
+                      user.createdAt || Date.now()
                     ).toLocaleDateString("en-US", {
                       month: "short",
                       year: "numeric",
@@ -253,85 +256,87 @@ const Profile = async () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Link
-              href="/wishlists"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                <svg
-                  className="w-5 h-5 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">
-                View Wishlists
-              </span>
-            </Link>
+        {/* Quick Actions - Only show for non-admin users */}
+        {authResult.user?.role !== 'admin' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link
+                href="/wishlists"
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg
+                    className="w-5 h-5 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  View Wishlists
+                </span>
+              </Link>
 
-            <Link
-              href="/bookings"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                <svg
-                  className="w-5 h-5 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">
-                My Bookings
-              </span>
-            </Link>
+              <Link
+                href="/bookings"
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg
+                    className="w-5 h-5 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  My Bookings
+                </span>
+              </Link>
 
-            <Link
-              href="/add-hotel"
-              className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                <svg
-                  className="w-5 h-5 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">
-                Add New Hotel
-              </span>
-            </Link>
+              <Link
+                href="/add-hotel"
+                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg
+                    className="w-5 h-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  Add New Hotel
+                </span>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
