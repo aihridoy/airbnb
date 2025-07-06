@@ -2,8 +2,8 @@
 import React from 'react'
 import { getAllHotels, getReviews, session } from '../../action'
 import Link from 'next/link'
-import ManageHotelList from '@/components/ManageHotelList'
 import { redirect } from 'next/navigation'
+import ManageHotelList from '@/components/HotelsListManage';
 
 export default async function ManageHotel() {
     const authResult = await session();

@@ -40,7 +40,7 @@ const Profile = async ({ params }) => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-0 py-8">
         <div className="relative bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 opacity-50"></div>
