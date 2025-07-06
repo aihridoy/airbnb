@@ -73,7 +73,7 @@ const Sidebar = () => {
         {isOpen && (
           <>
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#02877A] font-bold text-xl">
-              H
+              A
             </div>
             <span className="text-xl font-semibold">AirBnB</span>
           </>
