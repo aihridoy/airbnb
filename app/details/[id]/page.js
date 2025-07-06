@@ -216,9 +216,7 @@ const HotelDetailsPage = async ({ params }) => {
                   return (
                     <div
                       key={index}
-                      className="flex items-center gap
-
--2"
+                      className="flex items-center gap-2"
                     >
                       <i className={iconClass}></i>
                       <span>{amenity}</span>
