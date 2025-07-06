@@ -6,10 +6,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import DeleteWishlistButton from "@/components/DeleteWishlistButton";
 import Pagination from "@/components/Pagination";
+import { MapPin, HeartOff } from "lucide-react";
 
 const WishlistList = ({ wishlistNotBooked, searchParams }) => {
   const router = useRouter();
-  const searchParamsHook = useSearchParams();
   const [loading, setLoading] = useState(true);
   const currentPage = parseInt(searchParams.page || "1", 10);
   const itemsPerPage = 8;
@@ -19,16 +19,11 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
   const currentItems = wishlistNotBooked.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
-    // Validate currentPage and redirect if invalid
     if (currentPage < 1 || currentPage > totalPages) {
       router.replace(`/dashboard/wishlists?page=1`);
       return;
     }
-
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
+    const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, [currentPage, totalPages, router]);
 
@@ -39,24 +34,27 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
   };
 
   const skeletonLoader = (
-    <div className="border rounded-lg overflow-x-auto animate-pulse">
+    <div className="border rounded-xl overflow-hidden animate-pulse">
       <div className="divide-y divide-gray-200">
-        {[...Array(itemsPerPage)].map((_, index) => (
-          <div key={index} className="flex flex-col sm:flex-row items-center sm:items-stretch py-4 px-4 sm:px-6 gap-4">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-md"></div>
-            <div className="flex-1">
-              <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
-              <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+        {[...Array(itemsPerPage)].map((_, i) => (
+          <div
+            key={i}
+            className="flex flex-col sm:flex-row items-center gap-4 p-4 sm:px-6"
+          >
+            <div className="w-20 h-20 bg-gray-200 rounded-md" />
+            <div className="flex-1 space-y-2 w-full">
+              <div className="h-6 w-2/3 bg-gray-200 rounded" />
+              <div className="h-4 w-1/3 bg-gray-200 rounded" />
             </div>
-            <div className="w-24 h-4 bg-gray-200 rounded"></div>
-            <div className="w-16 h-8 bg-gray-200 rounded-lg"></div>
+            <div className="w-24 h-6 bg-gray-200 rounded" />
+            <div className="w-16 h-8 bg-gray-200 rounded-lg" />
           </div>
         ))}
       </div>
       <div className="mt-6 flex justify-center">
-        <div className="inline-flex items-center -space-x-px">
+        <div className="inline-flex gap-2">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-8 w-8 bg-gray-200 rounded border border-zinc-300"></div>
+            <div key={i} className="h-8 w-8 bg-gray-200 rounded border" />
           ))}
         </div>
       </div>
@@ -69,60 +67,54 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
         skeletonLoader
       ) : currentItems.length > 0 ? (
         <>
-          <div className="border rounded-lg overflow-x-auto">
-            <div className="divide-y divide-gray-200">
+          <div className="border rounded-xl overflow-hidden shadow-sm">
+            <div className="divide-y divide-gray-100">
               {currentItems.map((item) => (
                 <div
                   key={item._id}
-                  className="flex flex-col sm:flex-row items-center sm:items-stretch py-4 px-4 sm:px-6 gap-4 hover:bg-gray-50 transition-colors"
+                  className="flex flex-col sm:flex-row items-center sm:items-center py-4 px-4 sm:px-6 gap-4 hover:bg-gray-50 transition"
                 >
                   <Link href={`/details/${item.hotelId}`} className="block">
-                    {item.images && item.images.length > 0 ? (
+                    {item.images?.[0] ? (
                       <Image
                         src={item.images[0]}
-                        alt={`${item.title} image`}
+                        alt={item.title}
                         width={80}
                         height={80}
-                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md"
-                        sizes="(max-width: 640px) 100vw, 80px"
-                        loading="lazy"
+                        className="w-20 h-20 object-cover rounded-md"
                       />
                     ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-300 rounded-md flex items-center justify-center">
-                        <span className="text-gray-500 text-xs">No Image</span>
+                      <div className="w-20 h-20 bg-gray-300 rounded-md flex items-center justify-center text-xs text-gray-500">
+                        No Image
                       </div>
                     )}
                   </Link>
-                  <div className="flex-1">
+
+                  <div className="flex-1 w-full">
                     <Link href={`/details/${item.hotelId}`} className="block">
-                      <h2 className="text-lg font-semibold text-gray-800">{item.title}</h2>
-                      <div className="text-sm text-gray-600 flex items-center mt-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                        </svg>
+                      <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                        {item.title}
+                      </h2>
+                      <div className="text-sm text-gray-500 flex items-center mt-1">
+                        <MapPin className="w-4 h-4 mr-1" />
                         {item.location}
                       </div>
                     </Link>
                   </div>
-                  <div className="text-lg font-bold text-rose-600">
-                    ${item.rent} <span className="text-sm text-gray-500">/night</span>
+
+                  <div className="text-lg font-bold text-primary whitespace-nowrap">
+                    ${item.rent}
+                    <span className="text-sm text-gray-500 ml-1">/night</span>
                   </div>
-                  <DeleteWishlistButton id={item._id} />
+
+                  <div className="ml-2">
+                    <DeleteWishlistButton id={item._id} />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center">
               <Pagination
@@ -134,13 +126,13 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
           )}
         </>
       ) : (
-        <div id="empty-state" className="text-center py-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+        <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+          <HeartOff className="w-12 h-12 mx-auto text-primary mb-4" />
+          <h2 className="text-2xl font-semibold text-gray-700 mb-2">
             No Wishlists Available
           </h2>
-          <p className="text-zinc-500 text-sm">
-            You can add hotels to your wishlist by clicking the button on the
-            hotel details page.
+          <p className="text-gray-500 text-sm max-w-md mx-auto">
+            You haven&apos;t added any hotels to your wishlist yet. Explore hotels and save your favorites!
           </p>
         </div>
       )}
