@@ -8,6 +8,7 @@ import {
   FaHeart,
   FaCalendarCheck,
 } from "react-icons/fa";
+import ChartComponent from "@/components/Chart";
 
 const Dashboard = async () => {
   const auth = await session();
@@ -75,10 +76,10 @@ const Dashboard = async () => {
     : hotels.filter((hotel) => String(hotel.ownerId) === String(userId));
   const filteredBookings = isAdmin
     ? bookings
-    : bookings.filter((booking) => booking.userId === userId);
+    : bookings.filter((booking) => String(booking.userId) === String(userId));
   const filteredWishlists = isAdmin
     ? wishlists
-    : wishlists.filter((wishlist) => wishlist.userId === userId);
+    : wishlists.filter((wishlist) => String(wishlist.userId) === String(userId));
 
   // Calculate metrics
   const totalHotels = filteredHotels.length;
@@ -91,7 +92,7 @@ const Dashboard = async () => {
 
   // Prepare chart data
   const monthlyBookings = filteredBookings.reduce((acc, booking) => {
-    const month = new Date(booking.createdAt || booking.checkIn).toLocaleString(
+    const month = new Date(booking.createdAt || booking.bookingDetails?.checkInDate).toLocaleString(
       "default",
       { month: "short" }
     );
@@ -116,6 +117,23 @@ const Dashboard = async () => {
     ([status, count]) => ({
       name: status.charAt(0).toUpperCase() + status.slice(1),
       value: count,
+    })
+  );
+
+  // Revenue trend data
+  const revenueByMonth = filteredBookings.reduce((acc, booking) => {
+    const month = new Date(booking.createdAt || booking.bookingDetails?.checkInDate).toLocaleString(
+      "default",
+      { month: "short" }
+    );
+    acc[month] = (acc[month] || 0) + (booking.totalPrice || 0);
+    return acc;
+  }, {});
+
+  const revenueChartData = Object.entries(revenueByMonth).map(
+    ([month, amount]) => ({
+      month,
+      amount,
     })
   );
 
@@ -276,26 +294,35 @@ const Dashboard = async () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Monthly Bookings
             </h3>
-            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-              <div className="text-center">
-                <svg
-                  className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
-                <p className="text-gray-600">Bar Chart</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {bookingChartData.length} months of data
-                </p>
-              </div>
+            <div className="h-64">
+              {bookingChartData.length > 0 ? (
+                <ChartComponent 
+                  type="bar" 
+                  data={bookingChartData} 
+                  dataKey="bookings"
+                  xAxisKey="month"
+                  color="#3B82F6"
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <svg
+                      className="w-12 h-12 mx-auto text-gray-400 mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    <p className="text-gray-600">No booking data available</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -304,33 +331,78 @@ const Dashboard = async () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Hotel Status Distribution
             </h3>
-            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-              <div className="text-center">
-                <svg
-                  className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
-                  />
-                </svg>
-                <p className="text-gray-600">Pie Chart</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {pieChartData.length} categories
-                </p>
-              </div>
+            <div className="h-64">
+              {pieChartData.length > 0 ? (
+                <ChartComponent
+                  type="pie" 
+                  data={pieChartData} 
+                  dataKey="value"
+                  nameKey="name"
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <svg
+                      className="w-12 h-12 mx-auto text-gray-400 mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+                      />
+                    </svg>
+                    <p className="text-gray-600">No hotel data available</p>
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+        </div>
+
+        {/* Revenue Trend Chart */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {isAdmin ? "Revenue Trend" : "Expenditure Trend"}
+          </h3>
+          <div className="h-64">
+            {revenueChartData.length > 0 ? (
+              <ChartComponent 
+                type="line" 
+                data={revenueChartData} 
+                dataKey="amount"
+                xAxisKey="month"
+                color="#F59E0B"
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <svg
+                    className="w-12 h-12 mx-auto text-gray-400 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                  <p className="text-gray-600">No revenue data available</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -346,16 +418,16 @@ const Dashboard = async () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="p-3 text-sm font-medium text-gray-700">
-                      Guest
+                      Hotel
                     </th>
                     <th className="p-3 text-sm font-medium text-gray-700">
-                      Hotel
+                      Guests
                     </th>
                     <th className="p-3 text-sm font-medium text-gray-700">
                       Amount
                     </th>
                     <th className="p-3 text-sm font-medium text-gray-700">
-                      Status
+                      Date
                     </th>
                   </tr>
                 </thead>
@@ -364,24 +436,16 @@ const Dashboard = async () => {
                     recentBookings.map((booking, index) => (
                       <tr key={index} className="border-t">
                         <td className="p-3 text-sm text-gray-900">
-                          {booking.guestName || "N/A"}
+                          {booking.bookingDetails?.title || "N/A"}
                         </td>
                         <td className="p-3 text-sm text-gray-600">
-                          {booking.hotelName || "N/A"}
+                          {booking.bookingDetails?.guests || "N/A"}
                         </td>
                         <td className="p-3 text-sm text-gray-900">
-                          ${booking.totalAmount || 0}
+                          ${booking.totalPrice || 0}
                         </td>
-                        <td className="p-3">
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ${
-                              booking.status === "confirmed"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {booking.status || "pending"}
-                          </span>
+                        <td className="p-3 text-sm text-gray-600">
+                          {new Date(booking.createdAt).toLocaleDateString()}
                         </td>
                       </tr>
                     ))
@@ -413,10 +477,10 @@ const Dashboard = async () => {
                       Location
                     </th>
                     <th className="p-3 text-sm font-medium text-gray-700">
-                      Rating
+                      Rent
                     </th>
                     <th className="p-3 text-sm font-medium text-gray-700">
-                      Status
+                      Capacity
                     </th>
                   </tr>
                 </thead>
@@ -424,7 +488,7 @@ const Dashboard = async () => {
                   {filteredHotels.slice(0, 5).map((hotel, index) => (
                     <tr key={index} className="border-t">
                       <td className="p-3 text-sm text-gray-900">
-                        {hotel.name || "N/A"}
+                        {hotel.title || "N/A"}
                       </td>
                       <td className="p-3 text-sm text-gray-600">
                         <div className="flex items-center">
@@ -451,26 +515,10 @@ const Dashboard = async () => {
                         </div>
                       </td>
                       <td className="p-3 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <svg
-                            className="w-4 h-4 mr-1 text-yellow-400 fill-current"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          {hotel.rating || "N/A"}
-                        </div>
+                        ${hotel.rent || 0}
                       </td>
-                      <td className="p-3">
-                        <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            hotel.status === "active"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {hotel.status || "active"}
-                        </span>
+                      <td className="p-3 text-sm text-gray-600">
+                        {hotel.guestCapacity || 0} guests
                       </td>
                     </tr>
                   ))}
