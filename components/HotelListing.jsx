@@ -45,9 +45,26 @@ const HotelListing = () => {
         }
     };
 
-    const loadingSpinner = (
-        <div className="flex justify-center items-center h-[650px]">
-            <div className="animate-spin rounded-full h-40 w-40 border-t-2 border-b-2 border-blue-500"></div>
+    const skeletonLoader = (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, index) => (
+                <div key={index} className="animate-pulse">
+                    <div className="bg-gray-200 w-full h-64 rounded-xl"></div>
+                    <div className="mt-3">
+                        <div className="flex justify-between items-center">
+                            <div className="bg-gray-200 h-6 w-3/4 rounded"></div>
+                            <div className="flex items-center">
+                                <div className="bg-gray-200 h-4 w-4 rounded-full"></div>
+                                <div className="bg-gray-200 h-4 w-8 ml-1 rounded"></div>
+                            </div>
+                        </div>
+                        <div className="bg-gray-200 h-4 w-1/2 mt-1 rounded"></div>
+                        <div className="mt-2 flex justify-between items-center">
+                            <div className="bg-gray-200 h-4 w-1/3 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 
@@ -60,7 +77,7 @@ const HotelListing = () => {
             <section className="mt-10 px-6 min-h-screen">
                 <div className="max-w-7xl mx-auto">
                     {loading ? (
-                        loadingSpinner
+                        skeletonLoader
                     ) : hotels?.hotels?.length === 0 ? (
                         <div className="text-center text-xl text-gray-500 h-96 flex items-center justify-center">
                             No hotels found.
@@ -80,11 +97,9 @@ const HotelListing = () => {
                 </div>
 
                 <div className="mt-10 flex justify-center">
-                {hotels && <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />}
-            </div>
+                    {hotels && <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />}
+                </div>
             </section>
-
-            
         </>
     );
 };
