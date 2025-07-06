@@ -121,7 +121,7 @@ const HotelDetailsPage = async ({ params }) => {
             />
           )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 h-auto sm:h-[400px] lg:h-[500px]">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 h-auto sm:h-[400px] lg:h-[500px]">
           {images.map((image, index) => (
             <div
               key={index}
@@ -140,7 +140,29 @@ const HotelDetailsPage = async ({ params }) => {
               />
             </div>
           ))}
-        </div>
+        </div> */}
+          <div className="hotel-image-grid mb-8">
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className={`
+                  relative
+                  ${index === 0 && "(min-width: 640px)" ? "col-span-2 row-span-2" : ""}
+                `}
+              >
+                <Image
+                  width={index === 0 ? 800 : 400}
+                  height={index === 0 ? 800 : 400}
+                  src={image}
+                  alt={`Room ${index}`}
+                  className="w-full h-full object-cover rounded-lg"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  priority={index === 0}
+                  loading={index > 0 ? "lazy" : undefined}
+                />
+              </div>
+            ))}
+          </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           <div className="col-span-1 lg:col-span-2">
             <div className="border-b pb-6 mb-6">
