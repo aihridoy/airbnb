@@ -45,20 +45,30 @@ export async function getHotels(page = 1, pageSize = 8, searchQuery = '') {
     }
 }
 
-export async function getAllHotels() {
+export async function getAllHotels(category = null) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/all-hotels`, {
+        let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/all-hotels`;
+        
+        // Add category query parameter if provided
+        if (category) {
+            url += `?category=${encodeURIComponent(category)}`;
+        }
+        
+        const response = await fetch(url, {
             method: 'GET',
             cache: 'no-store',
-        })
+        });
+        
         const data = await response.json();
+        
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
+        
         return data;
-
     } catch (error) {
-        console.error("Failed to load reviews:", error);
+        console.error("Failed to load hotels:", error);
+        throw error; 
     }
 }
 
