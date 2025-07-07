@@ -99,7 +99,7 @@ const AnnounceBar = ({ onClose }) => {
             key={i}
             className="absolute w-2 h-2 bg-white rounded-full opacity-60"
             animate={{
-              x: [-10, window.innerWidth + 10],
+              x: [-10, typeof window !== 'undefined' ? window.innerWidth + 10 : 1200],
               y: [Math.random() * 60, Math.random() * 60],
               scale: [0, 1, 0],
               opacity: [0, 1, 0]
