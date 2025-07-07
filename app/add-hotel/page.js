@@ -373,7 +373,7 @@ const HotelForm = () => {
             ))}
           </div>
 
-          <div className="w-full sm:w-auto mt-4">
+          <div className="w-full sm:w-auto my-4">
             <label
               htmlFor="category"
               className="block text-sm font-medium text-gray-700 mb-1"

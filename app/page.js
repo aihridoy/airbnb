@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import HotelListing from "@/components/HotelListing";
+import HotelsCategory from "@/components/HotelsCategory";
 import Navbar from "@/components/Navbar";
 import Newsletter from "@/components/Newsletter";
 import Offer from "@/components/Offer";
@@ -13,6 +14,7 @@ export default function Home() {
       <Suspense fallback={<div>Loading...</div>}>
         <HotelListing />
       </Suspense>
+      <HotelsCategory />
       <TopRatedHotels />
       <Offer />
       <Newsletter />
