@@ -69,7 +69,7 @@ export default function SuggestedHotels() {
   }
 
   return (
-    <section className="max-w-7xl mx-auto mt-12 px-4 sm:px-6 lg:px-8">
+    <section className="max-w-7xl mx-auto px-4 sm:px-0 lg:px-0">
       <header className="text-center mb-10">
         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Top-Rated Hotels
