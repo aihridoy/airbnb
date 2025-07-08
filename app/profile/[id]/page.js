@@ -129,7 +129,7 @@ const Profile = async ({ params }) => {
                   <span>
                     Member since{" "}
                     {new Date(
-                      user.createdAt || Date.now()
+                      user?.createdAt || Date.now()
                     ).toLocaleDateString("en-US", {
                       month: "short",
                       year: "numeric",

@@ -12,13 +12,22 @@ const Navbar = () => {
   const { setSearchQuery } = useSearch();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [user, setUser] = useState(null);
-  const dummyImg = "https://via.placeholder.com/100";
+  
+  // Better dummy image from Unsplash
+  const dummyImg = "https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740";
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const userData = await session();
-        setUser(userData?.user || null);
+        if (userData?.user) {
+          setUser({
+            ...userData.user,
+            role: userData.user.role || 'user'
+          });
+        } else {
+          setUser(null);
+        }
       } catch (error) {
         console.error("Failed to fetch user session:", error);
       }
@@ -134,6 +143,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                {/* Common menu items for all logged-in users */}
                 <Link href="/dashboard">
                   <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                     <i className="fas fa-tachometer-alt"></i>
@@ -141,15 +151,16 @@ const Navbar = () => {
                   </li>
                 </Link>
 
-                <Link href="/add-hotel">
+                {/* Role-based menu items */}
+                {user?.role === "user" && (
+                  <>
+                    <Link href="/add-hotel">
                       <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                         <i className="fas fa-hotel"></i>
                         Create Hotel
                       </li>
                     </Link>
 
-                {user?.role === "user" && (
-                  <>
                     <Link href="/manage-hotels">
                       <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                         <i className="fas fa-tools"></i>
@@ -180,6 +191,17 @@ const Navbar = () => {
                   </>
                 )}
 
+                {/* Admin-specific menu items */}
+                {user?.role === "admin" && (
+                   <Link href="/add-hotel">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-hotel"></i>
+                        Create Hotel
+                      </li>
+                    </Link>
+                )}
+
+                {/* Sign out button for all logged-in users */}
                 <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
                   <SignOutButton />
                 </li>
