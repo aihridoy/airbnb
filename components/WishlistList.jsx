@@ -23,9 +23,16 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
       router.replace(`/dashboard/wishlists?page=1`);
       return;
     }
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, [currentPage, totalPages, router]);
+    
+    // Only show loading skeleton if there are items to display
+    if (wishlistNotBooked.length > 0) {
+      const timer = setTimeout(() => setLoading(false), 500);
+      return () => clearTimeout(timer);
+    } else {
+      // If no items, immediately set loading to false
+      setLoading(false);
+    }
+  }, [currentPage, totalPages, router, wishlistNotBooked.length]);
 
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
@@ -63,7 +70,7 @@ const WishlistList = ({ wishlistNotBooked, searchParams }) => {
 
   return (
     <>
-      {loading ? (
+      {loading && wishlistNotBooked.length > 0 ? (
         skeletonLoader
       ) : currentItems.length > 0 ? (
         <>
