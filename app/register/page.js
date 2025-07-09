@@ -4,6 +4,9 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegistrationPage = () => {
     const router = useRouter()
@@ -39,8 +42,17 @@ const RegistrationPage = () => {
             }
 
             await response.json();
-            router.push('/login')
-            alert("Registration successful!");
+            toast.success("Registration successful! Redirecting to login...", {
+                    position: "top-right",
+                    autoClose: 1200,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                  });
+            setTimeout(() => {
+                router.push('/login')
+            }, 1200);
         } catch (err) {
             console.error("Error:", err);
             setError(err.message);
@@ -54,7 +66,7 @@ const RegistrationPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-5">
+        <><div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-5">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-8">
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
@@ -158,6 +170,8 @@ const RegistrationPage = () => {
                 </div>
             </div>
         </div>
+        <ToastContainer />
+        </>
     );
 };
 
