@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Calendar, Users, Star, ArrowRight, Heart, Wifi, Car, Dumbbell } from 'lucide-react';
+import { MapPin, Users, Star, Heart, Wifi, Car, Dumbbell } from 'lucide-react';
 import Link from 'next/link';
 import { getAllHotels } from '@/app/action';
 import Image from 'next/image';
@@ -12,24 +12,27 @@ const HERO_SLIDES = [
   {
     title: "Discover Perfect",
     highlight: "Getaway",
-    subtitle: "From luxury villas to cozy retreats, find your ideal stay",
+    subtitle:
+      "Explore a wide range of accommodations, from luxurious beachfront villas to cozy mountain retreats, perfect for your next vacation or weekend escape.",
     bgGradient: "from-blue-600 via-purple-600 to-pink-600",
-    glowColor: "shadow-blue-500/50"
+    glowColor: "shadow-blue-500/50",
   },
   {
     title: "Explore Amazing",
     highlight: "Destinations",
-    subtitle: "Handpicked hotels and resorts in breathtaking locations",
+    subtitle:
+      "Discover handpicked hotels and resorts located in breathtaking destinations, offering unique experiences and stunning views for every traveler.",
     bgGradient: "from-emerald-600 via-teal-600 to-cyan-600",
-    glowColor: "shadow-emerald-500/50"
+    glowColor: "shadow-emerald-500/50",
   },
   {
     title: "Elevated Luxury",
     highlight: "Redefined",
-    subtitle: "Premium accommodations with world-class amenities",
+    subtitle:
+      "Indulge in premium accommodations with world-class amenities, designed to provide unmatched comfort and sophistication for your dream getaway.",
     bgGradient: "from-orange-600 via-red-600 to-pink-600",
-    glowColor: "shadow-orange-500/50"
-  }
+    glowColor: "shadow-orange-500/50",
+  },
 ];
 
 const STATS = [
