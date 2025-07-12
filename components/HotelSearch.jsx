@@ -1,11 +1,36 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import ManageHotelList from '@/components/HotelsListManage';
+import { session } from '@/app/action';
+import HotelsList from './HotelsList';
 
 export default function HotelSearch({ hotels = [], reviews = [] }) {
   const [query, setQuery] = useState('');
+  const [user, setUser] = useState(null);
+
+  const role = user?.role;  
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const userData = await session();
+          if (userData?.user) {
+            setUser({
+              ...userData.user,
+              role: userData.user.role || 'user'
+            });
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user session:", error);
+        }
+      };
+  
+      fetchUser();
+    }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -17,6 +42,8 @@ export default function HotelSearch({ hotels = [], reviews = [] }) {
       (hotel.category || '').toLowerCase().includes(q)
     );
   }, [query, hotels]);
+
+  const ListComponent = role === 'admin' ? HotelsList : ManageHotelList;
 
   return (
     <div className="w-full">
@@ -35,7 +62,7 @@ export default function HotelSearch({ hotels = [], reviews = [] }) {
                      focus:outline-none focus:ring-2 focus:ring-primary text-sm"
         />
       </div>
-      <ManageHotelList filteredHotels={filtered} reviews={reviews} />
+      <ListComponent filteredHotels={filtered} reviews={reviews} />
     </div>
   );
 }
