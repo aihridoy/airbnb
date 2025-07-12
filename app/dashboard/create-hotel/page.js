@@ -326,7 +326,7 @@ const HotelForm = () => {
           </div>
 
           {/* Images */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8 h-auto sm:h-[300px] lg:h-[400px]">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8 h-auto sm:h-[300px] lg:h-[400px]">
             {[...Array(5)].map((_, index) => (
               <div
                 key={index}
@@ -368,7 +368,46 @@ const HotelForm = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
+  {[...Array(5)].map((_, index) => (
+    <div
+      key={index}
+      className={
+        index === 0
+          ? "col-span-1 sm:col-span-2 row-span-2"
+          : "col-span-1"
+      }
+    >
+      <div className="relative w-full h-auto aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] overflow-hidden rounded-lg">
+        <Image
+          fill
+          src={
+            (hotelId &&
+              !formData.images[index] &&
+              hotel?.images[index]) ||
+            formData.images[index] ||
+            "https://placehold.co/600x400"
+          }
+          alt={`Room ${index}`}
+          className="object-cover rounded-lg"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          priority={index === 0}
+          unoptimized={true}
+        />
+        <input
+          type="text"
+          name={`image${index}`}
+          placeholder="https://placehold.co/600x400"
+          value={formData.images[index] || ""}
+          onChange={handleChange}
+          className="w-11/12 p-1.5 sm:p-2 border border-primary rounded-lg absolute left-1/2 -translate-x-1/2 bottom-2 bg-white text-xs sm:text-sm z-10"
+        />
+      </div>
+    </div>
+  ))}
+</div>
 
           <div className="w-full sm:w-auto my-4">
             <label

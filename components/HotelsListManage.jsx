@@ -142,7 +142,7 @@ const ManageHotelList = ({ filteredHotels, reviews }) => {
                     <div className="flex space-x-3 text-sm">
                       <Link
                         href={{
-                          pathname: "/add-hotel",
+                          pathname: "/dashboard/create-hotel",
                           query: { hotelId: hotel._id },
                         }}
                         className="text-blue-600 hover:text-blue-800 transition"
