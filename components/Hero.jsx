@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Users, Star, Heart, Wifi, Car, Dumbbell } from "lucide-react";
 import Link from "next/link";
-import { getAllHotels, session } from "@/app/action";
+import { getAllHotels, getReviews, session } from "@/app/action";
 import Image from "next/image";
 import AddToFavButton from "./AddToFavBtn";
 
@@ -45,6 +45,7 @@ const STATS = [
 
 const AnimatedHeroBanner = ({ wishlists }) => {
   const [hotels, setHotels] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [userId, setUserId] = useState(); 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHotelIndex, setCurrentHotelIndex] = useState(0);
@@ -52,13 +53,17 @@ const AnimatedHeroBanner = ({ wishlists }) => {
   const [error, setError] = useState(null);
   const [isHotelHovering, setIsHotelHovering] = useState(false);
 
-  const fetchHotels = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await getAllHotels();
-      setHotels(data?.hotels || []);
+      const [hotelsData, reviewsData] = await Promise.all([
+        getAllHotels(),
+        getReviews(),
+      ]);
+      setHotels(hotelsData?.hotels || []);
+      setReviews(reviewsData?.reviews || []);
     } catch (error) {
-      console.error("Error fetching hotels:", error);
+      console.error("Error fetching data:", error);
       setError("Failed to load hotels");
     } finally {
       setIsLoading(false);
@@ -78,8 +83,8 @@ const AnimatedHeroBanner = ({ wishlists }) => {
     }, []);
 
   useEffect(() => {
-    fetchHotels();
-  }, [fetchHotels]);
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     if (isHotelHovering) return;
@@ -155,6 +160,22 @@ const AnimatedHeroBanner = ({ wishlists }) => {
     return <Heart className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
   }, []);
 
+  // Calculate average rating for current hotel
+  const currentHotelRating = useMemo(() => {
+    if (!hotels[currentHotelIndex] || reviews.length === 0) return 0;
+    
+    const filteredReviews = reviews.filter(
+      (review) => review.hotelId === hotels[currentHotelIndex]._id
+    );
+    const totalReviews = filteredReviews.length;
+    const averageRating =
+      totalReviews > 0
+        ? filteredReviews.reduce((acc, review) => acc + review.ratings, 0) / totalReviews
+        : 0;
+    
+    return averageRating;
+  }, [hotels, reviews, currentHotelIndex]);
+
   const currentHotel = hotels[currentHotelIndex];
 
   if (error) {
@@ -163,7 +184,7 @@ const AnimatedHeroBanner = ({ wishlists }) => {
         <div className="text-white text-center p-4">
           <p className="text-lg sm:text-xl mb-4">{error}</p>
           <button
-            onClick={fetchHotels}
+            onClick={fetchData}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm sm:text-base"
           >
             Try Again
@@ -375,7 +396,7 @@ const AnimatedHeroBanner = ({ wishlists }) => {
                                 aria-hidden="true"
                               />
                               <span className="text-white font-semibold">
-                                4.9
+                                {currentHotelRating > 0 ? currentHotelRating.toFixed(1) : "No rating"}
                               </span>
                             </div>
                             <span className="text-gray-400 hidden sm:inline">
