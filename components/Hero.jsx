@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Users, Star, Heart, Wifi, Car, Dumbbell } from 'lucide-react';
-import Link from 'next/link';
-import { getAllHotels } from '@/app/action';
-import Image from 'next/image';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import PropTypes from "prop-types";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Users, Star, Heart, Wifi, Car, Dumbbell } from "lucide-react";
+import Link from "next/link";
+import { getAllHotels, session } from "@/app/action";
+import Image from "next/image";
+import AddToFavButton from "./AddToFavBtn";
 
 const HERO_SLIDES = [
   {
@@ -36,14 +37,15 @@ const HERO_SLIDES = [
 ];
 
 const STATS = [
-  { id: 'hotels', label: "Available Hotels" },
-  { id: 'travelers', number: "50,000+", label: "Happy Travelers" },
-  { id: 'rating', number: "4.9", label: "Average Rating", icon: Star },
-  { id: 'support', number: "24/7", label: "Customer Support" }
+  { id: "hotels", label: "Available Hotels" },
+  { id: "travelers", number: "50,000+", label: "Happy Travelers" },
+  { id: "rating", number: "4.9", label: "Average Rating", icon: Star },
+  { id: "support", number: "24/7", label: "Customer Support" },
 ];
 
-const AnimatedHeroBanner = () => {
+const AnimatedHeroBanner = ({ wishlists }) => {
   const [hotels, setHotels] = useState([]);
+  const [userId, setUserId] = useState(); 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHotelIndex, setCurrentHotelIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,6 +64,18 @@ const AnimatedHeroBanner = () => {
       setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const userData = await session();
+          setUserId(userData?.user?.id || null);
+        } catch (error) {
+          console.error("Failed to fetch user session:", error);
+        }
+      };
+      fetchUser();
+    }, []);
 
   useEffect(() => {
     fetchHotels();
@@ -83,42 +97,61 @@ const AnimatedHeroBanner = () => {
     return () => clearInterval(timer);
   }, [hotels.length, isHotelHovering]);
 
-  const containerVariants = useMemo(() => ({
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.8, staggerChildren: 0.2 }
-    }
-  }), []);
+  const containerVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: { duration: 0.8, staggerChildren: 0.2 },
+      },
+    }),
+    []
+  );
 
-  const itemVariants = useMemo(() => ({
-    hidden: { y: 30, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } }
-  }), []);
+  const itemVariants = useMemo(
+    () => ({
+      hidden: { y: 30, opacity: 0 },
+      visible: {
+        y: 0,
+        opacity: 1,
+        transition: { duration: 0.6, ease: "easeOut" },
+      },
+    }),
+    []
+  );
 
-  const floatingVariants = useMemo(() => ({
-    initial: { y: 0, rotate: 0 },
-    animate: {
-      y: [-10, 10, -10],
-      rotate: [-2, 2, -2],
-      transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-    }
-  }), []);
+  const floatingVariants = useMemo(
+    () => ({
+      initial: { y: 0, rotate: 0 },
+      animate: {
+        y: [-10, 10, -10],
+        rotate: [-2, 2, -2],
+        transition: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+      },
+    }),
+    []
+  );
 
-  const glowVariants = useMemo(() => ({
-    initial: { scale: 0.8, opacity: 0.3 },
-    animate: {
-      scale: [0.8, 1.2, 0.8],
-      opacity: [0.3, 0.6, 0.3],
-      transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-    }
-  }), []);
+  const glowVariants = useMemo(
+    () => ({
+      initial: { scale: 0.8, opacity: 0.3 },
+      animate: {
+        scale: [0.8, 1.2, 0.8],
+        opacity: [0.3, 0.6, 0.3],
+        transition: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+      },
+    }),
+    []
+  );
 
   const getAmenityIcon = useCallback((amenity) => {
     const amenityLower = amenity.toLowerCase();
-    if (amenityLower.includes('wifi')) return <Wifi className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-    if (amenityLower.includes('parking')) return <Car className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-    if (amenityLower.includes('fitness')) return <Dumbbell className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
+    if (amenityLower.includes("wifi"))
+      return <Wifi className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
+    if (amenityLower.includes("parking"))
+      return <Car className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
+    if (amenityLower.includes("fitness"))
+      return <Dumbbell className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
     return <Heart className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
   }, []);
 
@@ -143,7 +176,7 @@ const AnimatedHeroBanner = () => {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-5 sm:py-0 md:py-0 lg:py-0">
       <div className="absolute inset-0 bg-black/40 z-[1]" aria-hidden="true" />
-      
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -164,7 +197,10 @@ const AnimatedHeroBanner = () => {
             initial="initial"
             animate="animate"
             className={`absolute w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 rounded-full bg-gradient-to-r ${HERO_SLIDES[currentSlide].bgGradient} opacity-5 blur-3xl`}
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
           />
         ))}
       </div>
@@ -206,7 +242,9 @@ const AnimatedHeroBanner = () => {
                 >
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight drop-shadow-lg">
                     {HERO_SLIDES[currentSlide].title}
-                    <span className={`block bg-gradient-to-r ${HERO_SLIDES[currentSlide].bgGradient} bg-clip-text text-transparent drop-shadow-none`}>
+                    <span
+                      className={`block bg-gradient-to-r ${HERO_SLIDES[currentSlide].bgGradient} bg-clip-text text-transparent drop-shadow-none`}
+                    >
                       {HERO_SLIDES[currentSlide].highlight}
                     </span>
                   </h1>
@@ -232,91 +270,137 @@ const AnimatedHeroBanner = () => {
                     </div>
                   </div>
                 </div>
-              ) : currentHotel && (
-                <motion.div
-                  variants={itemVariants}
-                  className="relative"
-                  onMouseEnter={() => setIsHotelHovering(true)}
-                  onMouseLeave={() => setIsHotelHovering(false)}
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentHotel._id}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.8 }}
-                      className="bg-white/10 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 shadow-2xl"
-                    >
-                      <div className="relative mb-4">
-                        <Image
-                          height={256}
-                          width={512}
-                          src={currentHotel.images[0]}
-                          alt={currentHotel.title}
-                          className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-xl sm:rounded-2xl"
-                          priority
-                        />
-                        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 bg-black/50 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1">
-                          <span className="text-white font-semibold text-sm sm:text-base">${currentHotel.rent}/night</span>
+              ) : (
+                currentHotel && (
+                  <motion.div
+                    variants={itemVariants}
+                    className="relative"
+                    onMouseEnter={() => setIsHotelHovering(true)}
+                    onMouseLeave={() => setIsHotelHovering(false)}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentHotel._id}
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -50 }}
+                        transition={{ duration: 0.8 }}
+                        className="bg-white/10 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 shadow-2xl"
+                      >
+                        <div className="relative mb-4">
+                          <Image
+                            height={256}
+                            width={512}
+                            src={currentHotel.images[0]}
+                            alt={currentHotel.title}
+                            className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-xl sm:rounded-2xl"
+                            priority
+                          />
+                          
+                          <AddToFavButton 
+                            hotelId={currentHotel._id}
+                            userId={userId}
+                            title={currentHotel.title}
+                            location={currentHotel.location}
+                            rent={currentHotel.rent}
+                            images={currentHotel.images}
+                            wishlists={wishlists}
+                          />
+                          
+                          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 bg-black/50 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1">
+                            <span className="text-white font-semibold text-sm sm:text-base">
+                              ${currentHotel.rent}/night
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2 line-clamp-1">{currentHotel.title}</h3>
-                      <p className="text-gray-300 mb-3 flex items-center gap-2 text-sm sm:text-base">
-                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" aria-hidden="true" />
-                        <span className="line-clamp-1">{currentHotel.location}</span>
-                      </p>
-                      
-                      <div className="flex items-center gap-2 sm:gap-4 mb-4 text-gray-300 text-xs sm:text-sm">
-                        <span className="flex items-center gap-1">
-                          <Users className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                          {currentHotel.guestCapacity} guests
-                        </span>
-                        <span className="hidden sm:inline">{currentHotel.bedroomCapacity} bedrooms</span>
-                        <span className="sm:hidden">{currentHotel.bedroomCapacity} bed</span>
-                        <span className="hidden sm:inline">{currentHotel.bedCapacity} beds</span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
-                        {currentHotel.amenities.slice(0, 3).map((amenity, index) => (
-                          <div key={`${currentHotel._id}-amenity-${index}`} className="flex items-center gap-1 bg-white/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-300">
-                            {getAmenityIcon(amenity)}
-                            <span className="truncate max-w-20 sm:max-w-none">{amenity}</span>
-                          </div>
-                        ))}
-                        {currentHotel.amenities.length > 3 && (
-                          <div className="flex items-center bg-white/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-300">
-                            +{currentHotel.amenities.length - 3} more
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm sm:text-base">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current" aria-hidden="true" />
-                            <span className="text-white font-semibold">4.9</span>
-                          </div>
-                          <span className="text-gray-400 hidden sm:inline">·</span>
-                          <span className="text-gray-300 text-xs sm:text-sm truncate max-w-24 sm:max-w-none">
-                            <span className="hidden sm:inline">Host: </span>{currentHotel.hostName}
+
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2 line-clamp-1">
+                          {currentHotel.title}
+                        </h3>
+                        <p className="text-gray-300 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                          <MapPin
+                            className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span className="line-clamp-1">
+                            {currentHotel.location}
+                          </span>
+                        </p>
+
+                        <div className="flex items-center gap-2 sm:gap-4 mb-4 text-gray-300 text-xs sm:text-sm">
+                          <span className="flex items-center gap-1">
+                            <Users
+                              className="w-3 h-3 sm:w-4 sm:h-4"
+                              aria-hidden="true"
+                            />
+                            {currentHotel.guestCapacity} guests
+                          </span>
+                          <span className="hidden sm:inline">
+                            {currentHotel.bedroomCapacity} bedrooms
+                          </span>
+                          <span className="sm:hidden">
+                            {currentHotel.bedroomCapacity} bed
+                          </span>
+                          <span className="hidden sm:inline">
+                            {currentHotel.bedCapacity} beds
                           </span>
                         </div>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg px-3 sm:px-4 py-2 text-white font-semibold transition-all duration-200 text-xs sm:text-sm"
-                          aria-label={`View details for ${currentHotel.title}`}
-                        >
-                          <Link href={`/details/${currentHotel._id}`}>
-                            View Details
-                          </Link>
-                        </motion.button>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
+
+                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
+                          {currentHotel.amenities
+                            .slice(0, 3)
+                            .map((amenity, index) => (
+                              <div
+                                key={`${currentHotel._id}-amenity-${index}`}
+                                className="flex items-center gap-1 bg-white/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-300"
+                              >
+                                {getAmenityIcon(amenity)}
+                                <span className="truncate max-w-20 sm:max-w-none">
+                                  {amenity}
+                                </span>
+                              </div>
+                            ))}
+                          {currentHotel.amenities.length > 3 && (
+                            <div className="flex items-center bg-white/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-300">
+                              +{currentHotel.amenities.length - 3} more
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm sm:text-base">
+                            <div className="flex items-center gap-1">
+                              <Star
+                                className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current"
+                                aria-hidden="true"
+                              />
+                              <span className="text-white font-semibold">
+                                4.9
+                              </span>
+                            </div>
+                            <span className="text-gray-400 hidden sm:inline">
+                              ·
+                            </span>
+                            <span className="text-gray-300 text-xs sm:text-sm truncate max-w-24 sm:max-w-none">
+                              <span className="hidden sm:inline">Host: </span>
+                              {currentHotel.hostName}
+                            </span>
+                          </div>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg px-3 sm:px-4 py-2 text-white font-semibold transition-all duration-200 text-xs sm:text-sm"
+                            aria-label={`View details for ${currentHotel.title}`}
+                          >
+                            <Link href={`/details/${currentHotel._id}`}>
+                              View Details
+                            </Link>
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
+                )
               )}
             </div>
           </div>
@@ -335,10 +419,19 @@ const AnimatedHeroBanner = () => {
                 className="text-center p-3 sm:p-4 rounded-xl sm:rounded-2xl backdrop-blur-sm bg-white/10 border border-white/20"
               >
                 <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 flex items-center justify-center gap-1 sm:gap-2">
-                  {stat.id === 'hotels' ? (hotels.length.toLocaleString() || '0') : stat.number}
-                  {stat.icon && <stat.icon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-yellow-400" aria-hidden="true" />}
+                  {stat.id === "hotels"
+                    ? hotels.length.toLocaleString() || "0"
+                    : stat.number}
+                  {stat.icon && (
+                    <stat.icon
+                      className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-yellow-400"
+                      aria-hidden="true"
+                    />
+                  )}
                 </div>
-                <div className="text-gray-300 text-xs sm:text-sm">{stat.label}</div>
+                <div className="text-gray-300 text-xs sm:text-sm">
+                  {stat.label}
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -370,6 +463,8 @@ const AnimatedHeroBanner = () => {
 };
 
 AnimatedHeroBanner.propTypes = {
+  wishlists: PropTypes.array,
+  userId: PropTypes.string,
   hotels: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -381,9 +476,9 @@ AnimatedHeroBanner.propTypes = {
       bedroomCapacity: PropTypes.number.isRequired,
       bedCapacity: PropTypes.number.isRequired,
       amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
-      hostName: PropTypes.string.isRequired
+      hostName: PropTypes.string.isRequired,
     })
-  )
+  ),
 };
 
 export default React.memo(AnimatedHeroBanner);
