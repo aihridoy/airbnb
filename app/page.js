@@ -15,12 +15,11 @@ export default function Home() {
     <>
       <AnnounceBar />
       <Navbar />
-      <AnimatedHeroBanner />
+      <HeroSection />
       <Suspense fallback={<div>Loading...</div>}>
         <HotelListing />
       </Suspense>
-      {/* <HotelsCategory /> */}
-      <HeroSection />
+      <HotelsCategory />
       <TopRatedHotels />
       <Offer />
       <Newsletter />

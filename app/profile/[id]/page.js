@@ -139,14 +139,14 @@ const Profile = async ({ params }) => {
               </div>
 
               {/* Profile Actions */}
-              <div className="flex flex-col gap-2">
+              {/* <div className="flex flex-col gap-2">
                 <button className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg text-sm font-medium">
                   Edit Profile
                 </button>
                 <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
                   Settings
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
