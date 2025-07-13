@@ -1,5 +1,7 @@
 import AnnounceBar from "@/components/AnnounceBar";
 import Footer from "@/components/Footer";
+import AnimatedHeroBanner from "@/components/Hero";
+import HeroSection from "@/components/HeroSection";
 import HotelListing from "@/components/HotelListing";
 import HotelsCategory from "@/components/HotelsCategory";
 import Navbar from "@/components/Navbar";
@@ -13,6 +15,7 @@ export default function Home() {
     <>
       <AnnounceBar />
       <Navbar />
+      <HeroSection />
       <Suspense fallback={<div>Loading...</div>}>
         <HotelListing />
       </Suspense>

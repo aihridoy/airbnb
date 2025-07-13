@@ -14,9 +14,21 @@ const LoginModal = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleAuth = () => {
     signIn("google", { callbackUrl: "/" });
+  };
+
+  const handleDemoCredentials = (type) => {
+    if (type === "user") {
+      setEmail("abul@gmail.com");
+      setPassword("abul123");
+    } else if (type === "admin") {
+      setEmail("admin@gmail.com");
+      setPassword("admin123");
+    }
   };
 
   async function onSubmit(event) {
@@ -27,7 +39,9 @@ const LoginModal = () => {
     setError("");
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
       const response = await login(formData);
 
       if (response?.error) {
@@ -58,72 +72,90 @@ const LoginModal = () => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-2xl w-96 p-6 relative shadow-black/50">
-          {/* ── close button ─────────────────────────── */}
-          <button
-            id="closeModalBtn"
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-          >
-            <i className="ph-x text-2xl" />
-          </button>
-
-          {/* ── header ──────────────────────────────── */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Log in to Hotel Booking
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-60 z-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative transform transition-all duration-300">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
+              Welcome to Hotel Booking
             </h2>
-            <p className="text-gray-600 text-sm mt-2">
-              Welcome back! Let's get you signed in.
+            <p className="text-gray-500 text-sm mt-2">
+              Sign in to access your account
             </p>
           </div>
 
-          {/* ── auth buttons / form ─────────────────── */}
-          <div className="space-y-4 mb-4">
+          {/* Auth buttons / form */}
+          <div className="space-y-6">
             {/* Google auth */}
             <button
               onClick={handleAuth}
-              className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-50 transition"
+              className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-3 bg-white hover:bg-gray-50 transition duration-200 shadow-sm"
             >
-              {/* (icon omitted for brevity) */}
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-1.02.68-2.33 1.09-3.71 1.09-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C4.01 20.49 7.73 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.73 1 4.01 3.51 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
               Continue with Google
             </button>
 
-            {/* divider */}
-            <div className="flex items-center my-4">
-              <div className="flex-grow border-t border-gray-300" />
-              <span className="mx-4 text-gray-500 text-sm">or</span>
-              <div className="flex-grow border-t border-gray-300" />
+            {/* Divider */}
+            <div className="flex items-center my-6">
+              <div className="flex-grow border-t border-gray-200" />
+              <span className="mx-4 text-gray-400 text-sm">OR</span>
+              <div className="flex-grow border-t border-gray-200" />
             </div>
 
-            {/* email/password form */}
+            {/* Email/password form */}
             <form onSubmit={onSubmit} className="space-y-4">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition"
+                  required
+                />
+              </div>
 
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              {/* Demo credentials buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleDemoCredentials("user")}
+                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                >
+                  Demo User
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDemoCredentials("admin")}
+                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                >
+                  Demo Admin
+                </button>
+              </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full bg-primary text-white rounded-full py-3 transition
-                ${
-                  isSubmitting
-                    ? "opacity-60 cursor-not-allowed"
-                    : "hover:bg-primary"
-                }
-              `}
+                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-primary"}`}
               >
-                {/* spinner or label */}
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
                     <svg
@@ -149,24 +181,25 @@ const LoginModal = () => {
                     Processing…
                   </span>
                 ) : (
-                  "Continue"
+                  "Sign In"
                 )}
               </button>
             </form>
 
-            {/* error message */}
+            {/* Error message */}
             {error && (
-              <p className="text-center text-red-600 text-sm font-medium">
+              <p className="text-center text-red-500 text-sm font-medium">
                 {error}
               </p>
             )}
           </div>
 
-          <div className="text-center text-sm text-gray-600">
+          {/* Register link */}
+          <div className="text-center text-sm text-gray-500 mt-6">
             <p>
               Don't have an account?{" "}
-              <Link href="/register" className="text-primary hover:underline">
-                Sign up
+              <Link href="/register" className="text-primary hover:underline font-medium">
+                Create an account
               </Link>
             </p>
           </div>

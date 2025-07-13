@@ -12,9 +12,10 @@ const Navbar = () => {
   const { setSearchQuery } = useSearch();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [user, setUser] = useState(null);
-  
+
   // Better dummy image from Unsplash
-  const dummyImg = "https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740";
+  const dummyImg =
+    "https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740";
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,7 +24,7 @@ const Navbar = () => {
         if (userData?.user) {
           setUser({
             ...userData.user,
-            role: userData.user.role || 'user'
+            role: userData.user.role || "user",
           });
         } else {
           setUser(null);
@@ -64,7 +65,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 grid grid-cols-2 md:flex justify-between items-center py-3 bg-white border-b mb-6 md:gap-8 px-4 md:px-8 lg:px-20 z-50">
+    <nav className="sticky top-0 grid grid-cols-2 md:flex justify-between items-center py-3 bg-white border-b mb-6 md:gap-8 px-4 md:px-8 lg:px-20 z-30">
       <div className="flex items-center">
         <Link href="/">
           <Image
@@ -193,12 +194,39 @@ const Navbar = () => {
 
                 {/* Admin-specific menu items */}
                 {user?.role === "admin" && (
-                   <Link href="/add-hotel">
+                  <>
+                    {/* Create Hotel */}
+                    <Link href="/add-hotel">
                       <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
-                        <i className="fas fa-hotel"></i>
+                        <i className="fas fa-plus-circle"></i>
                         Create Hotel
                       </li>
                     </Link>
+
+                    {/* Hotels List */}
+                    <Link href="/dashboard/hotels-list">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-hotel"></i>
+                        Hotels List
+                      </li>
+                    </Link>
+
+                    {/* Bookings List */}
+                    <Link href="/dashboard/bookings-list">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-calendar-check"></i>
+                        Bookings List
+                      </li>
+                    </Link>
+
+                    {/* Users List */}
+                    <Link href="/dashboard/users-list">
+                      <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 flex items-center gap-2">
+                        <i className="fas fa-users"></i>
+                        Users List
+                      </li>
+                    </Link>
+                  </>
                 )}
 
                 {/* Sign out button for all logged-in users */}

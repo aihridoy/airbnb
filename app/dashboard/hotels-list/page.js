@@ -4,6 +4,7 @@ import { getAllHotels, getReviews, session } from '../../action'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import HotelsList from '@/components/HotelsList'
+import HotelSearch from '@/components/HotelSearch'
 
 export default async function ManageHotel() {
     const authResult = await session();
@@ -25,7 +26,8 @@ export default async function ManageHotel() {
                     + Create Hotel
                 </Link>
             </div>
-            <HotelsList filteredHotels={hotels} reviews={reviews} />
+            {/* <HotelsList filteredHotels={hotels} reviews={reviews} /> */}
+            <HotelSearch hotels={hotels} reviews={reviews} />
         </div>
     );
 }
