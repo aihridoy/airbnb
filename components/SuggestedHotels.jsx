@@ -46,7 +46,12 @@ const SuggestedHotels = async () => {
               className="bg-surface border border-hairline rounded-xl overflow-hidden hover:shadow-luxe transition-shadow duration-300"
             >
               <div className="h-48 relative">
-                <Image src={hotel.images[0]} alt={hotel.title} fill className="object-cover" />
+                <Image
+                  src={(hotel.images && hotel.images.length > 0 && hotel.images[0]) || "https://placehold.co/600x400"}
+                  alt={hotel.title}
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-ink">{hotel.title}</h3>
