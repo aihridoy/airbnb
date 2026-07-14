@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Loader2 } from "lucide-react";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -17,12 +18,10 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Google OAuth
   const handleAuth = () => {
     signIn("google", { callbackUrl: "/" });
   };
 
-  // Demo credentials
   const handleDemoCredentials = (type) => {
     if (type === "user") {
       setEmail("abul@gmail.com");
@@ -33,7 +32,6 @@ const LoginPage = () => {
     }
   };
 
-  // Email/password login
   async function onSubmit(event) {
     event.preventDefault();
 
@@ -72,24 +70,21 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-8">
-          {/* Header */}
+      <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-4">
+        <div className="bg-surface rounded-2xl border border-hairline shadow-luxe w-full max-w-md p-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
+            <h2 className="font-serif text-3xl text-ink tracking-tight">
               Log in to Hotel Booking
             </h2>
-            <p className="text-gray-600 text-sm mt-2">
+            <p className="text-muted text-sm mt-2">
               Welcome back! Let's get you signed in.
             </p>
           </div>
 
-          {/* Google button + form */}
           <div className="space-y-6">
-            {/* Google OAuth */}
             <button
               onClick={handleAuth}
-              className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-full py-3 hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 border border-hairline rounded-full py-3 hover:bg-surface-alt transition disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={isSubmitting}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -101,14 +96,12 @@ const LoginPage = () => {
               Continue with Google
             </button>
 
-            {/* Divider */}
             <div className="flex items-center my-4">
-              <div className="flex-grow border-t border-gray-300" />
-              <span className="mx-4 text-gray-500 text-sm">or</span>
-              <div className="flex-grow border-t border-gray-300" />
+              <div className="flex-grow border-t border-hairline" />
+              <span className="mx-4 text-muted text-sm">or</span>
+              <div className="flex-grow border-t border-hairline" />
             </div>
 
-            {/* Email/password form */}
             <form className="space-y-4" onSubmit={onSubmit}>
               <input
                 type="email"
@@ -116,7 +109,7 @@ const LoginPage = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-hairline rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brass"
                 required
               />
               <input
@@ -125,23 +118,22 @@ const LoginPage = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full border border-hairline rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brass"
                 required
               />
 
-              {/* Demo credentials buttons */}
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => handleDemoCredentials("user")}
-                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
                 >
                   Demo User
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDemoCredentials("admin")}
-                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
                 >
                   Demo Admin
                 </button>
@@ -150,31 +142,12 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-primary text-white rounded-full py-3 transition
-                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-primary-dark"}`}
+                className={`w-full bg-brass-dark text-cream rounded-full py-3 transition
+                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-brass"}`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
-                    <svg
-                      className="animate-spin h-5 w-5 text-white mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4A8 8 0 104 12z"
-                      />
-                    </svg>
+                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
                     Processing…
                   </span>
                 ) : (
@@ -183,7 +156,6 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Error message */}
             {error && (
               <p className="text-center text-red-600 text-sm font-medium">
                 {error}
@@ -191,11 +163,10 @@ const LoginPage = () => {
             )}
           </div>
 
-          {/* Footer */}
-          <div className="text-center text-sm text-gray-600 mt-6">
+          <div className="text-center text-sm text-muted mt-6">
             <p>
               Don't have an account?{" "}
-              <Link href="/register" className="text-primary hover:underline">
+              <Link href="/register" className="text-brass-dark hover:underline">
                 Sign up
               </Link>
             </p>
