@@ -1,4 +1,5 @@
 import localFont from "next/font/local";
+import { Fraunces } from "next/font/google";
 import "./globals.css";
 import { BookingProvider } from "@/contexts/BookingContext";
 import { SearchProvider } from "@/contexts/SearchContext";
@@ -13,6 +14,12 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+});
 
 export const metadata = {
   title: "AirBnB",
@@ -21,16 +28,17 @@ export const metadata = {
 
 export default function RootLayout({ children, modal }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`}
+    >
       <head>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
         />
       </head>
-      <body
-        className="bg-gray-50"
-      >
+      <body className="bg-cream font-sans text-ink">
         <SearchProvider>
           <BookingProvider>
             {modal}
