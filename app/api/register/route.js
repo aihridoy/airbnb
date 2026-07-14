@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 import { User } from "@/models/user-model";
 import { dbConnect } from "@/service/mongo";
 
@@ -24,16 +25,20 @@ export async function POST(req) {
             );
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const newUser = await User.create({
             name,
             email,
-            password,
+            password: hashedPassword,
             location,
-            role
+            role,
         });
 
+        const { password: _password, ...userWithoutPassword } = newUser.toObject();
+
         return NextResponse.json(
-            { message: "User registered successfully", user: newUser },
+            { message: "User registered successfully", user: userWithoutPassword },
             { status: 201 }
         );
     } catch (error) {

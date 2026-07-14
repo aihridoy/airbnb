@@ -144,7 +144,7 @@ const HotelDetailsPage = async ({ params }) => {
           <div className="hotel-image-grid mb-8">
             {images.map((image, index) => (
               <div
-                key={index}
+                key={`${image}-${index}`}
                 className={`
                   relative
                   ${index === 0 && "(min-width: 640px)" ? "col-span-2 row-span-2" : ""}
@@ -195,7 +195,7 @@ const HotelDetailsPage = async ({ params }) => {
                 What this place offers
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {amenities?.map((amenity, index) => {
+                {amenities?.map((amenity) => {
                   let iconClass = "";
                   switch (amenity.toLowerCase()) {
                     case "beach access":
@@ -215,7 +215,7 @@ const HotelDetailsPage = async ({ params }) => {
                   }
                   return (
                     <div
-                      key={index}
+                      key={amenity}
                       className="flex items-center gap-2"
                     >
                       <i className={iconClass}></i>

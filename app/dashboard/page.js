@@ -433,8 +433,8 @@ const Dashboard = async () => {
                 </thead>
                 <tbody>
                   {recentBookings.length > 0 ? (
-                    recentBookings.map((booking, index) => (
-                      <tr key={index} className="border-t">
+                    recentBookings.map((booking) => (
+                      <tr key={booking._id} className="border-t">
                         <td className="p-3 text-sm text-gray-900">
                           {booking.bookingDetails?.title || "N/A"}
                         </td>
@@ -486,8 +486,8 @@ const Dashboard = async () => {
                 </thead>
                 <tbody>
                   {filteredHotels.length > 0 ? (
-                    filteredHotels.slice(0, 5).map((hotel, index) => (
-                      <tr key={index} className="border-t">
+                    filteredHotels.slice(0, 5).map((hotel) => (
+                      <tr key={hotel._id} className="border-t">
                         <td className="p-3 text-sm text-gray-900">
                           {hotel.title || "N/A"}
                         </td>
