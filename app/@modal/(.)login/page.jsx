@@ -119,7 +119,7 @@ const LoginModal = () => {
 
             <div className="flex items-center my-6">
               <div className="flex-grow border-t border-hairline" />
-              <span className="mx-4 text-muted text-sm">OR</span>
+              <span className="mx-4 text-muted text-sm">or</span>
               <div className="flex-grow border-t border-hairline" />
             </div>
 
