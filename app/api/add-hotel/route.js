@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/service/mongo";
+import { auth } from "@/auth";
 import Hotel from "@/models/hotel-model";
 import mongoose from "mongoose";
 
@@ -15,21 +16,13 @@ const ALLOWED_CATEGORIES = [
 
 export async function POST(req) {
   try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const body = await req.formData();
-    const ownerId = body.get("ownerId");
-    if (!ownerId || ownerId === "null") {
-      return NextResponse.json(
-        { message: "ownerId is required" },
-        { status: 400 }
-      );
-    }
-    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
-      return NextResponse.json(
-        { message: "Invalid ownerId format" },
-        { status: 400 }
-      );
-    }
 
     const category = body.get("category") || "urban";
     if (!ALLOWED_CATEGORIES.includes(category)) {
@@ -42,21 +35,40 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+
+    const rent = parseFloat(body.get("rent"));
+    const guestCapacity = parseInt(body.get("guestCapacity"), 10);
+    const bedroomCapacity = parseInt(body.get("bedroomCapacity"), 10);
+    const bedCapacity = parseInt(body.get("bedCapacity"), 10);
+    const serviceFee = parseFloat(body.get("serviceFee"));
+    const cleaningFee = parseFloat(body.get("cleaningFee"));
+
+    if (
+      [rent, guestCapacity, bedroomCapacity, bedCapacity, serviceFee, cleaningFee].some(
+        (n) => Number.isNaN(n)
+      )
+    ) {
+      return NextResponse.json(
+        { message: "rent, guestCapacity, bedroomCapacity, bedCapacity, serviceFee and cleaningFee must be valid numbers" },
+        { status: 400 }
+      );
+    }
+
     const hotelData = {
-      ownerId: mongoose.Types.ObjectId.createFromHexString(ownerId),
+      ownerId: mongoose.Types.ObjectId.createFromHexString(session.user.id),
       title: body.get("title"),
       location: body.get("location"),
-      rent: parseFloat(body.get("rent")),
+      rent,
       hostName: body.get("hostName"),
-      guestCapacity: parseInt(body.get("guestCapacity"), 10),
-      bedroomCapacity: parseInt(body.get("bedroomCapacity"), 10),
-      bedCapacity: parseInt(body.get("bedCapacity"), 10),
+      guestCapacity,
+      bedroomCapacity,
+      bedCapacity,
       description: body.get("description"),
-      category, 
+      category,
       amenities: JSON.parse(body.get("amenities") || "[]"),
       images: body.getAll("images[]") || [],
-      serviceFee: parseFloat(body.get("serviceFee")),
-      cleaningFee: parseFloat(body.get("cleaningFee")),
+      serviceFee,
+      cleaningFee,
     };
     const newHotel = new Hotel(hotelData);
     await newHotel.save();

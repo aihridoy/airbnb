@@ -57,10 +57,6 @@ const bookingSchema = new Schema(
                 type: String,
                 required: true,
             },
-            cvv: {
-                type: String,
-                required: true,
-            },
             billingAddress: {
                 streetAddress: {
                     type: String,

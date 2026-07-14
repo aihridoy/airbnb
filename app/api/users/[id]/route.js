@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { dbConnect } from "@/service/mongo";
 import { User } from "@/models/user-model";
 
@@ -6,11 +7,26 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request, { params }) {
   try {
-    // Connect to MongoDB
-    await dbConnect();
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized", success: false },
+        { status: 401 }
+      );
+    }
 
     // Extract user ID from params
     const { id } = params;
+
+    if (session.user.role !== "admin" && session.user.id !== id) {
+      return NextResponse.json(
+        { error: "Forbidden", success: false },
+        { status: 403 }
+      );
+    }
+
+    // Connect to MongoDB
+    await dbConnect();
 
     // Fetch user by ID from the User model
     const user = await User.findById(id, "-password"); // Exclude password field for security

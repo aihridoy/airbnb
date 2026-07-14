@@ -2,10 +2,36 @@
 
 import { auth, signIn, signOut } from '@/auth';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
+
+// Server Actions run on the server, so calling our own /api/* routes with
+// fetch() does NOT automatically carry the browser's session cookie the way
+// a same-origin browser fetch would. Forward it explicitly so auth() inside
+// the route handlers can see the signed-in user.
+function getBaseUrl() {
+    if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+        return process.env.NEXT_PUBLIC_API_BASE_URL;
+    }
+    const h = headers();
+    const host = h.get('host');
+    const protocol = h.get('x-forwarded-proto') ?? 'http';
+    return `${protocol}://${host}`;
+}
+
+function internalFetch(path, options = {}) {
+    const cookie = headers().get('cookie') ?? '';
+    return fetch(`${getBaseUrl()}${path}`, {
+        ...options,
+        headers: {
+            ...(options.headers || {}),
+            cookie,
+        },
+    });
+}
 
 export async function addHotel(formData) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/add-hotel`, {
+        const response = await internalFetch(`/api/add-hotel`, {
             method: 'POST',
             body: formData,
             cache: 'no-store',
@@ -27,7 +53,7 @@ export async function addHotel(formData) {
 export async function getHotels(page = 1, pageSize = 8, searchQuery = '') {
     try {
         const query = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : '';
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hotels?page=${page}&pageSize=${pageSize}${query}`, {
+        const response = await internalFetch(`/api/hotels?page=${page}&pageSize=${pageSize}${query}`, {
             method: 'GET',
             cache: 'no-store',
         });
@@ -47,34 +73,34 @@ export async function getHotels(page = 1, pageSize = 8, searchQuery = '') {
 
 export async function getAllHotels(category = null) {
     try {
-        let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/all-hotels`;
-        
+        let url = `/api/all-hotels`;
+
         // Add category query parameter if provided
         if (category) {
             url += `?category=${encodeURIComponent(category)}`;
         }
-        
-        const response = await fetch(url, {
+
+        const response = await internalFetch(url, {
             method: 'GET',
             cache: 'no-store',
         });
-        
+
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
-        
+
         return data;
     } catch (error) {
         console.error("Failed to load hotels:", error);
-        throw error; 
+        throw error;
     }
 }
 
 export async function getHotelById(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hotels/${id}`, {
+        const response = await internalFetch(`/api/hotels/${id}`, {
             method: 'GET',
             cache: 'no-store',
         });
@@ -96,7 +122,7 @@ export async function updateHotelById(id, hotelData) {
     hotelData.images = JSON.parse(hotelData.images || '[]');
     hotelData.amenities = JSON.parse(hotelData.amenities || [])
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hotels/${id}`, {
+        const response = await internalFetch(`/api/hotels/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,7 +147,7 @@ export async function updateHotelById(id, hotelData) {
 
 export async function deleteHotelById(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/hotels/${id}`, {
+        const response = await internalFetch(`/api/hotels/${id}`, {
             method: 'DELETE',
             cache: 'no-store',
         });
@@ -141,7 +167,7 @@ export async function deleteHotelById(id) {
 
 export async function addToWishlist(userId, hotelId, title, location, rent, images) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/add-wishlist`, {
+        const response = await internalFetch(`/api/add-wishlist`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -165,10 +191,14 @@ export async function addToWishlist(userId, hotelId, title, location, rent, imag
 
 export async function getWishlists() {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wishlists`, {
+        const response = await internalFetch(`/api/wishlists`, {
             method: 'GET',
             cache: 'no-store',
         })
+        // Signed-out visitor: no wishlist, not an error.
+        if (response.status === 401) {
+            return { wishlists: [] };
+        }
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
@@ -178,12 +208,13 @@ export async function getWishlists() {
 
     } catch (error) {
         console.error("Failed to load wishlists:", error);
+        return { wishlists: [] };
     }
 }
 
 export async function deleteWishlist(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wishlists/${id}`, {
+        const response = await internalFetch(`/api/wishlists/${id}`, {
             method: 'DELETE',
             cache: 'no-store',
         });
@@ -203,7 +234,7 @@ export async function deleteWishlist(id) {
 
 export async function submitReview(reviewData) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/add-review`, {
+        const response = await internalFetch(`/api/add-review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -227,7 +258,7 @@ export async function submitReview(reviewData) {
 
 export async function getReviews() {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/reviews`, {
+        const response = await internalFetch(`/api/reviews`, {
             method: 'GET',
             cache: 'no-store',
         })
@@ -239,12 +270,13 @@ export async function getReviews() {
 
     } catch (error) {
         console.error("Failed to load reviews:", error);
+        return { reviews: [] };
     }
 }
 
 export async function deleteReview(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/reviews/${id}`, {
+        const response = await internalFetch(`/api/reviews/${id}`, {
             method: 'DELETE',
             cache: 'no-store',
         });
@@ -264,7 +296,7 @@ export async function deleteReview(id) {
 
 export async function createBooking(data) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/add-booking`, {
+        const response = await internalFetch(`/api/add-booking`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -287,10 +319,14 @@ export async function createBooking(data) {
 
 export async function getBookings() {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings`, {
+        const response = await internalFetch(`/api/bookings`, {
             method: 'GET',
             cache: 'no-store',
         })
+        // Signed-out visitor: no bookings, not an error.
+        if (response.status === 401) {
+            return { bookings: [] };
+        }
         const data = await response.json();
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
@@ -298,13 +334,14 @@ export async function getBookings() {
         return data;
 
     } catch (error) {
-        console.error("Failed to load reviews:", error);
+        console.error("Failed to load bookings:", error);
+        return { bookings: [] };
     }
 }
 
 export async function getBooking(bookingId) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bookings/${bookingId}`, {
+        const response = await internalFetch(`/api/bookings/${bookingId}`, {
             method: 'GET',
             cache: 'no-store',
         });
@@ -315,6 +352,7 @@ export async function getBooking(bookingId) {
         return data;
     } catch (error) {
         console.error(`Failed to fetch booking with ID ${bookingId}:`, error);
+        return { booking: null };
     }
 }
 
@@ -344,7 +382,7 @@ export async function login(formData) {
 
 export async function sendEmail({ to, subject, html }) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/send-email`, {
+        const response = await internalFetch(`/api/send-email`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -364,17 +402,17 @@ export async function sendEmail({ to, subject, html }) {
 
 export async function getUsers() {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
+        const response = await internalFetch(`/api/users`, {
             method: 'GET',
             cache: 'no-store',
         });
-        
+
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
-        
+
         return data;
 
     } catch (error) {
@@ -390,7 +428,7 @@ export async function getUsers() {
 
 export async function getUserById(id) {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${id}`, {
+        const response = await internalFetch(`/api/users/${id}`, {
             method: 'GET',
             cache: 'no-store',
         });
@@ -413,6 +451,3 @@ export async function getUserById(id) {
         };
     }
 }
-
-
-

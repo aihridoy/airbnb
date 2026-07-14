@@ -1,21 +1,27 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/service/mongo';
+import { auth } from '@/auth';
 import { Review } from '@/models/review-model';
 
 export async function POST(request) {
     try {
-        const { hotelId, userId, userName, ratings, review } = await request.json();
+        const session = await auth();
+        if (!session?.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-        if (!hotelId || !userId || !ratings || !review || !userName) {
+        const { hotelId, ratings, review } = await request.json();
+
+        if (!hotelId || !ratings || !review) {
             return NextResponse.json(
-                { error: 'All fields are required' },
+                { error: 'hotelId, ratings and review are required' },
                 { status: 400 }
             );
         }
 
         await dbConnect();
 
-        const existingReview = await Review.findOne({ hotelId, userId });
+        const existingReview = await Review.findOne({ hotelId, userId: session.user.id });
         if (existingReview) {
             return NextResponse.json(
                 { message: 'You have already reviewed this hotel' },
@@ -24,8 +30,8 @@ export async function POST(request) {
 
         const newReview = new Review({
             hotelId,
-            userId,
-            userName,
+            userId: session.user.id,
+            userName: session.user.name,
             ratings,
             review,
         });

@@ -2,6 +2,7 @@ const { default: NextAuth } = require("next-auth");
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import bcrypt from "bcryptjs";
 import mongoClientPromise from "./service/mongoClientPromise";
 import { dbConnect } from "./service/mongo";
 import { User } from "./models/user-model";
@@ -70,7 +71,7 @@ export const {
         const user = await User.findOne({ email: credentials.email });
 
         if (!user) throw new Error("User not found");
-        const isMatch = user.password === credentials.password;
+        const isMatch = await bcrypt.compare(credentials.password, user.password);
 
         if (!isMatch) throw new Error("Invalid credentials");
 
