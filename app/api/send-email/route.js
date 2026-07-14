@@ -24,7 +24,7 @@ export const POST = async (req) => {
         }
 
         const emailResponse = await resend.emails.send({
-            from: "AirBnB <noreply@aihridoy.com>",
+            from: "AirBnB <noreply@ashrafulislam.im>",
             to,
             subject,
             html,
