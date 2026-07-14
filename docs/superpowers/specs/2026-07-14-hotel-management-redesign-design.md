@@ -96,7 +96,18 @@ Full scope, executed in dependency order so later phases can reuse earlier found
 
 Each phase is independently shippable and reviewable; later phases depend only on the Phase 0 foundation, not on each other, so they can be parallelized across sessions/agents if desired.
 
-## 8. Explicit Non-Goals
+## 8. UI/UX Pro Max Validation
+
+Ran `ui-ux-pro-max` design-system + domain searches (color, typography, ux, nextjs stack) against this brief. Findings folded in below; none contradict the approved direction in §3–§6, they harden it:
+
+- **Accent contrast rule**: use `brass` (`#B08D57`) for decorative/background/badge use only. For any accent text, icon, or link that must hit 4.5:1 (AA) on `cream`/`surface`, use `brass-dark` (`#8C6D3F`) instead — matches the tool's WCAG-adjusted luxury-gold accent pattern (its default `#CA8A04`-family accent gets auto-adjusted for the same reason).
+- **Motion cap**: no more than 1–2 animated elements active in any single viewport at once (tool flags "animate everything" as a high-severity anti-pattern). Applies across §4's motion inventory — e.g. hero headline stagger *or* parallax layer moving at a time, not both competing for attention.
+- **Smooth anchor scroll**: add `scroll-behavior: smooth` at the html level for any in-page anchor links (footer → sections, etc).
+- **Easing discipline**: entrances use ease-out, exits ease-in — already implied by the `luxe` cubic-bezier in §3, keep linear easing out of all UI transitions.
+- **Next.js implementation confirms**: `loading.js` per route segment (§5) and `Suspense` streaming (§5, already used in `app/page.js`) are the framework-idiomatic pattern, not a custom one — no change needed. All images must go through `next/image` (already the case in `Hotel.jsx`; carry forward, no raw `<img>` in new/redesigned components). `next.config.js` `images.remotePatterns` already covers the hosts in use (Unsplash, placehold.co, googleusercontent, freepik) — no config change needed unless new image hosts are introduced.
+- Font pairing choice (Fraunces + Geist Sans) stays as approved in §3 — the tool's own luxury pairings (Playfair Display/Cormorant + Inter/Montserrat) validate the general serif-display + clean-sans luxury pattern; Fraunces was chosen deliberately over Playfair for a warmer/less formal editorial feel and to reuse the already-installed Geist Sans rather than adding Inter.
+
+## 9. Explicit Non-Goals
 
 - No new component library (no shadcn/Radix) — hand-rolled Tailwind + framer-motion only, per existing codebase style.
 - No backend/API changes — this is UI/UX + motion + loading-state only. Newsletter footer signup reuses the existing subscribe endpoint as-is.
