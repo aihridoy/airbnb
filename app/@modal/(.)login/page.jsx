@@ -9,6 +9,9 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion, useReducedMotion } from "framer-motion";
+import { Loader2, X } from "lucide-react";
+import { luxeEase } from "@/lib/motion";
 
 const LoginModal = () => {
   const router = useRouter();
@@ -16,6 +19,7 @@ const LoginModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const prefersReducedMotion = useReducedMotion();
 
   const handleAuth = () => {
     signIn("google", { callbackUrl: "/" });
@@ -72,24 +76,37 @@ const LoginModal = () => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-gray-900 bg-opacity-60 z-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative transform transition-all duration-300">
-          {/* Header */}
+      <motion.div
+        initial={prefersReducedMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-0 bg-ink/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      >
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: luxeEase }}
+          className="bg-surface rounded-2xl border border-hairline shadow-luxe w-full max-w-md p-8 relative"
+        >
+          <button
+            onClick={() => router.back()}
+            aria-label="Close"
+            className="absolute top-4 right-4 text-muted hover:text-ink transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
+            <h2 className="font-serif text-3xl text-ink tracking-tight">
               Welcome to Hotel Booking
             </h2>
-            <p className="text-gray-500 text-sm mt-2">
-              Sign in to access your account
-            </p>
+            <p className="text-muted text-sm mt-2">Sign in to access your account</p>
           </div>
 
-          {/* Auth buttons / form */}
           <div className="space-y-6">
-            {/* Google auth */}
             <button
               onClick={handleAuth}
-              className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-3 bg-white hover:bg-gray-50 transition duration-200 shadow-sm"
+              className="w-full flex items-center justify-center gap-2 border border-hairline rounded-lg py-3 bg-surface hover:bg-surface-alt transition duration-200"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -100,51 +117,44 @@ const LoginModal = () => {
               Continue with Google
             </button>
 
-            {/* Divider */}
             <div className="flex items-center my-6">
-              <div className="flex-grow border-t border-gray-200" />
-              <span className="mx-4 text-gray-400 text-sm">OR</span>
-              <div className="flex-grow border-t border-gray-200" />
+              <div className="flex-grow border-t border-hairline" />
+              <span className="mx-4 text-muted text-sm">OR</span>
+              <div className="flex-grow border-t border-hairline" />
             </div>
 
-            {/* Email/password form */}
             <form onSubmit={onSubmit} className="space-y-4">
-              <div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition"
-                  required
-                />
-              </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-hairline rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brass transition"
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-hairline rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brass transition"
+                required
+              />
 
-              {/* Demo credentials buttons */}
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => handleDemoCredentials("user")}
-                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
                 >
                   Demo User
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDemoCredentials("admin")}
-                  className="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200 transition"
+                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
                 >
                   Demo Admin
                 </button>
@@ -153,31 +163,12 @@ const LoginModal = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-primary text-white rounded-full py-3 transition
-                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-primary"}`}
+                className={`w-full bg-brass-dark text-cream rounded-full py-3 transition
+                  ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-brass"}`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
-                    <svg
-                      className="animate-spin h-5 w-5 text-white mr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4A8 8 0 104 12z"
-                      />
-                    </svg>
+                    <Loader2 className="animate-spin h-5 w-5 mr-2" />
                     Processing…
                   </span>
                 ) : (
@@ -186,25 +177,21 @@ const LoginModal = () => {
               </button>
             </form>
 
-            {/* Error message */}
             {error && (
-              <p className="text-center text-red-500 text-sm font-medium">
-                {error}
-              </p>
+              <p className="text-center text-red-500 text-sm font-medium">{error}</p>
             )}
           </div>
 
-          {/* Register link */}
-          <div className="text-center text-sm text-gray-500 mt-6">
+          <div className="text-center text-sm text-muted mt-6">
             <p>
               Don't have an account?{" "}
-              <Link href="/register" className="text-primary hover:underline font-medium">
+              <Link href="/register" className="text-brass-dark hover:underline font-medium">
                 Create an account
               </Link>
             </p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       <ToastContainer />
     </>
   );
