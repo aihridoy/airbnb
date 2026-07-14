@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 .hotel-image-grid {
   display: grid;
   grid-template-columns: 1fr; /* Single column on mobile by default */
