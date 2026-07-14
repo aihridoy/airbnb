@@ -312,6 +312,8 @@ git commit -m "feat: add base Skeleton shimmer primitive"
 
 **Type/name consistency:** `brass`/`brass-dark`/`brass-light`/`ink`/`muted`/`cream`/`surface`/`surface-alt`/`hairline` used identically across Tasks 1, 2, and referenced by name (not redefined) in Task 4. `fadeUp`/`stagger`/`scaleIn`/`luxeEase` are the exact names later phases must import from `lib/motion.js` — no aliasing introduced elsewhere in this plan. `Skeleton` is the exact default-export name later composed-skeleton files will import.
 
+**Deviation from spec §5 text:** the shimmer keyframe/animation is implemented via Tailwind's `theme.extend.keyframes`/`animation` config (Task 1) rather than hand-written in `globals.css`. This is the JIT-friendly, config-driven equivalent of the same effect and was approved in Task 1's review; noting it here so the spec wording and implementation don't appear to disagree.
+
 ---
 
 ## Next Phases
