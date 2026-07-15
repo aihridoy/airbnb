@@ -1,39 +1,43 @@
 "use client";
 
-import { getHotels, getReviews } from "@/app/action";
-import React, { useState, useEffect } from "react";
+import { getHotels } from "@/app/action";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Hotel from "./Hotel";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSearch } from "@/contexts/SearchContext";
 import Pagination from "./Pagination";
 import HotelGridSkeleton from "./skeletons/HotelGridSkeleton";
 import { fadeUp } from "@/lib/motion";
 
-const HotelListing = () => {
-  const { searchQuery } = useSearch();
+// "Find Your Stay" is a pure browse listing - paginated only. Actual
+// searching lives on the /search page (hero + navbar navigate there).
+const HotelListing = ({ initialData = null, initialReviews = [] }) => {
   const prefersReducedMotion = useReducedMotion();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [hotels, setHotels] = useState(null);
+  const [hotels, setHotels] = useState(initialData);
   const [error, setError] = useState(null);
-  const [reviews, setReviews] = useState([]);
+  const [reviews] = useState(initialReviews);
   const [loading, setLoading] = useState(false);
 
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(initialData?.totalPages ?? 1);
+
+  // Server already provided page 1 - skip refetching it on first mount.
+  const skipNextFetch = useRef(Boolean(initialData) && currentPage === 1);
 
   useEffect(() => {
+    if (skipNextFetch.current) {
+      skipNextFetch.current = false;
+      return;
+    }
+
     setLoading(true);
     const fetchData = async () => {
       try {
-        const [hotelsData, reviewsData] = await Promise.all([
-          getHotels(currentPage, 8, searchQuery),
-          getReviews(),
-        ]);
+        const hotelsData = await getHotels(currentPage, 8, "", 0);
         setHotels(hotelsData);
         setTotalPages(hotelsData.totalPages);
-        setReviews(reviewsData?.reviews || []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -41,7 +45,7 @@ const HotelListing = () => {
       }
     };
     fetchData();
-  }, [currentPage, searchQuery]);
+  }, [currentPage]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {

@@ -1,22 +1,9 @@
 "use client";
 
-import { getAllHotels } from "@/app/action";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {
-  Building2,
-  Umbrella,
-  Mountain,
-  Trees,
-  Gem,
-  Sun,
-  Waves,
-  Sunrise,
-  Palmtree,
-  Snowflake,
-} from "lucide-react";
+import React from "react";
+import { Building2, Umbrella, Mountain, Trees, Gem, Sun, Waves, Sunrise, Palmtree, Snowflake } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import Skeleton from "./skeletons/Skeleton";
 import { fadeUp } from "@/lib/motion";
 
 const CATEGORY_ICONS = {
@@ -32,35 +19,9 @@ const CATEGORY_ICONS = {
   ski: Snowflake,
 };
 
-const HotelsCategory = () => {
-  const [hotels, setHotels] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const HotelsCategory = ({ hotels = [] }) => {
   const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getAllHotels();
-        if (!response || !response.hotels) {
-          throw new Error("No hotels found");
-        }
-        setHotels(response.hotels);
-
-        const uniqueCategories = [
-          ...new Set(response.hotels.map((hotel) => hotel.category)),
-        ];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchHotels();
-  }, []);
+  const categories = [...new Set(hotels.map((hotel) => hotel.category))];
 
   const getCategoryIcon = (category) => {
     const Icon = CATEGORY_ICONS[category] || Building2;
@@ -90,23 +51,11 @@ const HotelsCategory = () => {
         </p>
       </motion.div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {[...Array(5)].map((_, index) => (
-            <div
-              key={index}
-              className="bg-surface rounded-xl border border-hairline overflow-hidden"
-            >
-              <div className="p-6 text-center">
-                <Skeleton className="h-10 w-10 rounded-full mx-auto mb-4" />
-                <Skeleton className="h-5 w-3/4 mx-auto mb-2 rounded" />
-                <Skeleton className="h-4 w-1/2 mx-auto rounded" />
-              </div>
-              <div className="bg-surface-alt px-6 py-3">
-                <Skeleton className="h-4 w-1/3 mx-auto rounded" />
-              </div>
-            </div>
-          ))}
+      {categories.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-lg text-muted">
+            No categories available at the moment.
+          </p>
         </div>
       ) : (
         <motion.div
@@ -145,14 +94,6 @@ const HotelsCategory = () => {
             </motion.div>
           ))}
         </motion.div>
-      )}
-
-      {!isLoading && categories.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-lg text-muted">
-            No categories available at the moment.
-          </p>
-        </div>
       )}
     </div>
   );

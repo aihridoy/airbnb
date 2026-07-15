@@ -1,375 +1,263 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { MapPin, Users, Star, Wifi, Car, Dumbbell, Heart } from "lucide-react";
-import Link from "next/link";
-import { getAllHotels, getReviews, session } from "@/app/action";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import AddToFavButton from "./AddToFavBtn";
-import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
-import { fadeUp, stagger, luxeEase } from "@/lib/motion";
+import { useRouter } from "next/navigation";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { Search, MapPin, Users } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const HERO_SLIDES = [
-  {
-    title: "Discover Perfect",
-    highlight: "Getaways",
-    subtitle:
-      "Explore a curated range of accommodations, from luxurious beachfront villas to cozy mountain retreats, perfect for your next escape.",
-  },
-  {
-    title: "Explore Amazing",
-    highlight: "Destinations",
-    subtitle:
-      "Handpicked hotels and resorts in breathtaking locations, offering unique experiences and stunning views for every traveler.",
-  },
-  {
-    title: "Elevated Luxury",
-    highlight: "Redefined",
-    subtitle:
-      "Indulge in premium accommodations with world-class amenities, designed for unmatched comfort and sophistication.",
-  },
-];
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=2000&q=80";
 
-const STATS = [
-  { id: "hotels", label: "Available Hotels" },
-  { id: "travelers", number: "50,000+", label: "Happy Travelers" },
-  { id: "rating", number: "4.9", label: "Average Rating", icon: Star },
-  { id: "support", number: "24/7", label: "Customer Support" },
-];
+const CATEGORY_LABELS = {
+  urban: "Urban",
+  beach: "Beach",
+  mountain: "Mountain",
+  luxury: "Luxury",
+  rustic: "Rustic",
+  countryside: "Countryside",
+  lakeside: "Lakeside",
+  desert: "Desert",
+  island: "Island",
+  ski: "Ski",
+};
 
-const AnimatedHeroBanner = ({ wishlists }) => {
-  const [hotels, setHotels] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [userId, setUserId] = useState();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentHotelIndex, setCurrentHotelIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isHotelHovering, setIsHotelHovering] = useState(false);
+export default function Hero({ image, destinations = [], categories = [] }) {
+  const router = useRouter();
+  const [location, setLocation] = useState("");
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState(null);
+  const [guestCount, setGuestCount] = useState(1);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const heroRef = useRef(null);
+  const locationBoxRef = useRef(null);
+  const [chromeH, setChromeH] = useState(0);
+
   const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const [hotelsData, reviewsData] = await Promise.all([
-        getAllHotels(),
-        getReviews(),
-      ]);
-      setHotels(hotelsData?.hotels || []);
-      setReviews(reviewsData?.reviews || []);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("Failed to load hotels");
-    } finally {
-      setIsLoading(false);
-    }
+  // Height = viewport minus the announce bar + navbar above it, so together
+  // they read as exactly one screen. Recomputes when the announce bar is
+  // dismissed (its removal is a body DOM mutation) or on resize.
+  useLayoutEffect(() => {
+    const compute = () => {
+      const nav = document.querySelector("nav");
+      const announce = document.querySelector("[data-announcebar]");
+      const next = (nav?.offsetHeight || 0) + (announce?.offsetHeight || 0);
+      setChromeH((prev) => (prev === next ? prev : next));
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    const mo = new MutationObserver(compute);
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      window.removeEventListener("resize", compute);
+      mo.disconnect();
+    };
   }, []);
 
+  // Close the suggestions dropdown on outside click. Uses `click` (not
+  // `mousedown`) so clicking the search button still submits the form -
+  // a mousedown close mid-interaction was swallowing the submit.
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await session();
-        setUserId(userData?.user?.id || null);
-      } catch (error) {
-        console.error("Failed to fetch user session:", error);
+    const onClick = (e) => {
+      if (locationBoxRef.current && !locationBoxRef.current.contains(e.target)) {
+        setDropdownOpen(false);
       }
     };
-    fetchUser();
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const goToSearch = (loc) => {
+    const params = new URLSearchParams();
+    if (loc) params.set("location", loc);
+    if (guestCount > 1) params.set("guests", String(guestCount));
+    if (checkIn) params.set("checkin", checkIn.toISOString().slice(0, 10));
+    if (checkOut) params.set("checkout", checkOut.toISOString().slice(0, 10));
+    router.push(`/search?${params.toString()}`);
+  };
 
-  useEffect(() => {
-    if (isHotelHovering) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [isHotelHovering]);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    goToSearch(location.trim());
+  };
 
-  useEffect(() => {
-    if (isHotelHovering || hotels.length === 0) return;
-    const timer = setInterval(() => {
-      setCurrentHotelIndex((prev) => (prev + 1) % hotels.length);
-    }, 7000);
-    return () => clearInterval(timer);
-  }, [hotels.length, isHotelHovering]);
-
-  const getAmenityIcon = useCallback((amenity) => {
-    const amenityLower = amenity.toLowerCase();
-    if (amenityLower.includes("wifi"))
-      return <Wifi className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-    if (amenityLower.includes("parking"))
-      return <Car className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-    if (amenityLower.includes("fitness"))
-      return <Dumbbell className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-    return <Heart className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />;
-  }, []);
-
-  const currentHotelRating = useMemo(() => {
-    if (!hotels[currentHotelIndex] || reviews.length === 0) return 0;
-
-    const filteredReviews = reviews.filter(
-      (review) => review.hotelId === hotels[currentHotelIndex]._id
-    );
-    const totalReviews = filteredReviews.length;
-    const averageRating =
-      totalReviews > 0
-        ? filteredReviews.reduce((acc, review) => acc + review.ratings, 0) / totalReviews
-        : 0;
-
-    return averageRating;
-  }, [hotels, reviews, currentHotelIndex]);
-
-  const currentHotel = hotels[currentHotelIndex];
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-ink px-4">
-        <div className="text-cream text-center p-4">
-          <p className="text-lg sm:text-xl mb-4">{error}</p>
-          <button
-            onClick={fetchData}
-            className="bg-brass-dark hover:bg-brass text-cream px-4 py-2 rounded-lg text-sm sm:text-base transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const filteredDestinations = location.trim()
+    ? destinations.filter((d) =>
+        d.toLowerCase().includes(location.trim().toLowerCase())
+      )
+    : destinations;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-ink py-5 sm:py-0 md:py-0 lg:py-0">
+    <section
+      ref={heroRef}
+      style={{ height: chromeH ? `calc(100dvh - ${chromeH}px)` : "100dvh" }}
+      className="relative w-full overflow-hidden min-h-[520px]"
+    >
+      <motion.div
+        style={{ y: prefersReducedMotion ? 0 : parallaxY }}
+        className="absolute inset-x-0 -top-[10%] h-[120%]"
+      >
+        <Image
+          src={image || FALLBACK_IMAGE}
+          alt="Featured hotel"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      </motion.div>
       <div
-        className="absolute inset-0 bg-gradient-to-br from-ink via-ink to-[#2a251f]"
+        className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/10"
         aria-hidden="true"
       />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
-        <motion.div
-          variants={prefersReducedMotion ? undefined : stagger}
-          initial={prefersReducedMotion ? undefined : "hidden"}
-          animate={prefersReducedMotion ? undefined : "visible"}
-          className="w-full max-w-7xl mx-auto py-16"
-          role="main"
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-cream mb-4">
+          Escape. Unwind. Stay.
+        </h1>
+        <p className="text-cream/80 text-base sm:text-lg max-w-xl mb-10">
+          Discover handpicked hotels and resorts for your next getaway.
+        </p>
+
+        <form
+          onSubmit={handleSearch}
+          className="w-full max-w-4xl bg-surface/95 backdrop-blur-md rounded-2xl border border-hairline shadow-luxe p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Text Content */}
-            <div className="text-center lg:text-left order-2 lg:order-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? {} : { opacity: 0, y: -20 }}
-                  transition={{ duration: 0.6, ease: luxeEase }}
-                  className="space-y-4 sm:space-y-6"
-                >
-                  <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium text-cream leading-tight">
-                    {HERO_SLIDES[currentSlide].title}
-                    <span className="block italic text-brass-light">
-                      {HERO_SLIDES[currentSlide].highlight}
-                    </span>
-                  </h1>
-                  <p className="text-base sm:text-lg md:text-xl text-cream/70 max-w-2xl">
-                    {HERO_SLIDES[currentSlide].subtitle}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
+          <div className="text-left relative" ref={locationBoxRef}>
+            <div className="flex items-center gap-2 border border-hairline rounded-lg px-3 py-2.5 bg-surface h-11">
+              <MapPin className="w-4 h-4 text-muted flex-shrink-0" aria-hidden="true" />
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  setDropdownOpen(true);
+                }}
+                onFocus={() => setDropdownOpen(true)}
+                placeholder="Search a city or hotel"
+                className="w-full outline-none text-sm bg-transparent text-ink placeholder:text-muted"
+              />
             </div>
 
-            {/* Hotel Card */}
-            <div className="order-1 lg:order-2">
-              {isLoading ? (
-                <div className="bg-cream/5 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-cream/10">
-                  <HotelCardSkeleton />
-                </div>
-              ) : (
-                currentHotel && (
-                  <motion.div
-                    variants={prefersReducedMotion ? undefined : fadeUp}
-                    className="relative"
-                    onMouseEnter={() => setIsHotelHovering(true)}
-                    onMouseLeave={() => setIsHotelHovering(false)}
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentHotel._id}
-                        initial={prefersReducedMotion ? false : { opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={prefersReducedMotion ? {} : { opacity: 0, x: -30 }}
-                        transition={{ duration: 0.6, ease: luxeEase }}
-                        className="bg-cream/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-cream/10 shadow-luxe"
-                      >
-                        <div className="relative mb-4">
-                          <Image
-                            height={256}
-                            width={512}
-                            src={currentHotel.images[0]}
-                            alt={currentHotel.title}
-                            sizes="(max-width: 1024px) 100vw, 50vw"
-                            className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-xl sm:rounded-2xl"
-                            priority
-                          />
-
-                          <AddToFavButton
-                            hotelId={currentHotel._id}
-                            userId={userId}
-                            title={currentHotel.title}
-                            location={currentHotel.location}
-                            rent={currentHotel.rent}
-                            images={currentHotel.images}
-                            wishlists={wishlists}
-                          />
-
-                          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 bg-ink/70 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1">
-                            <span className="text-cream font-semibold text-sm sm:text-base">
-                              ${currentHotel.rent}/night
-                            </span>
-                          </div>
-                        </div>
-
-                        <h3 className="font-serif text-lg sm:text-xl lg:text-2xl text-cream mb-2 line-clamp-1">
-                          {currentHotel.title}
-                        </h3>
-                        <p className="text-cream/60 mb-3 flex items-center gap-2 text-sm sm:text-base">
-                          <MapPin
-                            className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
-                            aria-hidden="true"
-                          />
-                          <span className="line-clamp-1">{currentHotel.location}</span>
-                        </p>
-
-                        <div className="flex items-center gap-2 sm:gap-4 mb-4 text-cream/60 text-xs sm:text-sm">
-                          <span className="flex items-center gap-1">
-                            <Users
-                              className="w-3 h-3 sm:w-4 sm:h-4"
-                              aria-hidden="true"
-                            />
-                            {currentHotel.guestCapacity} guests
-                          </span>
-                          <span className="hidden sm:inline">
-                            {currentHotel.bedroomCapacity} bedrooms
-                          </span>
-                          <span className="sm:hidden">
-                            {currentHotel.bedroomCapacity} bed
-                          </span>
-                          <span className="hidden sm:inline">
-                            {currentHotel.bedCapacity} beds
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
-                          {currentHotel.amenities
-                            .slice(0, 3)
-                            .map((amenity, index) => (
-                              <div
-                                key={`${currentHotel._id}-amenity-${index}`}
-                                className="flex items-center gap-1 bg-cream/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-cream/70"
-                              >
-                                {getAmenityIcon(amenity)}
-                                <span className="truncate max-w-20 sm:max-w-none">
-                                  {amenity}
-                                </span>
-                              </div>
-                            ))}
-                          {currentHotel.amenities.length > 3 && (
-                            <div className="flex items-center bg-cream/10 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-cream/70">
-                              +{currentHotel.amenities.length - 3} more
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-sm sm:text-base">
-                            <div className="flex items-center gap-1">
-                              <Star
-                                className="w-3 h-3 sm:w-4 sm:h-4 text-brass-light fill-current"
-                                aria-hidden="true"
-                              />
-                              <span className="text-cream font-semibold">
-                                {currentHotelRating > 0
-                                  ? currentHotelRating.toFixed(1)
-                                  : "No rating"}
-                              </span>
-                            </div>
-                            <span className="text-cream/40 hidden sm:inline">·</span>
-                            <span className="text-cream/60 text-xs sm:text-sm truncate max-w-24 sm:max-w-none">
-                              <span className="hidden sm:inline">Host: </span>
-                              {currentHotel.hostName}
-                            </span>
-                          </div>
-                          <Link
-                            href={`/details/${currentHotel._id}`}
-                            className="bg-brass-dark hover:bg-brass rounded-lg px-3 sm:px-4 py-2 text-cream font-semibold transition-colors text-xs sm:text-sm"
-                            aria-label={`View details for ${currentHotel.title}`}
+            {dropdownOpen && (destinations.length > 0 || categories.length > 0) && (
+              <div className="absolute z-20 left-0 right-0 mt-2 bg-surface border border-hairline rounded-xl shadow-luxe p-3 text-left max-h-80 overflow-y-auto">
+                {filteredDestinations.length > 0 && (
+                  <>
+                    <p className="text-xs font-semibold text-muted uppercase tracking-wide px-2 mb-1">
+                      Popular destinations
+                    </p>
+                    <ul className="mb-2">
+                      {filteredDestinations.slice(0, 6).map((dest) => (
+                        <li key={dest}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLocation(dest);
+                              setDropdownOpen(false);
+                              goToSearch(dest);
+                            }}
+                            className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-ink hover:bg-surface-alt transition-colors"
                           >
-                            View Details
-                          </Link>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-                  </motion.div>
-                )
-              )}
-            </div>
+                            <MapPin className="w-4 h-4 text-brass-dark flex-shrink-0" />
+                            {dest}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {categories.length > 0 && (
+                  <>
+                    <p className="text-xs font-semibold text-muted uppercase tracking-wide px-2 mb-1">
+                      Browse by type
+                    </p>
+                    <div className="flex flex-wrap gap-2 px-2 pt-1">
+                      {categories.map((cat) => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            router.push(`/category/${cat}`);
+                          }}
+                          className="px-3 py-1.5 rounded-full border border-hairline text-xs text-ink hover:bg-surface-alt hover:border-brass transition-colors"
+                        >
+                          {CATEGORY_LABELS[cat] || cat}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Stats Section */}
-          <motion.div
-            variants={prefersReducedMotion ? undefined : fadeUp}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto mt-8 sm:mt-12"
-            role="region"
-            aria-label="Statistics"
-          >
-            {STATS.map((stat) => (
-              <div
-                key={stat.id}
-                className="text-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-cream/5 border border-cream/10"
-              >
-                <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-serif text-cream mb-1 sm:mb-2 flex items-center justify-center gap-1 sm:gap-2">
-                  {stat.id === "hotels"
-                    ? hotels.length.toLocaleString() || "0"
-                    : stat.number}
-                  {stat.icon && (
-                    <stat.icon
-                      className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-brass-light"
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
-                <div className="text-cream/60 text-xs sm:text-sm">{stat.label}</div>
+          <label className="text-left">
+            <span className="sr-only">Check-in</span>
+            <div className="border border-hairline rounded-lg px-3 bg-surface h-11 flex items-center">
+              <DatePicker
+                selected={checkIn}
+                onChange={setCheckIn}
+                selectsStart
+                startDate={checkIn}
+                endDate={checkOut}
+                minDate={new Date()}
+                placeholderText="Check-in"
+                className="w-full outline-none text-sm bg-transparent text-ink placeholder:text-muted"
+              />
+            </div>
+          </label>
+
+          <label className="text-left">
+            <span className="sr-only">Check-out</span>
+            <div className="border border-hairline rounded-lg px-3 bg-surface h-11 flex items-center">
+              <DatePicker
+                selected={checkOut}
+                onChange={setCheckOut}
+                selectsEnd
+                startDate={checkIn}
+                endDate={checkOut}
+                minDate={checkIn || new Date()}
+                placeholderText="Check-out"
+                className="w-full outline-none text-sm bg-transparent text-ink placeholder:text-muted"
+              />
+            </div>
+          </label>
+
+          <div className="flex gap-2">
+            <label className="flex-1 text-left">
+              <span className="sr-only">Guests</span>
+              <div className="flex items-center gap-2 border border-hairline rounded-lg px-3 bg-surface h-11">
+                <Users className="w-4 h-4 text-muted flex-shrink-0" aria-hidden="true" />
+                <input
+                  type="number"
+                  min={1}
+                  value={guestCount}
+                  onChange={(e) => setGuestCount(Math.max(1, Number(e.target.value) || 1))}
+                  className="w-full outline-none text-sm bg-transparent text-ink"
+                />
               </div>
-            ))}
-          </motion.div>
-        </motion.div>
+            </label>
+            <button
+              type="submit"
+              aria-label="Search hotels"
+              className="flex items-center justify-center bg-brass-dark hover:bg-brass text-cream rounded-lg h-11 px-4 transition-colors"
+            >
+              <Search className="w-4 h-4" aria-hidden="true" />
+            </button>
+          </div>
+        </form>
       </div>
-    </div>
+    </section>
   );
-};
-
-AnimatedHeroBanner.propTypes = {
-  wishlists: PropTypes.array,
-  userId: PropTypes.string,
-  hotels: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-      images: PropTypes.arrayOf(PropTypes.string).isRequired,
-      rent: PropTypes.number.isRequired,
-      guestCapacity: PropTypes.number.isRequired,
-      bedroomCapacity: PropTypes.number.isRequired,
-      bedCapacity: PropTypes.number.isRequired,
-      amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
-      hostName: PropTypes.string.isRequired,
-    })
-  ),
-};
-
-export default React.memo(AnimatedHeroBanner);
+}

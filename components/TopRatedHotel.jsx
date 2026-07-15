@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, MapPin } from "lucide-react";
-import { getHotels, getReviews } from "@/app/action";
-import Skeleton from "./skeletons/Skeleton";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -18,25 +16,8 @@ const calcAvg = (reviews, id) => {
   return r.length ? +(r.reduce((s, v) => s + v.ratings, 0) / r.length).toFixed(1) : 0;
 };
 
-export default function SuggestedHotels() {
-  const [hotels, setHotels] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function TopRatedHotels({ hotels = [], reviews = [] }) {
   const swiperRef = useRef(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const [h, r] = await Promise.all([getHotels(), getReviews()]);
-        setHotels(h?.hotels ?? []);
-        setReviews(r?.reviews ?? []);
-      } catch (e) {
-        console.error("Fetch error", e);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
 
   const top = useMemo(() => {
     return [...hotels]
@@ -45,32 +26,7 @@ export default function SuggestedHotels() {
       .slice(0, 5);
   }, [hotels, reviews]);
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto mt-12 px-4 sm:px-6 lg:px-8">
-        <Skeleton className="h-8 w-64 rounded-lg mb-8 mx-auto" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, index) => (
-            <div
-              key={index}
-              className="bg-surface rounded-xl overflow-hidden border border-hairline"
-            >
-              <Skeleton className="h-64 w-full rounded-none" />
-              <div className="p-5 space-y-3">
-                <Skeleton className="h-6 w-3/4 rounded" />
-                <Skeleton className="h-4 w-1/2 rounded" />
-                <Skeleton className="h-4 w-2/3 rounded" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-6 w-1/4 rounded" />
-                  <Skeleton className="h-6 w-24 rounded-lg" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  if (top.length === 0) return null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-0 lg:px-0">
