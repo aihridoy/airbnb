@@ -134,7 +134,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
             <ToastContainer position="top-right" autoClose={3000} />
             <form onSubmit={handleSubmit}>
                 <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">
+                    <h2 className="font-serif text-xl text-ink mb-4">
                         Pay with American Express
                     </h2>
                     <div className="space-y-4">
@@ -144,7 +144,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                             value={formData.cardNumber}
                             onChange={handleChange}
                             placeholder="Card number"
-                            className="w-full p-3 border rounded-lg"
+                            className="w-full p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                         />
 
                         <div className="grid grid-cols-2 gap-4">
@@ -154,7 +154,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                                 value={formData.expiration}
                                 onChange={handleChange}
                                 placeholder="Expiration"
-                                className="p-3 border rounded-lg"
+                                className="p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                             />
                             <input
                                 type="text"
@@ -162,13 +162,13 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                                 value={formData.cvv}
                                 onChange={handleChange}
                                 placeholder="CVV"
-                                className="p-3 border rounded-lg"
+                                className="p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                             />
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">Billing address</h2>
+                    <h2 className="font-serif text-xl text-ink mb-4">Billing address</h2>
                     <div className="space-y-4">
                         <input
                             type="text"
@@ -176,7 +176,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                             value={formData.streetAddress}
                             onChange={handleChange}
                             placeholder="Street address"
-                            className="w-full p-3 border rounded-lg"
+                            className="w-full p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                         />
                         <input
                             type="text"
@@ -184,7 +184,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                             value={formData.aptSuite}
                             onChange={handleChange}
                             placeholder="Apt or suite number"
-                            className="w-full p-3 border rounded-lg"
+                            className="w-full p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                         />
                         <input
                             type="text"
@@ -192,7 +192,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                             value={formData.city}
                             onChange={handleChange}
                             placeholder="City"
-                            className="w-full p-3 border rounded-lg"
+                            className="w-full p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                         />
                         <div className="grid grid-cols-2 gap-4">
                             <input
@@ -201,7 +201,7 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                                 value={formData.state}
                                 onChange={handleChange}
                                 placeholder="State"
-                                className="p-3 border rounded-lg"
+                                className="p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                             />
                             <input
                                 type="text"
@@ -209,15 +209,15 @@ const PaymentAndBillingForm = ({ totalPrice, bookingDetails }) => {
                                 value={formData.zipCode}
                                 onChange={handleChange}
                                 placeholder="ZIP code"
-                                className="p-3 border rounded-lg"
+                                className="p-3 border border-hairline rounded-lg focus:outline-none focus:ring-2 focus:ring-brass"
                             />
                         </div>
                     </div>
                     <button
                         type="submit"
-                        className={`w-full block text-center bg-primary text-white py-3 rounded-lg mt-6 ${isLoading
+                        className={`w-full block text-center bg-brass-dark text-cream py-3 rounded-lg mt-6 transition-colors ${isLoading
                                 ? "cursor-not-allowed opacity-50"
-                                : "hover:brightness-90"
+                                : "hover:bg-brass"
                             }`}
                         disabled={isLoading}
                     >
