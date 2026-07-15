@@ -2,12 +2,15 @@ import React from "react";
 import { getAllHotels, getBookings, getWishlists, session } from "../action";
 import Link from "next/link";
 import {
-  FaHotel,
-  FaPlusSquare,
-  FaClipboardList,
-  FaHeart,
-  FaCalendarCheck,
-} from "react-icons/fa";
+  Hotel,
+  PlusSquare,
+  ClipboardList,
+  Heart,
+  CalendarCheck,
+  DollarSign,
+  BarChart3,
+  PieChart,
+} from "lucide-react";
 import ChartComponent from "@/components/Chart";
 
 const Dashboard = async () => {
@@ -27,46 +30,46 @@ const Dashboard = async () => {
         {
           label: "View All Hotels",
           path: "/dashboard/hotels-list",
-          Icon: FaHotel,
-          bg: "bg-blue-50 hover:bg-blue-100",
-          text: "text-blue-600",
+          Icon: Hotel,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
         {
           label: "View All Bookings",
           path: "/dashboard/bookings-list",
-          Icon: FaClipboardList,
-          bg: "bg-green-50 hover:bg-green-100",
-          text: "text-green-600",
+          Icon: ClipboardList,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
         {
           label: "View All Wishlists",
           path: "/dashboard/wishlists-list",
-          Icon: FaHeart,
-          bg: "bg-red-50 hover:bg-red-100",
-          text: "text-red-600",
+          Icon: Heart,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
       ]
     : [
         {
           label: "Add New Hotel",
           path: "/dashboard/create-hotel",
-          Icon: FaPlusSquare,
-          bg: "bg-blue-50 hover:bg-blue-100",
-          text: "text-blue-600",
+          Icon: PlusSquare,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
         {
           label: "View My Bookings",
           path: "/dashboard/bookings",
-          Icon: FaCalendarCheck,
-          bg: "bg-green-50 hover:bg-green-100",
-          text: "text-green-600",
+          Icon: CalendarCheck,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
         {
           label: "View My Wishlists",
           path: "/dashboard/wishlists",
-          Icon: FaHeart,
-          bg: "bg-red-50 hover:bg-red-100",
-          text: "text-red-600",
+          Icon: Heart,
+          bg: "bg-brass-light/20 hover:bg-brass-light/30",
+          text: "text-brass-dark",
         },
       ];
 
@@ -143,146 +146,80 @@ const Dashboard = async () => {
     .slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-cream">
       <div className="flex-1 p-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="font-serif text-3xl text-ink">
             {isAdmin ? "Admin Dashboard" : "My Dashboard"}
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Welcome back, {userName}! Here&#39;s your overview.
           </p>
         </div>
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-muted">
                   {isAdmin ? "Total Hotels" : "My Hotels"}
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-serif text-ink">
                   {totalHotels}
                 </p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
+              <div className="p-3 bg-brass-light/20 rounded-full">
+                <Hotel className="w-6 h-6 text-brass-dark" />
               </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-green-600">
-                +12% from last month
-              </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-muted">
                   {isAdmin ? "Total Bookings" : "My Bookings"}
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-serif text-ink">
                   {totalBookings}
                 </p>
               </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+              <div className="p-3 bg-brass-light/20 rounded-full">
+                <CalendarCheck className="w-6 h-6 text-brass-dark" />
               </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-green-600">
-                +8% from last month
-              </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-muted">
                   {isAdmin ? "Total Wishlists" : "My Wishlists"}
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-serif text-ink">
                   {totalWishlists}
                 </p>
               </div>
-              <div className="p-3 bg-red-100 rounded-full">
-                <svg
-                  className="w-6 h-6 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
+              <div className="p-3 bg-brass-light/20 rounded-full">
+                <Heart className="w-6 h-6 text-brass-dark" />
               </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-red-600">-2% from last month</span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-muted">
                   {isAdmin ? "Total Revenue" : "My Expenditure"}
                 </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-2xl font-serif text-ink">
                   ${totalRevenue.toLocaleString()}
                 </p>
               </div>
-              <div className="p-3 bg-yellow-100 rounded-full">
-                <svg
-                  className="w-6 h-6 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
+              <div className="p-3 bg-brass-light/20 rounded-full">
+                <DollarSign className="w-6 h-6 text-brass-dark" />
               </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm text-green-600">
-                +15% from last month
-              </span>
             </div>
           </div>
         </div>
@@ -290,36 +227,24 @@ const Dashboard = async () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Monthly Bookings Chart */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               Monthly Bookings
             </h3>
             <div className="h-64">
               {bookingChartData.length > 0 ? (
-                <ChartComponent 
-                  type="bar" 
-                  data={bookingChartData} 
+                <ChartComponent
+                  type="bar"
+                  data={bookingChartData}
                   dataKey="bookings"
                   xAxisKey="month"
-                  color="#3B82F6"
+                  color="#2a78d6"
                 />
               ) : (
-                <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="h-full flex items-center justify-center bg-surface-alt rounded-lg">
                   <div className="text-center">
-                    <svg
-                      className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                    <p className="text-gray-600">No booking data available</p>
+                    <BarChart3 className="w-12 h-12 mx-auto text-muted mb-4" />
+                    <p className="text-muted">No booking data available</p>
                   </div>
                 </div>
               )}
@@ -327,41 +252,23 @@ const Dashboard = async () => {
           </div>
 
           {/* Hotel Status Distribution */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               Hotel Status Distribution
             </h3>
             <div className="h-64">
               {pieChartData.length > 0 ? (
                 <ChartComponent
-                  type="pie" 
-                  data={pieChartData} 
+                  type="pie"
+                  data={pieChartData}
                   dataKey="value"
                   nameKey="name"
                 />
               ) : (
-                <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="h-full flex items-center justify-center bg-surface-alt rounded-lg">
                   <div className="text-center">
-                    <svg
-                      className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
-                      />
-                    </svg>
-                    <p className="text-gray-600">No hotel data available</p>
+                    <PieChart className="w-12 h-12 mx-auto text-muted mb-4" />
+                    <p className="text-muted">No hotel data available</p>
                   </div>
                 </div>
               )}
@@ -370,36 +277,24 @@ const Dashboard = async () => {
         </div>
 
         {/* Revenue Trend Chart */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-surface p-6 rounded-2xl border border-hairline mb-8">
+          <h3 className="text-lg font-semibold text-ink mb-4">
             {isAdmin ? "Revenue Trend" : "Expenditure Trend"}
           </h3>
           <div className="h-64">
             {revenueChartData.length > 0 ? (
-              <ChartComponent 
-                type="line" 
-                data={revenueChartData} 
+              <ChartComponent
+                type="line"
+                data={revenueChartData}
                 dataKey="amount"
                 xAxisKey="month"
-                color="#F59E0B"
+                color="#eb6834"
               />
             ) : (
-              <div className="h-full flex items-center justify-center bg-gray-50 rounded-lg">
+              <div className="h-full flex items-center justify-center bg-surface-alt rounded-lg">
                 <div className="text-center">
-                  <svg
-                    className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    />
-                  </svg>
-                  <p className="text-gray-600">No revenue data available</p>
+                  <BarChart3 className="w-12 h-12 mx-auto text-muted mb-4" />
+                  <p className="text-muted">No revenue data available</p>
                 </div>
               </div>
             )}
@@ -409,24 +304,24 @@ const Dashboard = async () => {
         {/* Tables Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Recent Bookings Table */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               Recent Bookings
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50">
+                <thead className="bg-surface-alt">
                   <tr>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Hotel
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Guests
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Amount
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Date
                     </th>
                   </tr>
@@ -434,24 +329,24 @@ const Dashboard = async () => {
                 <tbody>
                   {recentBookings.length > 0 ? (
                     recentBookings.map((booking) => (
-                      <tr key={booking._id} className="border-t">
-                        <td className="p-3 text-sm text-gray-900">
+                      <tr key={booking._id} className="border-t border-hairline">
+                        <td className="p-3 text-sm text-ink">
                           {booking.bookingDetails?.title || "N/A"}
                         </td>
-                        <td className="p-3 text-sm text-gray-600">
+                        <td className="p-3 text-sm text-muted">
                           {booking.bookingDetails?.guests || "N/A"}
                         </td>
-                        <td className="p-3 text-sm text-gray-900">
+                        <td className="p-3 text-sm text-ink">
                           ${booking.totalPrice || 0}
                         </td>
-                        <td className="p-3 text-sm text-gray-600">
+                        <td className="p-3 text-sm text-muted">
                           {new Date(booking.createdAt).toLocaleDateString()}
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" className="p-3 text-center text-gray-500">
+                      <td colSpan="4" className="p-3 text-center text-muted">
                         No recent bookings
                       </td>
                     </tr>
@@ -462,24 +357,24 @@ const Dashboard = async () => {
           </div>
 
           {/* Top Hotels Table */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-surface p-6 rounded-2xl border border-hairline">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               {isAdmin ? "Top Hotels" : "My Hotels"}
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50">
+                <thead className="bg-surface-alt">
                   <tr>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Hotel
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Location
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Rent
                     </th>
-                    <th className="p-3 text-sm font-medium text-gray-700">
+                    <th className="p-3 text-sm font-medium text-ink">
                       Capacity
                     </th>
                   </tr>
@@ -487,45 +382,24 @@ const Dashboard = async () => {
                 <tbody>
                   {filteredHotels.length > 0 ? (
                     filteredHotels.slice(0, 5).map((hotel) => (
-                      <tr key={hotel._id} className="border-t">
-                        <td className="p-3 text-sm text-gray-900">
+                      <tr key={hotel._id} className="border-t border-hairline">
+                        <td className="p-3 text-sm text-ink">
                           {hotel.title || "N/A"}
                         </td>
-                        <td className="p-3 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <svg
-                              className="w-4 h-4 mr-1 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                            </svg>
-                            {hotel.location || "N/A"}
-                          </div>
+                        <td className="p-3 text-sm text-muted">
+                          {hotel.location || "N/A"}
                         </td>
-                        <td className="p-3 text-sm text-gray-600">
+                        <td className="p-3 text-sm text-muted">
                           ${hotel.rent || 0}
                         </td>
-                        <td className="p-3 text-sm text-gray-600">
+                        <td className="p-3 text-sm text-muted">
                           {hotel.guestCapacity || 0} guests
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" className="p-3 text-center text-gray-500">
+                      <td colSpan="4" className="p-3 text-center text-muted">
                         No hotels found
                       </td>
                     </tr>
@@ -537,8 +411,8 @@ const Dashboard = async () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-surface p-6 rounded-2xl border border-hairline">
+          <h3 className="text-lg font-semibold text-ink mb-4">
             Quick Actions
           </h3>
 
