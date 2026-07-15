@@ -52,12 +52,26 @@ export default async function Home() {
   const heroImage = pickHeroImage(hotels);
   const destinations = topDestinations(hotels);
   const categories = [...new Set(hotels.map((h) => h.category))];
+  // Slim list for the hero search typeahead - only the fields it renders.
+  const heroHotels = hotels.map((h) => ({
+    _id: h._id,
+    title: h.title,
+    location: h.location,
+    category: h.category,
+    rent: h.rent,
+    image: h.images?.[0] || null,
+  }));
 
   return (
     <>
       <AnnounceBar />
       <Navbar />
-      <Hero image={heroImage} destinations={destinations} categories={categories} />
+      <Hero
+        image={heroImage}
+        destinations={destinations}
+        categories={categories}
+        hotels={heroHotels}
+      />
       <HotelListing initialData={initialListing} initialReviews={reviews} />
       <HotelsCategory hotels={hotels} />
       <PopularDestinations hotels={hotels} />
