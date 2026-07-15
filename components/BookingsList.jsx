@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { Eye, Download, X } from "lucide-react";
 import Pagination from "./Pagination";
 import { getUserById } from "@/app/action";
 
@@ -183,41 +184,41 @@ const BookingsList = ({ bookings }) => {
 
   // Skeleton Loading Component
   const SkeletonRow = () => (
-    <tr className="border-t">
+    <tr className="border-t border-hairline">
       <td className="p-2 sm:p-4">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-md animate-pulse"></div>
+        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-alt rounded-md animate-pulse"></div>
       </td>
       <td className="p-2 sm:p-4">
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
-          <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2 xl:hidden"></div>
+          <div className="h-4 bg-surface-alt rounded animate-pulse w-3/4"></div>
+          <div className="h-3 bg-surface-alt rounded animate-pulse w-1/2 xl:hidden"></div>
         </div>
       </td>
       <td className="p-2 sm:p-4 hidden xl:table-cell">
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
-          <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2"></div>
+          <div className="h-4 bg-surface-alt rounded animate-pulse w-2/3"></div>
+          <div className="h-3 bg-surface-alt rounded animate-pulse w-1/2"></div>
         </div>
       </td>
       <td className="p-2 sm:p-4 hidden lg:table-cell">
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+        <div className="h-4 bg-surface-alt rounded animate-pulse w-20"></div>
       </td>
       <td className="p-2 sm:p-4 hidden md:table-cell">
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-8"></div>
+        <div className="h-4 bg-surface-alt rounded animate-pulse w-8"></div>
       </td>
       <td className="p-2 sm:p-4 hidden lg:table-cell">
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+        <div className="h-4 bg-surface-alt rounded animate-pulse w-20"></div>
       </td>
       <td className="p-2 sm:p-4 hidden lg:table-cell">
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+        <div className="h-4 bg-surface-alt rounded animate-pulse w-20"></div>
       </td>
       <td className="p-2 sm:p-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+        <div className="h-4 bg-surface-alt rounded animate-pulse w-16"></div>
       </td>
       <td className="p-2 sm:p-4">
         <div className="flex space-x-2">
-          <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
-          <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+          <div className="w-6 h-6 bg-surface-alt rounded animate-pulse"></div>
+          <div className="w-6 h-6 bg-surface-alt rounded animate-pulse"></div>
         </div>
       </td>
     </tr>
@@ -226,10 +227,10 @@ const BookingsList = ({ bookings }) => {
   if (loading) {
     return (
       <div className="space-y-4 px-4 sm:px-0">
-        <div className="border rounded-lg overflow-x-auto">
+        <div className="border border-hairline rounded-lg overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-surface-alt">
                 <th className="p-2 sm:p-4 text-xs sm:text-sm">Image</th>
                 <th className="p-2 sm:p-4 text-xs sm:text-sm">Property</th>
                 <th className="p-2 sm:p-4 hidden xl:table-cell text-xs sm:text-sm">
@@ -268,10 +269,10 @@ const BookingsList = ({ bookings }) => {
     <>
       <div className="space-y-4 px-4 sm:px-0">
         {paginatedBookings.length > 0 ? (
-          <div className="border rounded-lg overflow-x-auto">
+          <div className="border border-hairline rounded-lg overflow-x-auto">
             <table className="w-full text-left text-sm min-w-[800px]">
               <thead>
-                <tr className="bg-gray-100">
+                <tr className="bg-surface-alt">
                   <th className="p-2 sm:p-3 text-xs sm:text-sm font-medium">
                     Image
                   </th>
@@ -305,7 +306,7 @@ const BookingsList = ({ bookings }) => {
                 {paginatedBookings.map((booking) => {
                   const user = users[booking.userId];
                   return (
-                    <tr key={booking._id} className="border-t hover:bg-gray-50">
+                    <tr key={booking._id} className="border-t border-hairline hover:bg-surface-alt">
                       <td className="p-2 sm:p-3">
                         {booking?.bookingDetails?.hotelImage && (
                           <Image
@@ -320,19 +321,19 @@ const BookingsList = ({ bookings }) => {
                         )}
                       </td>
                       <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                        <div className="font-semibold text-zinc-800 mb-1 max-w-[200px] truncate">
+                        <div className="font-semibold text-ink mb-1 max-w-[200px] truncate">
                           {booking?.bookingDetails?.title || "N/A"}
                         </div>
-                        <div className="xl:hidden text-xs text-zinc-600 mb-1">
+                        <div className="xl:hidden text-xs text-muted mb-1">
                           Customer: {user?.name || "Loading..."}
                         </div>
-                        <div className="lg:hidden text-xs text-zinc-600 mb-1">
+                        <div className="lg:hidden text-xs text-muted mb-1">
                           Booked: {formatDate(booking?.createdAt) || "N/A"}
                         </div>
-                        <div className="md:hidden text-xs text-zinc-600 mb-1">
+                        <div className="md:hidden text-xs text-muted mb-1">
                           Guests: {booking?.bookingDetails?.guests || "N/A"}
                         </div>
-                        <div className="lg:hidden text-xs text-zinc-600 mb-1">
+                        <div className="lg:hidden text-xs text-muted mb-1">
                           {formatDate(booking?.bookingDetails?.checkInDate) ||
                             "N/A"}{" "}
                           -{" "}
@@ -340,49 +341,49 @@ const BookingsList = ({ bookings }) => {
                             "N/A"}
                         </div>
                       </td>
-                      <td className="p-2 sm:p-3 hidden xl:table-cell text-xs sm:text-sm text-zinc-600 max-w-[150px]">
-                        <div className="font-medium text-zinc-800 truncate">
+                      <td className="p-2 sm:p-3 hidden xl:table-cell text-xs sm:text-sm text-muted max-w-[150px]">
+                        <div className="font-medium text-ink truncate">
                           {user?.name || "Loading..."}
                         </div>
-                        <div className="text-xs text-zinc-500 truncate">
+                        <div className="text-xs text-muted truncate">
                           {user?.email || ""}
                         </div>
-                        <div className="text-xs text-zinc-500">
+                        <div className="text-xs text-muted">
                           {user?.location || ""}
                         </div>
                       </td>
-                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-zinc-600">
+                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-muted">
                         {formatDate(booking?.createdAt) || "N/A"}
                       </td>
-                      <td className="p-2 sm:p-3 hidden md:table-cell text-xs sm:text-sm text-zinc-600">
+                      <td className="p-2 sm:p-3 hidden md:table-cell text-xs sm:text-sm text-muted">
                         {booking?.bookingDetails?.guests || "N/A"}
                       </td>
-                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-zinc-600">
+                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-muted">
                         {formatDate(booking?.bookingDetails?.checkInDate) ||
                           "N/A"}
                       </td>
-                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-zinc-600">
+                      <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-muted">
                         {formatDate(booking?.bookingDetails?.checkOutDate) ||
                           "N/A"}
                       </td>
-                      <td className="p-2 sm:p-3 text-xs sm:text-sm text-rose-600 font-semibold">
+                      <td className="p-2 sm:p-3 text-xs sm:text-sm text-brass-dark font-semibold">
                         ${booking?.totalPrice || "N/A"}
                       </td>
                       <td className="p-2 sm:p-3">
                         <div className="flex space-x-2">
                           <button
-                            className="text-blue-500 hover:text-blue-600 text-sm p-1 rounded hover:bg-blue-50 transition-colors"
+                            className="text-brass-dark hover:text-brass text-sm p-1 rounded hover:bg-surface-alt transition-colors"
                             onClick={() => openModal(booking)}
                             title="View Details"
                           >
-                            <i className="fas fa-eye"></i>
+                            <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            className="text-gray-500 hover:text-gray-600 text-sm p-1 rounded hover:bg-gray-50 transition-colors"
+                            className="text-muted hover:text-ink text-sm p-1 rounded hover:bg-surface-alt transition-colors"
                             onClick={() => downloadReceipt(booking)}
                             title="Download Receipt"
                           >
-                            <i className="fas fa-download"></i>
+                            <Download className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -394,10 +395,10 @@ const BookingsList = ({ bookings }) => {
           </div>
         ) : (
           <div id="empty-state" className="text-center py-8 sm:py-12">
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+            <h2 className="font-serif text-xl sm:text-2xl text-ink mb-2">
               No Bookings Yet
             </h2>
-            <p className="text-zinc-500 text-sm sm:text-base">
+            <p className="text-muted text-sm sm:text-base">
               You made no bookings. Start exploring amazing stays!
             </p>
           </div>
@@ -413,72 +414,73 @@ const BookingsList = ({ bookings }) => {
         )}
       </div>
       {isModalOpen && selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
-          <div className="bg-white w-full max-w-md sm:max-w-lg rounded-lg shadow-lg p-4 sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm px-4">
+          <div className="bg-surface border border-hairline shadow-luxe w-full max-w-md sm:max-w-lg rounded-2xl p-4 sm:p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-800">
+              <h2 className="font-serif text-base sm:text-lg text-ink">
                 Booking Details
               </h2>
               <button
-                className="text-gray-400 hover:text-gray-600 text-lg sm:text-xl"
+                className="text-muted hover:text-ink transition-colors"
                 onClick={closeModal}
+                aria-label="Close"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-2 text-sm sm:text-base">
               {/* Customer Information */}
-              <div className="bg-gray-50 p-3 rounded-md mb-4">
-                <h3 className="font-semibold text-gray-800 mb-2">
+              <div className="bg-surface-alt p-3 rounded-md mb-4">
+                <h3 className="font-semibold text-ink mb-2">
                   Customer Information
                 </h3>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Name: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Name: </span>
                   {users[selectedBooking.userId]?.name || "Loading..."}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Email: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Email: </span>
                   {users[selectedBooking.userId]?.email || "Loading..."}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Location: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Location: </span>
                   {users[selectedBooking.userId]?.location || "Loading..."}
                 </p>
               </div>
 
               {/* Booking Information */}
-              <div className="bg-gray-50 p-3 rounded-md">
-                <h3 className="font-semibold text-gray-800 mb-2">
+              <div className="bg-surface-alt p-3 rounded-md">
+                <h3 className="font-semibold text-ink mb-2">
                   Booking Information
                 </h3>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Title: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Title: </span>
                   {selectedBooking.bookingDetails.title}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Description: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Description: </span>
                   {selectedBooking.bookingDetails.description}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Guests: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Guests: </span>
                   {selectedBooking.bookingDetails.guests}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Check-In: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Check-In: </span>
                   {formatDate(selectedBooking.bookingDetails.checkInDate)}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Check-Out: </span>
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Check-Out: </span>
                   {formatDate(selectedBooking.bookingDetails.checkOutDate)}
                 </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Total Price: </span>$
+                <p className="text-muted">
+                  <span className="font-semibold text-ink">Total Price: </span>$
                   {selectedBooking.totalPrice}
                 </p>
               </div>
             </div>
             <button
-              className="mt-4 w-full px-4 py-2 text-sm sm:text-base bg-primary text-white rounded-lg hover:brightness-90 transition-colors"
+              className="mt-4 w-full px-4 py-2 text-sm sm:text-base bg-brass-dark text-cream rounded-lg hover:bg-brass transition-colors"
               onClick={closeModal}
             >
               Close
