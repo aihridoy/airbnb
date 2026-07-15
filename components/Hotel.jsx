@@ -17,6 +17,7 @@ const Hotel = ({ hotel, averageRating }) => {
           height={500}
           src={hotelImage}
           alt={hotel.title}
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-3 right-3 bg-cream/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-ink flex items-center gap-1">

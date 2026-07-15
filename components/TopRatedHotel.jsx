@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Star, MapPin } from "lucide-react";
+import { Star, MapPin } from "lucide-react";
 import { getHotels, getReviews } from "@/app/action";
 import Skeleton from "./skeletons/Skeleton";
 
@@ -89,13 +89,9 @@ export default function SuggestedHotels() {
         onMouseLeave={() => swiperRef.current?.swiper?.autoplay?.start()}
       >
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
+          modules={[Pagination, Autoplay]}
           spaceBetween={24}
           ref={swiperRef}
-          navigation={{
-            nextEl: ".next-btn",
-            prevEl: ".prev-btn",
-          }}
           pagination={{ clickable: true, dynamicBullets: true }}
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           loop
@@ -104,7 +100,7 @@ export default function SuggestedHotels() {
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          className="pb-12"
+          className="pb-16"
         >
           {top.map((hotel) => {
             const totalReviews = reviews.filter((r) => r.hotelId === hotel._id).length;
@@ -155,24 +151,11 @@ export default function SuggestedHotels() {
             );
           })}
         </Swiper>
-
-        <button
-          aria-label="Previous slide"
-          className="prev-btn absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-surface border border-hairline rounded-full flex items-center justify-center shadow-md hover:bg-brass-dark hover:text-cream transition-all duration-300"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          aria-label="Next slide"
-          className="next-btn absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-surface border border-hairline rounded-full flex items-center justify-center shadow-md hover:bg-brass-dark hover:text-cream transition-all duration-300"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
       </div>
 
       <style jsx global>{`
         .swiper-pagination {
-          bottom: 0 !important;
+          bottom: 4px !important;
         }
         .swiper-pagination-bullet {
           width: 10px;

@@ -13,6 +13,9 @@ import {
   Gem,
   Sun,
   Waves,
+  Sunrise,
+  Palmtree,
+  Snowflake,
   AlertTriangle,
   ArrowLeft,
   Search,
@@ -32,6 +35,9 @@ const CATEGORY_ICONS = {
   luxury: Gem,
   countryside: Sun,
   lakeside: Waves,
+  desert: Sunrise,
+  island: Palmtree,
+  ski: Snowflake,
 };
 
 const CategoryPage = () => {

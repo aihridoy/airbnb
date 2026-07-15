@@ -3,7 +3,18 @@
 import { getAllHotels } from "@/app/action";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Building2, Umbrella, Mountain, Trees, Gem, Sun, Waves } from "lucide-react";
+import {
+  Building2,
+  Umbrella,
+  Mountain,
+  Trees,
+  Gem,
+  Sun,
+  Waves,
+  Sunrise,
+  Palmtree,
+  Snowflake,
+} from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import Skeleton from "./skeletons/Skeleton";
 import { fadeUp } from "@/lib/motion";
@@ -16,6 +27,9 @@ const CATEGORY_ICONS = {
   luxury: Gem,
   countryside: Sun,
   lakeside: Waves,
+  desert: Sunrise,
+  island: Palmtree,
+  ski: Snowflake,
 };
 
 const HotelsCategory = () => {

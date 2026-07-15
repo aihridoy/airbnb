@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    compiler: {
+        removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+    },
+    experimental: {
+        optimizePackageImports: ['lucide-react', 'framer-motion', 'swiper'],
+    },
     images: {
+        formats: ['image/avif', 'image/webp'],
+        minimumCacheTTL: 2678400,
         remotePatterns: [
             {
                 protocol: 'https',
