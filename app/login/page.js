@@ -23,15 +23,16 @@ const LoginPage = () => {
     signIn("google", { callbackUrl: "/" });
   };
 
-  const handleDemoCredentials = (type) => {
-    if (type === "user") {
-      setEmail("abul@gmail.com");
-      setPassword("abul123");
-    } else if (type === "admin") {
-      setEmail("admin@gmail.com");
-      setPassword("admin123");
-    }
-  };
+  // Demo/seed credentials shortcut - disabled for now
+  // const handleDemoCredentials = (type) => {
+  //   if (type === "user") {
+  //     setEmail("abul@gmail.com");
+  //     setPassword("abul123");
+  //   } else if (type === "admin") {
+  //     setEmail("admin@gmail.com");
+  //     setPassword("admin123");
+  //   }
+  // };
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -122,6 +123,7 @@ const LoginPage = () => {
                 required
               />
 
+              {/* Demo/seed credentials shortcut - disabled for now
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -138,6 +140,7 @@ const LoginPage = () => {
                   Demo Admin
                 </button>
               </div>
+              */}
 
               <button
                 type="submit"
