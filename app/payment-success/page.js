@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { getBooking } from "../action";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { CheckCircle2, Star, Mail, MessageCircle, Briefcase, Download } from "lucide-react";
 
 const formatDate = (isoDate) => {
   const date = new Date(isoDate);
@@ -121,39 +124,40 @@ export default function PaymentSuccess() {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto p-6">
+      <Navbar />
+      <div className="max-w-3xl mx-auto p-6 bg-cream">
         <div className="text-center my-12">
-          <div className="inline-block p-4 bg-green-100 rounded-full mb-6">
-            <i className="fas fa-check-circle text-4xl text-primary"></i>
+          <div className="inline-block p-4 bg-brass-light/20 rounded-full mb-6">
+            <CheckCircle2 className="w-10 h-10 text-brass-dark" />
           </div>
-          <h1 className="text-3xl font-bold mb-4">Payment Successful!</h1>
-          <p className="text-zinc-600 mb-8">
+          <h1 className="font-serif text-3xl text-ink mb-4">Payment Successful!</h1>
+          <p className="text-muted mb-8">
             Your booking has been confirmed. Check your email for details.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex items-start gap-6 mb-6 pb-6 border-b">
+        <div className="bg-surface border border-hairline rounded-2xl p-6 mb-8">
+          <div className="flex items-start gap-6 mb-6 pb-6 border-b border-hairline">
             <Image
               width={500}
               height={500}
               src={booking?.bookingDetails?.hotelImage}
               alt="Property"
               className="w-32 h-32 rounded-lg object-cover"
-              // unoptimized={true}
+              unoptimized={true}
             />
             <div>
-              <h2 className="text-2xl font-semibold mb-2">
+              <h2 className="font-serif text-2xl text-ink mb-2">
                 {booking?.bookingDetails?.title}
               </h2>
               <div className="flex items-center mb-2">
-                <i className="fas fa-star text-sm mr-1"></i>
-                <span className="text-sm">
+                <Star className="w-4 h-4 mr-1 text-brass-dark fill-current" />
+                <span className="text-sm text-ink">
                   {booking?.bookingDetails?.averageRating?.toFixed(1)} (
                   {booking?.bookingDetails?.totalReviews}+ reviews)
                 </span>
               </div>
-              <p className="text-zinc-600">
+              <p className="text-muted">
                 {booking?.bookingDetails?.description}
               </p>
             </div>
@@ -161,23 +165,23 @@ export default function PaymentSuccess() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold mb-4">Reservation Details</h3>
+              <h3 className="font-semibold text-ink mb-4">Reservation Details</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-zinc-600 text-sm">Check-in</span>
-                  <span className="text-zinc-500 text-sm">
+                  <span className="text-muted text-sm">Check-in</span>
+                  <span className="text-ink text-sm">
                     {formatDate(booking?.bookingDetails?.checkInDate)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-600 text-sm">Check-out</span>
-                  <span className="text-zinc-500 text-sm">
+                  <span className="text-muted text-sm">Check-out</span>
+                  <span className="text-ink text-sm">
                     {formatDate(booking?.bookingDetails?.checkOutDate)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-600 text-sm">Guests</span>
-                  <span className="text-zinc-500 text-sm">
+                  <span className="text-muted text-sm">Guests</span>
+                  <span className="text-ink text-sm">
                     {booking?.bookingDetails?.guests} guest
                   </span>
                 </div>
@@ -185,31 +189,31 @@ export default function PaymentSuccess() {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Payment Summary</h3>
+              <h3 className="font-semibold text-ink mb-4">Payment Summary</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-zinc-600">Total amount paid</span>
-                  <span className="font-semibold">${booking?.totalPrice}</span>
+                  <span className="text-muted">Total amount paid</span>
+                  <span className="font-semibold text-ink">${booking?.totalPrice}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600 text-sm">Booking ID</span>
-                  <span>{bookingId?.slice(0, 8)}</span>
+                  <span className="text-muted text-sm">Booking ID</span>
+                  <span className="text-ink">{bookingId?.slice(0, 8)}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h3 className="text-xl font-semibold mb-6">Next Steps</h3>
+        <div className="bg-surface border border-hairline rounded-2xl p-6 mb-8">
+          <h3 className="font-serif text-xl text-ink mb-6">Next Steps</h3>
           <div className="space-y-6">
             <div className="flex gap-4">
-              <div className="text-primary">
-                <i className="fas fa-envelope text-xl"></i>
+              <div className="text-brass-dark">
+                <Mail className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold mb-1">Check your email</h4>
-                <p className="text-zinc-600">
+                <h4 className="font-semibold text-ink mb-1">Check your email</h4>
+                <p className="text-muted">
                   We've sent your confirmation and trip details to your email
                   address.
                 </p>
@@ -217,24 +221,24 @@ export default function PaymentSuccess() {
             </div>
 
             <div className="flex gap-4">
-              <div className="text-primary">
-                <i className="fas fa-comment-alt text-xl"></i>
+              <div className="text-brass-dark">
+                <MessageCircle className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold mb-1">Message your host</h4>
-                <p className="text-zinc-600">
+                <h4 className="font-semibold text-ink mb-1">Message your host</h4>
+                <p className="text-muted">
                   Introduce yourself and let them know your travel plans.
                 </p>
               </div>
             </div>
 
             <div className="flex gap-4">
-              <div className="text-primary">
-                <i className="fas fa-suitcase text-xl"></i>
+              <div className="text-brass-dark">
+                <Briefcase className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold mb-1">Plan your trip</h4>
-                <p className="text-zinc-600">
+                <h4 className="font-semibold text-ink mb-1">Plan your trip</h4>
+                <p className="text-muted">
                   Review house rules and check-in instructions in your trip
                   details.
                 </p>
@@ -246,24 +250,25 @@ export default function PaymentSuccess() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={downloadReceipt}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:brightness-90"
+            className="flex items-center justify-center px-6 py-3 bg-brass-dark text-cream rounded-lg hover:bg-brass transition-colors"
           >
-            <i className="fas fa-download mr-2"></i>
+            <Download className="w-4 h-4 mr-2" />
             Download Receipt
           </button>
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-zinc-600">Need help with your booking?</p>
-          <a href="#" className="text-primary hover:underline">
+          <p className="text-muted">Need help with your booking?</p>
+          <a href="#" className="text-brass-dark hover:underline">
             Visit our Help Center
           </a>
           <br />
-          <Link href="/" className="text-primary hover:underline">
+          <Link href="/" className="text-brass-dark hover:underline">
             Back to home
           </Link>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
