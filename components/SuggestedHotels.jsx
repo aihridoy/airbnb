@@ -50,6 +50,7 @@ const SuggestedHotels = async () => {
                   src={(hotel.images && hotel.images.length > 0 && hotel.images[0]) || "https://placehold.co/600x400"}
                   alt={hotel.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover"
                 />
               </div>

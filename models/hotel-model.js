@@ -20,7 +20,7 @@ const hotelSchema = new Schema({
     },
     category: {
       type: String,
-      enum: ['urban', 'beach', 'mountain', 'luxury', 'rustic', 'countryside', 'lakeside'],
+      enum: ['urban', 'beach', 'mountain', 'luxury', 'rustic', 'countryside', 'lakeside', 'desert', 'island', 'ski'],
       default: 'urban',
       required: true, 
     },

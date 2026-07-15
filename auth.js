@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoClientPromise from "./service/mongoClientPromise";
 import { dbConnect } from "./service/mongo";
 import { User } from "./models/user-model";
+import { authConfig } from "./auth.config";
 
 export const {
   handlers: { GET, POST },
@@ -13,6 +14,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  ...authConfig,
   adapter: MongoDBAdapter(mongoClientPromise, {
     databaseName: process.env.ENVIRONMENT,
   }),
@@ -21,6 +23,7 @@ export const {
     maxAge: 60 * 60 * 24,
   },
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user, account }) {
       if (account && user) {
         token.accessToken = account.access_token;

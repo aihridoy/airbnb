@@ -212,6 +212,7 @@ const AnimatedHeroBanner = ({ wishlists }) => {
                             width={512}
                             src={currentHotel.images[0]}
                             alt={currentHotel.title}
+                            sizes="(max-width: 1024px) 100vw, 50vw"
                             className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-xl sm:rounded-2xl"
                             priority
                           />

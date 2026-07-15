@@ -12,6 +12,9 @@ const ALLOWED_CATEGORIES = [
   "rustic",
   "countryside",
   "lakeside",
+  "desert",
+  "island",
+  "ski",
 ];
 
 export async function POST(req) {

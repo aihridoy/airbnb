@@ -399,6 +399,9 @@ const HotelForm = () => {
               <option value="rustic">Rustic</option>
               <option value="countryside">Countryside</option>
               <option value="lakeside">Lakeside</option>
+              <option value="desert">Desert</option>
+              <option value="island">Island</option>
+              <option value="ski">Ski</option>
             </select>
           </div>
 
