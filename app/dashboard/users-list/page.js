@@ -6,6 +6,8 @@ import Image from "next/image";
 import { getUsers } from "@/app/action";
 import Pagination from "@/components/Pagination";
 import Link from "next/link";
+import { Search, AlertTriangle, RotateCw, Mail, MapPin, Calendar, Users2 } from "lucide-react";
+import Skeleton from "@/components/skeletons/Skeleton";
 
 // Debounce utility function
 const debounce = (func, wait) => {
@@ -18,53 +20,53 @@ const debounce = (func, wait) => {
 
 // Skeleton Components
 const SkeletonRow = () => (
-  <tr className="border-t animate-pulse">
+  <tr className="border-t border-hairline">
     <td className="p-2 sm:p-4">
-      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full"></div>
+      <Skeleton className="w-8 h-8 sm:w-10 sm:h-10 rounded-full" />
     </td>
     <td className="p-2 sm:p-4">
       <div className="space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-32"></div>
+        <Skeleton className="h-4 w-32 rounded" />
         <div className="sm:hidden space-y-1">
-          <div className="h-3 bg-gray-200 rounded w-40"></div>
-          <div className="h-3 bg-gray-200 rounded w-24"></div>
-          <div className="h-5 bg-gray-200 rounded w-16"></div>
-          <div className="h-3 bg-gray-200 rounded w-28"></div>
+          <Skeleton className="h-3 w-40 rounded" />
+          <Skeleton className="h-3 w-24 rounded" />
+          <Skeleton className="h-5 w-16 rounded-full" />
+          <Skeleton className="h-3 w-28 rounded" />
         </div>
       </div>
     </td>
     <td className="p-2 sm:p-4 hidden sm:table-cell">
-      <div className="h-4 bg-gray-200 rounded w-48"></div>
+      <Skeleton className="h-4 w-48 rounded" />
     </td>
     <td className="p-2 sm:p-4 hidden sm:table-cell">
-      <div className="h-4 bg-gray-200 rounded w-28"></div>
+      <Skeleton className="h-4 w-28 rounded" />
     </td>
     <td className="p-2 sm:p-4 hidden sm:table-cell">
-      <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+      <Skeleton className="h-6 w-16 rounded-full" />
     </td>
     <td className="p-2 sm:p-4 hidden sm:table-cell">
-      <div className="h-4 bg-gray-200 rounded w-24"></div>
+      <Skeleton className="h-4 w-24 rounded" />
     </td>
   </tr>
 );
 
 const SkeletonTable = () => (
-  <div className="bg-white rounded-xl shadow-lg overflow-x-auto border border-gray-100">
+  <div className="bg-surface rounded-xl overflow-x-auto border border-hairline">
     <table className="w-full text-left text-sm sm:text-base">
-      <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+      <thead className="bg-surface-alt border-b border-hairline">
         <tr>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700">Profile</th>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700">Name</th>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+          <th className="p-3 sm:p-4 font-semibold text-ink">Profile</th>
+          <th className="p-3 sm:p-4 font-semibold text-ink">Name</th>
+          <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
             Email
           </th>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+          <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
             Location
           </th>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+          <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
             Role
           </th>
-          <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+          <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
             Joined
           </th>
         </tr>
@@ -75,21 +77,6 @@ const SkeletonTable = () => (
         ))}
       </tbody>
     </table>
-  </div>
-);
-
-const LoadingCard = () => (
-  <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 border border-gray-100">
-    <div className="flex flex-col items-center space-y-4">
-      <div className="relative">
-        <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin"></div>
-        <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-blue-300 rounded-full animate-spin animation-delay-150"></div>
-      </div>
-      <div className="text-center space-y-2">
-        <div className="h-5 bg-gray-200 rounded w-32 mx-auto animate-pulse"></div>
-        <div className="h-4 bg-gray-200 rounded w-48 mx-auto animate-pulse"></div>
-      </div>
-    </div>
   </div>
 );
 
@@ -156,10 +143,10 @@ export default function UsersList() {
 
   const getRoleColor = (role) => {
     const colors = {
-      user: "bg-blue-100 text-blue-800",
-      moderator: "bg-purple-100 text-purple-800",
-      premium: "bg-yellow-100 text-yellow-800",
-      default: "bg-gray-100 text-gray-800",
+      user: "bg-brass-light/30 text-brass-dark",
+      moderator: "bg-surface-alt text-ink",
+      premium: "bg-brass-light/30 text-brass-dark",
+      default: "bg-surface-alt text-muted",
     };
     return colors[role] || colors.default;
   };
@@ -168,18 +155,15 @@ export default function UsersList() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <div className="h-8 sm:h-10 bg-gray-200 rounded-lg w-48 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-72 mt-2 animate-pulse"></div>
+          <Skeleton className="h-8 sm:h-10 w-48 rounded-lg" />
+          <Skeleton className="h-4 w-72 mt-2 rounded" />
         </div>
         <SkeletonTable />
         <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="h-4 bg-gray-200 rounded w-48 animate-pulse"></div>
+          <Skeleton className="h-4 w-48 rounded" />
           <div className="flex space-x-2">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="w-8 h-8 bg-gray-200 rounded animate-pulse"
-              ></div>
+              <Skeleton key={i} className="w-8 h-8 rounded" />
             ))}
           </div>
         </div>
@@ -191,53 +175,29 @@ export default function UsersList() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink mb-2">
             Users List
           </h1>
-          <p className="text-gray-600">Manage and view all registered users</p>
+          <p className="text-muted">Manage and view all registered users</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-8 sm:p-12 border border-red-100">
+        <div className="bg-surface rounded-xl border border-hairline p-8 sm:p-12">
           <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                />
-              </svg>
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-red-500" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-serif text-xl sm:text-2xl text-ink mb-2">
               Oops! Something went wrong
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted mb-6">
               We couldn't load the users. Please check your connection and try
               again.
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-cream bg-brass-dark hover:bg-brass transition-colors"
             >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
+              <RotateCw className="w-4 h-4 mr-2" />
               Try Again
             </button>
           </div>
@@ -250,10 +210,10 @@ export default function UsersList() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink mb-1 sm:mb-2">
             Users List
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-muted">
             Manage and view all registered users
           </p>
         </div>
@@ -265,56 +225,44 @@ export default function UsersList() {
               type="text"
               placeholder="By Name/ Email"
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full px-4 py-2.5 sm:py-3 pl-10 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm"
+              className="w-full px-4 py-2.5 sm:py-3 pl-10 text-sm sm:text-base border border-hairline rounded-lg focus:ring-2 focus:ring-brass focus:border-brass transition-all duration-200 bg-surface"
             />
-            <svg
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
           </div>
         </div>
       </div>
 
       {filteredUsers.length > 0 ? (
         <>
-          <div className="bg-white rounded-xl shadow-lg overflow-x-auto border border-gray-100">
+          <div className="bg-surface rounded-xl overflow-x-auto border border-hairline">
             <table className="w-full text-left text-sm sm:text-base">
-              <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+              <thead className="bg-surface-alt border-b border-hairline">
                 <tr>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700">
+                  <th className="p-3 sm:p-4 font-semibold text-ink">
                     Profile
                   </th>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700">
+                  <th className="p-3 sm:p-4 font-semibold text-ink">
                     Name
                   </th>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+                  <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
                     Email
                   </th>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+                  <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
                     Location
                   </th>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+                  <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
                     Role
                   </th>
-                  <th className="p-3 sm:p-4 font-semibold text-gray-700 hidden sm:table-cell">
+                  <th className="p-3 sm:p-4 font-semibold text-ink hidden sm:table-cell">
                     Joined
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-hairline">
                 {currentUsers.map((user) => (
                   <tr
                     key={user._id}
-                    className="hover:bg-gray-50 transition-all duration-200 group"
+                    className="hover:bg-surface-alt transition-all duration-200 group"
                   >
                     <td className="p-3 sm:p-4">
                       <Link href={`/profile/${user._id}`}>
@@ -325,57 +273,33 @@ export default function UsersList() {
                               alt={`${user.name} profile`}
                               width={40}
                               height={40}
-                              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover cursor-pointer ring-2 ring-gray-200 group-hover:ring-blue-300 transition-all duration-200"
+                              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover cursor-pointer ring-2 ring-hairline group-hover:ring-brass-light transition-all duration-200"
                               sizes="(max-width: 640px) 100vw, 48px"
                               priority={false}
                             />
                           ) : (
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center cursor-pointer ring-2 ring-gray-200 group-hover:ring-blue-300 transition-all duration-200">
-                              <span className="text-white text-sm sm:text-base font-semibold">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brass-dark rounded-full flex items-center justify-center cursor-pointer ring-2 ring-hairline group-hover:ring-brass-light transition-all duration-200">
+                              <span className="text-cream text-sm sm:text-base font-semibold">
                                 {user.name?.charAt(0)?.toUpperCase() || "U"}
                               </span>
                             </div>
                           )}
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-surface"></div>
                         </div>
                       </Link>
                     </td>
                     <td className="p-3 sm:p-4">
                       <Link href={`/profile/${user._id}`} className="block">
-                        <div className="font-semibold text-gray-900 hover:text-blue-600 transition-colors cursor-pointer group-hover:text-blue-600">
+                        <div className="font-semibold text-ink group-hover:text-brass-dark transition-colors cursor-pointer">
                           {user.name}
                         </div>
                         <div className="sm:hidden mt-2 space-y-1">
-                          <div className="text-xs text-gray-600 flex items-center">
-                            <svg
-                              className="w-3 h-3 mr-1 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                              />
-                            </svg>
+                          <div className="text-xs text-muted flex items-center">
+                            <Mail className="w-3 h-3 mr-1" />
                             {user.email}
                           </div>
-                          <div className="text-xs text-gray-600 flex items-center">
-                            <svg
-                              className="w-3 h-3 mr-1 text-gray-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                            </svg>
+                          <div className="text-xs text-muted flex items-center">
+                            <MapPin className="w-3 h-3 mr-1" />
                             {user.location || "Not specified"}
                           </div>
                           <div className="flex items-center gap-2">
@@ -386,7 +310,7 @@ export default function UsersList() {
                             >
                               {user.role}
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-muted">
                               {user.createdAt
                                 ? new Date(user.createdAt).toLocaleDateString(
                                     "en-US",
@@ -402,39 +326,15 @@ export default function UsersList() {
                         </div>
                       </Link>
                     </td>
-                    <td className="p-3 sm:p-4 text-gray-600 hidden sm:table-cell">
+                    <td className="p-3 sm:p-4 text-muted hidden sm:table-cell">
                       <div className="flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                          />
-                        </svg>
+                        <Mail className="w-4 h-4 mr-2 text-muted" />
                         {user.email}
                       </div>
                     </td>
-                    <td className="p-3 sm:p-4 text-gray-600 hidden sm:table-cell">
+                    <td className="p-3 sm:p-4 text-muted hidden sm:table-cell">
                       <div className="flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                        </svg>
+                        <MapPin className="w-4 h-4 mr-2 text-muted" />
                         {user.location || "Not specified"}
                       </div>
                     </td>
@@ -447,21 +347,9 @@ export default function UsersList() {
                         {user.role}
                       </span>
                     </td>
-                    <td className="p-3 sm:p-4 text-gray-600 hidden sm:table-cell">
+                    <td className="p-3 sm:p-4 text-muted hidden sm:table-cell">
                       <div className="flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
+                        <Calendar className="w-4 h-4 mr-2 text-muted" />
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString(
                               "en-US",
@@ -480,31 +368,19 @@ export default function UsersList() {
             </table>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center text-sm text-gray-600">
-              <svg
-                className="w-4 h-4 mr-2 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+          <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface rounded-lg p-4 border border-hairline">
+            <div className="flex items-center text-sm text-muted">
+              <Users2 className="w-4 h-4 mr-2 text-muted" />
               Showing{" "}
-              <span className="font-medium text-gray-900 mx-1">
+              <span className="font-medium text-ink mx-1">
                 {startIndex + 1}
               </span>
               to{" "}
-              <span className="font-medium text-gray-900 mx-1">
+              <span className="font-medium text-ink mx-1">
                 {Math.min(endIndex, filteredUsers.length)}
               </span>
               of{" "}
-              <span className="font-medium text-gray-900 mx-1">
+              <span className="font-medium text-ink mx-1">
                 {filteredUsers.length}
               </span>{" "}
               {searchQuery ? "matching" : ""} users
@@ -520,33 +396,21 @@ export default function UsersList() {
           </div>
         </>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg p-8 sm:p-12 border border-gray-100">
+        <div className="bg-surface rounded-xl border border-hairline p-8 sm:p-12">
           <div className="text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+            <div className="w-16 h-16 bg-surface-alt rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users2 className="w-8 h-8 text-muted" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-serif text-xl sm:text-2xl text-ink mb-2">
               {searchQuery ? "No Matching Users" : "No Users Yet"}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted mb-6">
               {searchQuery
                 ? `No users found matching "${searchQuery}"`
                 : "Your community is just getting started. Users will appear here once they register."}
             </p>
             {!searchQuery && (
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-muted">
                 Check back later or invite people to join your platform!
               </div>
             )}
@@ -556,7 +420,7 @@ export default function UsersList() {
                   setSearchQuery("");
                   setCurrentPage(1);
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-cream bg-brass-dark hover:bg-brass transition-colors"
               >
                 Clear Search
               </button>
