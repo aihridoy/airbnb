@@ -24,7 +24,7 @@ const AddToWishListButton = ({ hotelId, userId, title, location, rent, images, w
             <button
                 onClick={handleAddToWishlist}
                 disabled={!!isInWishList}
-                className={`px-4 py-2 rounded-full transition-all duration-200 ${isInWishList ? 'bg-gray-600 text-white cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                className={`px-4 py-2 rounded-full transition-colors duration-200 ${isInWishList ? 'bg-hairline text-muted cursor-not-allowed' : 'bg-brass-dark text-cream hover:bg-brass'}`}
             >
                 {isInWishList ? 'Added to wishlist' : 'Add to wishlist'}
             </button>
