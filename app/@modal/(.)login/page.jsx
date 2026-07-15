@@ -2,7 +2,7 @@
 "use client";
 
 import { login } from "@/app/action";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -15,6 +15,7 @@ import { luxeEase } from "@/lib/motion";
 
 const LoginModal = () => {
   const router = useRouter();
+  const { update } = useSession();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [email, setEmail] = useState("");
@@ -51,20 +52,16 @@ const LoginModal = () => {
       if (response?.error) {
         setError(response.error.message);
       } else {
-        toast.success("Login successful! Redirecting...", {
+        await update();
+        toast.success("Login successful!", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
           draggable: true,
         });
-        setTimeout(() => {
-          router.push("/");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
-        }, 1000);
+        router.back();
       }
     } catch (e) {
       console.error(e);

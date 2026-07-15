@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { login } from "../action";
@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 
 const LoginPage = () => {
   const router = useRouter();
+  const { update } = useSession();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [email, setEmail] = useState("");
@@ -48,17 +49,16 @@ const LoginPage = () => {
       if (response?.error) {
         setError(response.error.message);
       } else {
-        toast.success("Login successful! Redirecting...", {
+        await update();
+        toast.success("Login successful!", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
           draggable: true,
         });
-        setTimeout(() => {
-          router.push("/");
-        }, 1000);
+        router.push("/");
       }
     } catch (e) {
       console.error(e);

@@ -58,7 +58,7 @@ const RegistrationModal = () => {
       });
 
       setTimeout(() => {
-        router.push("/login");
+        router.replace("/login");
       }, 1200);
     } catch (err) {
       console.error("Error:", err);

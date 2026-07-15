@@ -358,8 +358,7 @@ export async function getBooking(bookingId) {
 
 
 export async function doSignOut() {
-    await signOut()
-    window.location.reload();
+    await signOut();
 }
 
 export async function session() {

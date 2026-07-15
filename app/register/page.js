@@ -51,7 +51,7 @@ const RegistrationPage = () => {
         draggable: true,
       });
       setTimeout(() => {
-        router.push("/login");
+        router.replace("/login");
       }, 1200);
     } catch (err) {
       console.error("Error:", err);
