@@ -11,7 +11,21 @@ export async function GET(request) {
         const page = parseInt(searchParams.get('page') || '1', 10);
         const pageSize = parseInt(searchParams.get('pageSize') || '8', 10);
         const searchQuery = searchParams.get('search') || '';
-        const query = searchQuery ? { title: { $regex: searchQuery, $options: 'i' } } : {};
+        const minGuests = parseInt(searchParams.get('guests') || '0', 10);
+
+        const conditions = [];
+        if (searchQuery) {
+            conditions.push({
+                $or: [
+                    { title: { $regex: searchQuery, $options: 'i' } },
+                    { location: { $regex: searchQuery, $options: 'i' } },
+                ],
+            });
+        }
+        if (minGuests > 0) {
+            conditions.push({ guestCapacity: { $gte: minGuests } });
+        }
+        const query = conditions.length ? { $and: conditions } : {};
         const skip = (page - 1) * pageSize;
         const hotels = await Hotel.find(query).skip(skip).limit(pageSize).lean();
         const total = await Hotel.countDocuments(query);

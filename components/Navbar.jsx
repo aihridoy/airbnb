@@ -22,11 +22,10 @@ import {
 } from "lucide-react";
 import SignOutButton from "./SignOutButton";
 import { useSession } from "next-auth/react";
-import { useSearch } from "@/contexts/SearchContext";
-import useDebounce from "@/hooks/useDebounce";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-  const { setSearchQuery } = useSearch();
+  const router = useRouter();
   const { data: sessionData } = useSession();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -62,12 +61,11 @@ const Navbar = () => {
     };
   }, [isPopupVisible]);
 
-  const debouncedHandleSearchChange = useDebounce((value) => {
-    setSearchQuery(value);
-  }, 800);
+  const [searchValue, setSearchValue] = useState("");
 
-  const handleSearchChange = (e) => {
-    debouncedHandleSearchChange(e.target.value);
+  const submitSearch = () => {
+    const q = searchValue.trim();
+    router.push(q ? `/search?location=${encodeURIComponent(q)}` : "/search");
   };
 
   return (
@@ -94,13 +92,22 @@ const Navbar = () => {
         <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-4 divide-x divide-hairline py-2 md:px-2 flex-grow">
           <input
             type="text"
-            placeholder="Where to?"
+            placeholder="Search a city or hotel"
+            value={searchValue}
             className="px-3 bg-transparent focus:outline-none lg:col-span-3 placeholder:text-sm text-ink font-sans"
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submitSearch();
+            }}
           />
         </div>
 
-        <button className="bg-ink w-9 h-9 rounded-full grid place-items-center text-sm text-center transition-all hover:bg-brass-dark shrink-0">
+        <button
+          type="button"
+          aria-label="Search"
+          onClick={submitSearch}
+          className="bg-ink w-9 h-9 rounded-full grid place-items-center text-sm text-center transition-all hover:bg-brass-dark shrink-0"
+        >
           <Search className="w-4 h-4 text-cream" />
         </button>
       </div>

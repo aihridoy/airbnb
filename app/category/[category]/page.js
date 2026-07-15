@@ -86,7 +86,7 @@ const CategoryPage = () => {
     return (
       <div className="min-h-screen flex flex-col bg-cream">
         <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
           <div className="text-center py-12">
             <div className="mx-auto w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
               <AlertTriangle className="w-8 h-8 text-red-500" />
@@ -110,7 +110,7 @@ const CategoryPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-cream">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
         <div className="mb-10">
           <div className="flex items-center mb-4 gap-3">
             {getCategoryIcon(category)}

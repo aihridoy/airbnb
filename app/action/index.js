@@ -3,6 +3,14 @@
 import { auth, signIn, signOut } from '@/auth';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
+import { dbConnect } from '@/service/mongo';
+import Hotel from '@/models/hotel-model';
+import { Review } from '@/models/review-model';
+
+// Mongoose .lean() docs carry BSON ObjectId/Date instances, which Server
+// Actions can't serialize back to the client as-is - round-trip through
+// JSON to get the same plain strings a NextResponse.json() route would.
+const toPlain = (value) => JSON.parse(JSON.stringify(value));
 
 // Server Actions run on the server, so calling our own /api/* routes with
 // fetch() does NOT automatically carry the browser's session cookie the way
@@ -50,21 +58,37 @@ export async function addHotel(formData) {
     }
 }
 
-export async function getHotels(page = 1, pageSize = 8, searchQuery = '') {
+export async function getHotels(page = 1, pageSize = 8, searchQuery = '', minGuests = 0) {
     try {
-        const query = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : '';
-        const response = await internalFetch(`/api/hotels?page=${page}&pageSize=${pageSize}${query}`, {
-            method: 'GET',
-            cache: 'no-store',
-        });
+        await dbConnect();
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const conditions = [];
+        if (searchQuery) {
+            conditions.push({
+                $or: [
+                    { title: { $regex: searchQuery, $options: 'i' } },
+                    { location: { $regex: searchQuery, $options: 'i' } },
+                ],
+            });
         }
+        if (minGuests > 0) {
+            conditions.push({ guestCapacity: { $gte: minGuests } });
+        }
+        const query = conditions.length ? { $and: conditions } : {};
+        const skip = (page - 1) * pageSize;
 
-        const data = await response.json();
-        revalidatePath('/');
-        return data;
+        const [hotels, total] = await Promise.all([
+            Hotel.find(query).skip(skip).limit(pageSize).lean(),
+            Hotel.countDocuments(query),
+        ]);
+
+        return toPlain({
+            hotels,
+            total,
+            page,
+            pageSize,
+            totalPages: Math.ceil(total / pageSize),
+        });
     } catch (error) {
         console.error('Failed to fetch hotels:', error);
         throw error;
@@ -73,25 +97,10 @@ export async function getHotels(page = 1, pageSize = 8, searchQuery = '') {
 
 export async function getAllHotels(category = null) {
     try {
-        let url = `/api/all-hotels`;
-
-        // Add category query parameter if provided
-        if (category) {
-            url += `?category=${encodeURIComponent(category)}`;
-        }
-
-        const response = await internalFetch(url, {
-            method: 'GET',
-            cache: 'no-store',
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
-        }
-
-        return data;
+        await dbConnect();
+        const query = category ? { category } : {};
+        const hotels = await Hotel.find(query).lean();
+        return toPlain({ hotels });
     } catch (error) {
         console.error("Failed to load hotels:", error);
         throw error;
@@ -258,16 +267,9 @@ export async function submitReview(reviewData) {
 
 export async function getReviews() {
     try {
-        const response = await internalFetch(`/api/reviews`, {
-            method: 'GET',
-            cache: 'no-store',
-        })
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
-        }
-        return data;
-
+        await dbConnect();
+        const reviews = await Review.find().lean();
+        return toPlain({ reviews });
     } catch (error) {
         console.error("Failed to load reviews:", error);
         return { reviews: [] };

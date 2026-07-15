@@ -2,7 +2,6 @@ import localFont from "next/font/local";
 import { Fraunces } from "next/font/google";
 import "./globals.css";
 import { BookingProvider } from "@/contexts/BookingContext";
-import { SearchProvider } from "@/contexts/SearchContext";
 import Providers from "@/components/Providers";
 import { auth } from "@/auth";
 
@@ -38,12 +37,10 @@ export default async function RootLayout({ children, modal }) {
     >
       <body className="bg-cream font-sans text-ink">
         <Providers session={session}>
-          <SearchProvider>
-            <BookingProvider>
-              {modal}
-              {children}
-            </BookingProvider>
-          </SearchProvider>
+          <BookingProvider>
+            {modal}
+            {children}
+          </BookingProvider>
         </Providers>
       </body>
     </html>
