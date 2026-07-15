@@ -61,6 +61,14 @@ export default async function Home() {
     rent: h.rent,
     image: h.images?.[0] || null,
   }));
+  const amenityOptions = [
+    ...new Set(hotels.flatMap((h) => h.amenities ?? [])),
+  ].sort();
+  const rents = hotels.map((h) => h.rent).filter((n) => typeof n === "number");
+  const priceBounds = {
+    min: rents.length ? Math.floor(Math.min(...rents)) : 0,
+    max: rents.length ? Math.ceil(Math.max(...rents)) : 1000,
+  };
 
   return (
     <>
@@ -71,6 +79,8 @@ export default async function Home() {
         destinations={destinations}
         categories={categories}
         hotels={heroHotels}
+        amenityOptions={amenityOptions}
+        priceBounds={priceBounds}
       />
       <HotelListing initialData={initialListing} initialReviews={reviews} />
       <HotelsCategory hotels={hotels} />

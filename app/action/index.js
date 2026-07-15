@@ -95,6 +95,94 @@ export async function getHotels(page = 1, pageSize = 8, searchQuery = '', minGue
     }
 }
 
+// Rich filtered search used by the /search page. One aggregation handles
+// location, guests, category, price range, amenities, and min-rating (which
+// needs a review lookup) plus pagination. getHotels stays light for the
+// homepage browse listing.
+export async function searchHotels({
+    location = '',
+    guests = 0,
+    category = '',
+    minPrice = 0,
+    maxPrice = 0,
+    amenities = [],
+    minRating = 0,
+    page = 1,
+    pageSize = 12,
+} = {}) {
+    try {
+        await dbConnect();
+
+        const match = {};
+        if (location) {
+            match.$or = [
+                { title: { $regex: location, $options: 'i' } },
+                { location: { $regex: location, $options: 'i' } },
+            ];
+        }
+        if (guests > 0) match.guestCapacity = { $gte: guests };
+        if (category) match.category = category;
+        if (minPrice > 0 || maxPrice > 0) {
+            match.rent = {};
+            if (minPrice > 0) match.rent.$gte = minPrice;
+            if (maxPrice > 0) match.rent.$lte = maxPrice;
+        }
+        if (amenities.length > 0) match.amenities = { $all: amenities };
+
+        const pipeline = [{ $match: match }];
+
+        // Only pay for the review join when a rating filter is active.
+        if (minRating > 0) {
+            pipeline.push(
+                {
+                    $lookup: {
+                        from: 'reviews',
+                        localField: '_id',
+                        foreignField: 'hotelId',
+                        as: 'reviewDocs',
+                    },
+                },
+                {
+                    $addFields: {
+                        avgRating: {
+                            $cond: [
+                                { $gt: [{ $size: '$reviewDocs' }, 0] },
+                                { $avg: '$reviewDocs.ratings' },
+                                0,
+                            ],
+                        },
+                    },
+                },
+                { $match: { avgRating: { $gte: minRating } } },
+                { $project: { reviewDocs: 0 } },
+            );
+        }
+
+        const skip = (page - 1) * pageSize;
+        pipeline.push({
+            $facet: {
+                data: [{ $sort: { createdAt: -1 } }, { $skip: skip }, { $limit: pageSize }],
+                meta: [{ $count: 'total' }],
+            },
+        });
+
+        const [result] = await Hotel.aggregate(pipeline);
+        const hotels = result?.data ?? [];
+        const total = result?.meta?.[0]?.total ?? 0;
+
+        return toPlain({
+            hotels,
+            total,
+            page,
+            pageSize,
+            totalPages: Math.ceil(total / pageSize),
+        });
+    } catch (error) {
+        console.error('Failed to search hotels:', error);
+        throw error;
+    }
+}
+
 export async function getAllHotels(category = null) {
     try {
         await dbConnect();
