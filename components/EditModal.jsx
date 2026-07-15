@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { X } from 'lucide-react';
 
 const EditModal = ({ type, onClose, updateBookingDetails, guests, checkIn, checkOut }) => {
     const [newDate, setNewDate] = useState({ checkIn: checkIn, checkOut: checkOut });
@@ -16,20 +17,31 @@ const EditModal = ({ type, onClose, updateBookingDetails, guests, checkIn, check
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg w-96">
-                <h2 className="text-lg font-bold mb-4">Edit {type === 'dates' ? 'Dates' : 'Guests'}</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm px-4">
+            <div className="bg-surface border border-hairline shadow-luxe w-full max-w-md rounded-2xl p-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="font-serif text-lg text-ink">
+                        Edit {type === 'dates' ? 'Dates' : 'Guests'}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="text-muted hover:text-ink transition-colors"
+                        aria-label="Close"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
                 {type === 'dates' && (
                     <div className="space-y-4">
                         <input
                             type="date"
-                            className="border p-2 w-full"
+                            className="border border-hairline rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-brass"
                             value={newDate.checkIn}
                             onChange={(e) => setNewDate({ ...newDate, checkIn: e.target.value })}
                         />
                         <input
                             type="date"
-                            className="border p-2 w-full"
+                            className="border border-hairline rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-brass"
                             value={newDate.checkOut}
                             onChange={(e) => setNewDate({ ...newDate, checkOut: e.target.value })}
                         />
@@ -39,15 +51,22 @@ const EditModal = ({ type, onClose, updateBookingDetails, guests, checkIn, check
                     <div className="space-y-4">
                         <input
                             type="number"
-                            className="border p-2 w-full"
+                            className="border border-hairline rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-brass"
                             value={newGuests}
                             onChange={(e) => setNewGuests(e.target.value)}
                         />
                     </div>
                 )}
-                <div className="flex justify-end mt-4">
-                    <button onClick={onClose} className="mr-4">Cancel</button>
-                    <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+                <div className="flex justify-end gap-4 mt-6">
+                    <button onClick={onClose} className="text-muted hover:text-ink transition-colors text-sm">
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSave}
+                        className="bg-brass-dark text-cream px-4 py-2 rounded-lg hover:bg-brass transition-colors text-sm"
+                    >
+                        Save
+                    </button>
                 </div>
             </div>
         </div>
