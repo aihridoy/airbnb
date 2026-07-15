@@ -10,7 +10,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#009688",
         cream: "#FAF7F2",
         surface: "#FFFFFF",
         "surface-alt": "#F5F1EA",

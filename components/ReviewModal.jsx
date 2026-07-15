@@ -79,7 +79,7 @@ const ReviewModal = ({ setShowModal, hotelId }) => {
                         Cancel
                     </button>
                     <button
-                        className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90"
+                        className="px-4 py-2 bg-brass text-white rounded-lg hover:brightness-90"
                         onClick={handleSubmit}
                     >
                         Submit Review
