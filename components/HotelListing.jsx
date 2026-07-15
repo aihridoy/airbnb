@@ -58,7 +58,7 @@ const HotelListing = () => {
   }
 
   return (
-    <section className="mt-10 px-6 min-h-screen">
+    <section id="hotel-listing" className="mt-10 px-6 min-h-screen">
       <motion.div
         initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
