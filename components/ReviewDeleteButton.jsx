@@ -22,7 +22,7 @@ const ReviewDeleteButton = ({ review, user }) => {
             {user?.id === review.userId && (
                 <button
                     onClick={() => handleDelete(review._id)}
-                    className="text-red-500 hover:underline"
+                    className="text-red-500 hover:text-red-600 hover:underline transition-colors text-sm"
                 >
                     Delete Review
                 </button>
