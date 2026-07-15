@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { Download, X } from "lucide-react";
 import Pagination from "./Pagination";
 
 const formatDate = (isoDate) => {
@@ -155,7 +156,7 @@ const BookingDetailsModal = ({ bookings }) => {
               return (
                 <div
                   key={booking._id}
-                  className="bg-white shadow-md rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-lg transition-shadow"
+                  className="bg-surface border border-hairline rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:shadow-luxe transition-shadow"
                 >
                   <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
                     <Image
@@ -163,34 +164,34 @@ const BookingDetailsModal = ({ bookings }) => {
                       height={200}
                       src={booking?.bookingDetails?.hotelImage}
                       alt="Property Thumbnail"
-                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
                       sizes="(max-width: 640px) 100vw, 150px"
                       priority={false}
                     />
                     <div className="flex-1">
-                      <h2 className="text-base sm:text-lg text-zinc-800 font-semibold truncate">
+                      <h2 className="font-serif text-base sm:text-lg text-ink truncate">
                         {booking?.bookingDetails?.title}
                       </h2>
-                      <p className="text-zinc-500 text-xs sm:text-sm">
+                      <p className="text-muted text-xs sm:text-sm">
                         Booking Date: {formatDate(booking?.createdAt)}
                       </p>
-                      <p className="text-zinc-500 text-xs sm:text-sm">
+                      <p className="text-muted text-xs sm:text-sm">
                         Booking Cost: ${booking.totalPrice}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
                     <button
-                      className="px-3 py-1.5 sm:py-2 text-xs sm:text-sm bg-primary text-white rounded-lg hover:brightness-90 transition-colors"
+                      className="px-3 py-1.5 sm:py-2 text-xs sm:text-sm bg-brass-dark text-cream rounded-lg hover:bg-brass transition-colors"
                       onClick={() => openModal(booking)}
                     >
                       View Trip Details
                     </button>
                     <button
                       onClick={downloadReceipt}
-                      className="px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-center px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-hairline rounded-lg text-ink hover:bg-surface-alt transition-colors"
                     >
-                      <i className="fas fa-download mr-1 sm:mr-2"></i>
+                      <Download className="w-4 h-4 mr-1 sm:mr-2" />
                       Download Receipt
                     </button>
                   </div>
@@ -207,59 +208,60 @@ const BookingDetailsModal = ({ bookings }) => {
           </>
         ) : (
           <div id="empty-state" className="text-center py-8 sm:py-12">
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+            <h2 className="font-serif text-xl sm:text-2xl text-ink mb-2">
               No Bookings Yet
             </h2>
-            <p className="text-zinc-500 text-sm sm:text-base">
+            <p className="text-muted text-sm sm:text-base">
               You made no bookings. Start exploring amazing stays!
             </p>
           </div>
         )}
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
-          <div className="bg-white w-full max-w-md sm:max-w-lg rounded-lg shadow-lg p-4 sm:p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm px-4">
+          <div className="bg-surface border border-hairline shadow-luxe w-full max-w-md sm:max-w-lg rounded-2xl p-4 sm:p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-800">
+              <h2 className="font-serif text-base sm:text-lg text-ink">
                 Booking Details
               </h2>
               <button
-                className="text-gray-400 hover:text-gray-600 text-lg sm:text-xl"
+                className="text-muted hover:text-ink transition-colors"
                 onClick={closeModal}
+                aria-label="Close"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
             {selectedBooking && (
-              <div className="space-y-2 text-sm sm:text-base">
-                <p className="text-gray-600">
+              <div className="space-y-2 text-sm sm:text-base text-ink">
+                <p>
                   <span className="font-semibold">Title: </span>
                   {selectedBooking.bookingDetails.title}
                 </p>
-                <p className="text-gray-600">
+                <p>
                   <span className="font-semibold">Description: </span>
                   {selectedBooking.bookingDetails.description}
                 </p>
-                <p className="text-gray-600">
+                <p>
                   <span className="font-semibold">Guests: </span>
                   {selectedBooking.bookingDetails.guests}
                 </p>
-                <p className="text-gray-600">
+                <p>
                   <span className="font-semibold">Check-In: </span>
                   {formatDate(selectedBooking.bookingDetails.checkInDate)}
                 </p>
-                <p className="text-gray-600">
+                <p>
                   <span className="font-semibold">Check-Out: </span>
                   {formatDate(selectedBooking.bookingDetails.checkOutDate)}
                 </p>
-                <p className="text-gray-600">
+                <p>
                   <span className="font-semibold">Total Price: </span>$
                   {selectedBooking.totalPrice}
                 </p>
               </div>
             )}
             <button
-              className="mt-4 w-full px-4 py-2 text-sm sm:text-base bg-primary text-white rounded-lg hover:brightness-90 transition-colors"
+              className="mt-4 w-full px-4 py-2 text-sm sm:text-base bg-brass-dark text-cream rounded-lg hover:bg-brass transition-colors"
               onClick={closeModal}
             >
               Close
