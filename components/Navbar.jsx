@@ -21,38 +21,19 @@ import {
   CalendarCheck,
 } from "lucide-react";
 import SignOutButton from "./SignOutButton";
-import { session } from "@/app/action";
+import { useSession } from "next-auth/react";
 import { useSearch } from "@/contexts/SearchContext";
 import useDebounce from "@/hooks/useDebounce";
 
 const Navbar = () => {
   const { setSearchQuery } = useSearch();
+  const { data: sessionData } = useSession();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const user = sessionData?.user || null;
 
   const dummyImg =
     "https://img.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-gender-neutral-silhouette-profile-picture-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_719432-2210.jpg?semt=ais_hybrid&w=740";
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await session();
-        if (userData?.user) {
-          setUser({
-            ...userData.user,
-            role: userData.user.role || "user",
-          });
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user session:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
