@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Search,
   Globe,
@@ -23,6 +23,20 @@ import {
 import SignOutButton from "./SignOutButton";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getAllHotels } from "@/app/action";
+
+const CATEGORY_LABELS = {
+  urban: "Urban",
+  beach: "Beach",
+  mountain: "Mountain",
+  luxury: "Luxury",
+  rustic: "Rustic",
+  countryside: "Countryside",
+  lakeside: "Lakeside",
+  desert: "Desert",
+  island: "Island",
+  ski: "Ski",
+};
 
 const Navbar = () => {
   const router = useRouter();
@@ -62,9 +76,53 @@ const Navbar = () => {
   }, [isPopupVisible]);
 
   const [searchValue, setSearchValue] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [hotels, setHotels] = useState([]);
+  const [hotelsReady, setHotelsReady] = useState(false);
+  const hotelsLoaded = useRef(false);
+  const searchRef = useRef(null);
+
+  // Lazily load the hotel list the first time the user engages the search -
+  // avoids fetching on every page just to power the navbar typeahead.
+  const loadHotels = async () => {
+    if (hotelsLoaded.current) return;
+    hotelsLoaded.current = true;
+    try {
+      const res = await getAllHotels();
+      setHotels(res?.hotels ?? []);
+      setHotelsReady(true);
+    } catch (e) {
+      console.error("Failed to load hotels for search:", e);
+      hotelsLoaded.current = false;
+    }
+  };
+
+  const query = searchValue.trim().toLowerCase();
+  const matches = useMemo(() => {
+    if (!query) return [];
+    return hotels
+      .filter(
+        (h) =>
+          h.title?.toLowerCase().includes(query) ||
+          h.location?.toLowerCase().includes(query) ||
+          h.category?.toLowerCase().includes(query)
+      )
+      .slice(0, 6);
+  }, [query, hotels]);
+
+  useEffect(() => {
+    const onClick = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
 
   const submitSearch = () => {
     const q = searchValue.trim();
+    setSearchOpen(false);
     router.push(q ? `/search?location=${encodeURIComponent(q)}` : "/search");
   };
 
@@ -88,19 +146,84 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div className="row-start-2 col-span-2 border-0 md:border md:border-hairline flex shadow-sm hover:shadow-md transition-all md:rounded-full items-center px-2 mt-2 sm:md:mt-0 bg-surface">
+      <div
+        ref={searchRef}
+        className="row-start-2 col-span-2 relative border-0 md:border md:border-hairline flex shadow-sm hover:shadow-md transition-all md:rounded-full items-center px-2 mt-2 sm:md:mt-0 bg-surface"
+      >
         <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-4 divide-x divide-hairline py-2 md:px-2 flex-grow">
           <input
             type="text"
             placeholder="Search a city or hotel"
             value={searchValue}
             className="px-3 bg-transparent focus:outline-none lg:col-span-3 placeholder:text-sm text-ink font-sans"
-            onChange={(e) => setSearchValue(e.target.value)}
+            onFocus={() => {
+              loadHotels();
+              setSearchOpen(true);
+            }}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              setSearchOpen(true);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") submitSearch();
             }}
           />
         </div>
+
+        {searchOpen && query && (
+          <div className="absolute left-0 right-0 top-full mt-2 bg-surface border border-hairline rounded-2xl shadow-luxe overflow-hidden z-50 text-left">
+            {!hotelsReady ? (
+              <p className="px-4 py-3 text-sm text-muted">Searching…</p>
+            ) : matches.length > 0 ? (
+              <ul className="max-h-96 overflow-y-auto">
+                {matches.map((h) => (
+                  <li key={h._id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchOpen(false);
+                        router.push(`/details/${h._id}`);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface-alt transition-colors text-left"
+                    >
+                      <span className="relative w-12 h-12 rounded-lg overflow-hidden bg-surface-alt flex-shrink-0">
+                        <Image
+                          src={h.images?.[0] || "https://placehold.co/96x96"}
+                          alt={h.title}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-medium text-ink truncate">
+                          {h.title}
+                        </span>
+                        <span className="block text-xs text-muted truncate">
+                          {h.location}
+                          {h.category ? ` · ${CATEGORY_LABELS[h.category] || h.category}` : ""}
+                        </span>
+                      </span>
+                      <span className="text-sm font-semibold text-ink flex-shrink-0">
+                        ${h.rent}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="px-4 py-3 text-sm text-muted">No matches for "{searchValue.trim()}"</p>
+            )}
+            <button
+              type="button"
+              onClick={submitSearch}
+              className="w-full flex items-center gap-2 px-4 py-2.5 border-t border-hairline text-sm text-brass-dark hover:bg-surface-alt transition-colors font-medium"
+            >
+              <Search className="w-4 h-4" />
+              Search all stays for "{searchValue.trim()}"
+            </button>
+          </div>
+        )}
 
         <button
           type="button"
