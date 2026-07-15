@@ -2,7 +2,7 @@
 
 import { getHotels, getReviews } from "@/app/action";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Hotel from "./Hotel";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSearch } from "@/contexts/SearchContext";
@@ -12,6 +12,7 @@ import { fadeUp } from "@/lib/motion";
 
 const HotelListing = () => {
   const { searchQuery } = useSearch();
+  const prefersReducedMotion = useReducedMotion();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [hotels, setHotels] = useState(null);
@@ -59,7 +60,7 @@ const HotelListing = () => {
   return (
     <section className="mt-10 px-6 min-h-screen">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
@@ -81,7 +82,7 @@ const HotelListing = () => {
           </div>
         ) : (
           <motion.div
-            initial="hidden"
+            initial={prefersReducedMotion ? false : "hidden"}
             whileInView="visible"
             viewport={{ once: true }}
             variants={{ visible: { transition: { staggerChildren: 0.05 } } }}

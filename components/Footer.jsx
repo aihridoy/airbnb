@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Facebook, Instagram, Twitter, Send } from "lucide-react";
 import { fadeUp, stagger } from "@/lib/motion";
 
@@ -13,6 +13,7 @@ const Footer = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
+  const prefersReducedMotion = useReducedMotion();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ const Footer = () => {
 
   return (
     <motion.footer
-      initial="hidden"
+      initial={prefersReducedMotion ? false : "hidden"}
       whileInView="visible"
       viewport={{ once: true }}
       variants={stagger}

@@ -17,7 +17,7 @@ import {
   ArrowLeft,
   Search,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hotel from "@/components/Hotel";
@@ -41,6 +41,7 @@ const CategoryPage = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const fetchHotelsByCategory = async () => {
@@ -123,7 +124,7 @@ const CategoryPage = () => {
           <HotelGridSkeleton count={8} />
         ) : hotels.length > 0 ? (
           <motion.div
-            initial="hidden"
+            initial={prefersReducedMotion ? false : "hidden"}
             whileInView="visible"
             viewport={{ once: true }}
             variants={{ visible: { transition: { staggerChildren: 0.05 } } }}

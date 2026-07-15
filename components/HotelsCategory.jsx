@@ -4,7 +4,7 @@ import { getAllHotels } from "@/app/action";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Building2, Umbrella, Mountain, Trees, Gem, Sun, Waves } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Skeleton from "./skeletons/Skeleton";
 import { fadeUp } from "@/lib/motion";
 
@@ -22,6 +22,7 @@ const HotelsCategory = () => {
   const [hotels, setHotels] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -61,7 +62,7 @@ const HotelsCategory = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-0 lg:px-0 py-12">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
@@ -95,7 +96,7 @@ const HotelsCategory = () => {
         </div>
       ) : (
         <motion.div
-          initial="hidden"
+          initial={prefersReducedMotion ? false : "hidden"}
           whileInView="visible"
           viewport={{ once: true }}
           variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
