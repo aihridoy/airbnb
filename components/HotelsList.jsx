@@ -4,6 +4,7 @@ import { deleteHotelById } from "@/app/action";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { Star, Pencil, Trash2 } from "lucide-react";
 import Pagination from "./Pagination";
 
 const HotelsList = ({ filteredHotels, reviews }) => {
@@ -38,10 +39,10 @@ const HotelsList = ({ filteredHotels, reviews }) => {
   return (
     <div className="space-y-4 px-4 sm:px-0">
       {currentHotels.length > 0 ? (
-        <div className="border rounded-lg overflow-x-auto">
+        <div className="border border-hairline rounded-lg overflow-x-auto">
           <table className="w-full text-left text-sm min-w-[800px]">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-surface-alt">
                 <th className="p-2 sm:p-3 text-xs sm:text-sm font-medium">
                   Image
                 </th>
@@ -84,7 +85,7 @@ const HotelsList = ({ filteredHotels, reviews }) => {
                   hotel.images[Math.floor(Math.random() * hotel.images.length)];
 
                 return (
-                  <tr key={hotel._id} className="border-t hover:bg-gray-50">
+                  <tr key={hotel._id} className="border-t border-hairline hover:bg-surface-alt">
                     <td className="p-2 sm:p-3">
                       {hotelImage && (
                         <Link href={`/details/${hotel._id}`}>
@@ -101,37 +102,37 @@ const HotelsList = ({ filteredHotels, reviews }) => {
                       )}
                     </td>
                     <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                      <div className="font-semibold text-zinc-800 mb-1 max-w-[200px] truncate">
+                      <div className="font-semibold text-ink mb-1 max-w-[200px] truncate">
                         <Link href={`/details/${hotel._id}`}>{hotel.title}</Link>
                       </div>
-                      <div className="xl:hidden text-xs text-zinc-600 mb-1">
+                      <div className="xl:hidden text-xs text-muted mb-1">
                         Location: {hotel.location}
                       </div>
-                      <div className="lg:hidden text-xs text-zinc-600 mb-1">
+                      <div className="lg:hidden text-xs text-muted mb-1">
                         Rooms: {hotel.bedroomCapacity}
                       </div>
-                      <div className="md:hidden text-xs text-zinc-600 mb-1">
+                      <div className="md:hidden text-xs text-muted mb-1">
                         Price: ${hotel.rent}/night
                       </div>
-                      <div className="lg:hidden text-xs text-zinc-600 mb-1">
-                        <span className="flex items-center">
-                          <i className="fas fa-star text-yellow-500 mr-1"></i>
+                      <div className="lg:hidden text-xs text-muted mb-1">
+                        <span className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-brass-dark fill-current" />
                           {Number(averageRating)?.toFixed(1)} ({totalReviews} reviews)
                         </span>
                       </div>
                     </td>
-                    <td className="p-2 sm:p-3 hidden xl:table-cell text-xs sm:text-sm text-zinc-600">
+                    <td className="p-2 sm:p-3 hidden xl:table-cell text-xs sm:text-sm text-muted">
                       {hotel.location}
                     </td>
-                    <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-zinc-600">
+                    <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm text-muted">
                       {hotel.bedroomCapacity} Rooms
                     </td>
-                    <td className="p-2 sm:p-3 hidden md:table-cell text-xs sm:text-sm text-rose-600 font-semibold">
+                    <td className="p-2 sm:p-3 hidden md:table-cell text-xs sm:text-sm text-brass-dark font-semibold">
                       ${hotel.rent}
                     </td>
                     <td className="p-2 sm:p-3 hidden lg:table-cell text-xs sm:text-sm">
-                      <span className="flex items-center">
-                        <i className="fas fa-star text-yellow-500 mr-1"></i>
+                      <span className="flex items-center gap-1">
+                        <Star className="w-3 h-3 text-brass-dark fill-current" />
                         {Number(averageRating)?.toFixed(1)}
                       </span>
                     </td>
@@ -142,17 +143,17 @@ const HotelsList = ({ filteredHotels, reviews }) => {
                             pathname: "/dashboard/create-hotel",
                             query: { hotelId: hotel._id },
                           }}
-                          className="text-blue-500 hover:text-blue-600 text-sm p-1 rounded hover:bg-blue-50 transition-colors"
+                          className="text-brass-dark hover:text-brass text-sm p-1 rounded hover:bg-surface-alt transition-colors"
                           title="Edit Hotel"
                         >
-                          <i className="fas fa-edit"></i>
+                          <Pencil className="w-4 h-4" />
                         </Link>
                         <button
                           onClick={() => handleDelete(hotel._id, hotel.title)}
-                          className="text-red-500 hover:text-red-600 text-sm p-1 rounded hover:bg-red-50 transition-colors"
+                          className="text-red-500 hover:text-red-600 text-sm p-1 rounded hover:bg-surface-alt transition-colors"
                           title="Delete Hotel"
                         >
-                          <i className="fas fa-trash"></i>
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -164,10 +165,10 @@ const HotelsList = ({ filteredHotels, reviews }) => {
         </div>
       ) : (
         <div id="empty-state" className="text-center py-8 sm:py-12">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">
+          <h2 className="font-serif text-xl sm:text-2xl text-ink mb-2">
             No Hotels Found
           </h2>
-          <p className="text-zinc-500 text-sm sm:text-base">
+          <p className="text-muted text-sm sm:text-base">
             It seems there are no hotels available at the moment. Please try
             again later!
           </p>
