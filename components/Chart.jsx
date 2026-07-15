@@ -28,7 +28,7 @@ ChartJS.register(
   LineElement
 );
 
-const ChartComponent = ({ type, data, dataKey, xAxisKey, nameKey, color = '#3B82F6' }) => {
+const ChartComponent = ({ type, data, dataKey, xAxisKey, nameKey, color = '#2a78d6' }) => {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -113,20 +113,20 @@ const ChartComponent = ({ type, data, dataKey, xAxisKey, nameKey, color = '#3B82
         {
           data: data.map(item => item[dataKey]),
           backgroundColor: [
-            'rgba(34, 197, 94, 0.6)',
-            'rgba(239, 68, 68, 0.6)',
-            'rgba(245, 158, 11, 0.6)',
-            'rgba(168, 85, 247, 0.6)',
-            'rgba(59, 130, 246, 0.6)',
-            'rgba(236, 72, 153, 0.6)',
+            'rgba(42, 120, 214, 0.6)',
+            'rgba(27, 175, 122, 0.6)',
+            'rgba(237, 161, 0, 0.6)',
+            'rgba(0, 131, 0, 0.6)',
+            'rgba(74, 58, 167, 0.6)',
+            'rgba(227, 73, 72, 0.6)',
           ],
           borderColor: [
-            'rgba(34, 197, 94, 1)',
-            'rgba(239, 68, 68, 1)',
-            'rgba(245, 158, 11, 1)',
-            'rgba(168, 85, 247, 1)',
-            'rgba(59, 130, 246, 1)',
-            'rgba(236, 72, 153, 1)',
+            'rgba(42, 120, 214, 1)',
+            'rgba(27, 175, 122, 1)',
+            'rgba(237, 161, 0, 1)',
+            'rgba(0, 131, 0, 1)',
+            'rgba(74, 58, 167, 1)',
+            'rgba(227, 73, 72, 1)',
           ],
           borderWidth: 1,
         },
