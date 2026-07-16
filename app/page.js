@@ -44,7 +44,7 @@ export default async function Home() {
   const [allHotelsRes, reviewsRes, initialListing] = await Promise.all([
     getAllHotels(),
     getReviews(),
-    getHotels(1, 8, "", 0),
+    getHotels(1, 12, "", 0),
   ]);
 
   const hotels = allHotelsRes?.hotels ?? [];

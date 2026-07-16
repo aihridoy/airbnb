@@ -1,55 +1,41 @@
 "use client";
 
 import { getHotels } from "@/app/action";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import Hotel from "./Hotel";
-import { useRouter, useSearchParams } from "next/navigation";
-import Pagination from "./Pagination";
 import HotelGridSkeleton from "./skeletons/HotelGridSkeleton";
 import { fadeUp } from "@/lib/motion";
 
-// "Find Your Stay" is a pure browse listing - paginated only. Actual
-// searching lives on the /search page (hero + navbar navigate there).
+const PAGE_SIZE = 12;
+
+// "Find Your Stay" is a pure browse listing. Loads 12 at a time via a
+// "Show More" button that appends in place - no route nav, so the scroll
+// position stays put (old ?page pagination jumped back to the top).
 const HotelListing = ({ initialData = null, initialReviews = [] }) => {
   const prefersReducedMotion = useReducedMotion();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [hotels, setHotels] = useState(initialData);
-  const [error, setError] = useState(null);
-  const [reviews] = useState(initialReviews);
-  const [loading, setLoading] = useState(false);
-
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const [hotels, setHotels] = useState(initialData?.hotels ?? []);
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(initialData?.totalPages ?? 1);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [reviews] = useState(initialReviews);
 
-  // Server already provided page 1 - skip refetching it on first mount.
-  const skipNextFetch = useRef(Boolean(initialData) && currentPage === 1);
+  const hasMore = page < totalPages;
 
-  useEffect(() => {
-    if (skipNextFetch.current) {
-      skipNextFetch.current = false;
-      return;
-    }
-
+  const loadMore = async () => {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const hotelsData = await getHotels(currentPage, 8, "", 0);
-        setHotels(hotelsData);
-        setTotalPages(hotelsData.totalPages);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [currentPage]);
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      router.push(`/?page=${newPage}`);
+    try {
+      const next = page + 1;
+      const data = await getHotels(next, PAGE_SIZE, "", 0);
+      setHotels((prev) => [...prev, ...(data.hotels ?? [])]);
+      setTotalPages(data.totalPages);
+      setPage(next);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,12 +64,14 @@ const HotelListing = ({ initialData = null, initialReviews = [] }) => {
         </p>
       </motion.div>
       <div className="max-w-7xl mx-auto">
-        {loading ? (
-          <HotelGridSkeleton count={8} />
-        ) : hotels?.hotels?.length === 0 ? (
-          <div className="text-center text-xl text-muted h-96 flex items-center justify-center">
-            No hotels found.
-          </div>
+        {hotels.length === 0 ? (
+          initialData ? (
+            <div className="text-center text-xl text-muted h-96 flex items-center justify-center">
+              No hotels found.
+            </div>
+          ) : (
+            <HotelGridSkeleton count={PAGE_SIZE} />
+          )
         ) : (
           <motion.div
             initial={prefersReducedMotion ? false : "hidden"}
@@ -92,7 +80,7 @@ const HotelListing = ({ initialData = null, initialReviews = [] }) => {
             variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
-            {hotels?.hotels?.map((hotel) => {
+            {hotels.map((hotel) => {
               const filteredReviews = reviews.filter(
                 (review) => review.hotelId === hotel._id
               );
@@ -114,15 +102,19 @@ const HotelListing = ({ initialData = null, initialReviews = [] }) => {
         )}
       </div>
 
-      <div className="mt-10 flex justify-center">
-        {hotels && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
-        )}
-      </div>
+      {hasMore && (
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={loading}
+            className="flex items-center gap-2 px-8 py-3 rounded-full border border-ink text-ink font-medium hover:bg-ink hover:text-cream transition-colors disabled:opacity-60"
+          >
+            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+            {loading ? "Loading..." : "Show More Hotels"}
+          </button>
+        </div>
+      )}
     </section>
   );
 };
