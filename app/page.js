@@ -18,12 +18,19 @@ import { getAllHotels, getHotels, getReviews } from "@/app/action";
 const HERO_FALLBACK =
   "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=2000&q=80";
 
-const pickHeroImage = (hotels) => {
+// A handful of distinct, shuffled hero shots for the Hero to crossfade
+// through. Prefers luxury listings, falls back to any with an image.
+const pickHeroImages = (hotels, count = 5) => {
   const withImages = hotels.filter((h) => h.images?.[0]);
   const luxury = withImages.filter((h) => h.category === "luxury");
-  const pool = luxury.length ? luxury : withImages;
-  if (!pool.length) return HERO_FALLBACK;
-  return pool[Math.floor(Math.random() * pool.length)].images[0];
+  const pool = [
+    ...new Set((luxury.length ? luxury : withImages).map((h) => h.images[0])),
+  ];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count).length ? pool.slice(0, count) : [HERO_FALLBACK];
 };
 
 const topDestinations = (hotels) => {
@@ -49,7 +56,7 @@ export default async function Home() {
 
   const hotels = allHotelsRes?.hotels ?? [];
   const reviews = reviewsRes?.reviews ?? [];
-  const heroImage = pickHeroImage(hotels);
+  const heroImages = pickHeroImages(hotels);
   const destinations = topDestinations(hotels);
   const categories = [...new Set(hotels.map((h) => h.category))];
   // Slim list for the hero search typeahead - only the fields it renders.
@@ -75,7 +82,7 @@ export default async function Home() {
       <AnnounceBar />
       <Navbar />
       <Hero
-        image={heroImage}
+        images={heroImages}
         destinations={destinations}
         categories={categories}
         hotels={heroHotels}

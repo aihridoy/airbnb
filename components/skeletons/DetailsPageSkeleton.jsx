@@ -12,7 +12,7 @@ const DetailsPageSkeleton = () => {
       </div>
 
       <div className="hotel-image-grid mb-8">
-        {[...Array(4)].map((_, index) => (
+        {[...Array(5)].map((_, index) => (
           <Skeleton key={index} className="w-full h-full rounded-lg" />
         ))}
       </div>

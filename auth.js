@@ -35,7 +35,7 @@ export const {
           name: user.name,
           email: user.email,
           location: user.location,
-          role: user.role,
+          role: user.role || "user",
         };
       }
 

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { Search, MapPin, Users, Star, Minus, Plus, SlidersHorizontal, ChevronDown } from "lucide-react";
 
 const FALLBACK_IMAGE =
@@ -31,6 +31,7 @@ const RATING_OPTIONS = [
 
 export default function Hero({
   image,
+  images = [],
   destinations = [],
   categories = [],
   hotels = [],
@@ -62,6 +63,18 @@ export default function Hero({
     offset: ["start start", "end start"],
   });
   const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  // Crossfade through a set of hero shots. Falls back to the single `image`.
+  const heroImages = images.length ? images : [image || FALLBACK_IMAGE];
+  const [heroIndex, setHeroIndex] = useState(0);
+  useEffect(() => {
+    if (prefersReducedMotion || heroImages.length < 2) return;
+    const id = setInterval(
+      () => setHeroIndex((i) => (i + 1) % heroImages.length),
+      6000
+    );
+    return () => clearInterval(id);
+  }, [prefersReducedMotion, heroImages.length]);
 
   // Height = viewport minus the announce bar + navbar, so together they read
   // as exactly one screen. Recomputes on announce dismiss / resize.
@@ -161,7 +174,28 @@ export default function Hero({
         style={{ y: prefersReducedMotion ? 0 : parallaxY }}
         className="absolute inset-x-0 -top-[10%] h-[120%]"
       >
-        <Image src={image || FALLBACK_IMAGE} alt="Featured hotel" fill priority sizes="100vw" className="object-cover" />
+        <AnimatePresence>
+          <motion.div
+            key={heroIndex}
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              opacity: { duration: 1.6, ease: "easeInOut" },
+              scale: { duration: 7, ease: "linear" },
+            }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={heroImages[heroIndex]}
+              alt="Featured hotel"
+              fill
+              priority={heroIndex === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/10" aria-hidden="true" />
 
