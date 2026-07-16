@@ -5,9 +5,10 @@ import Image from "next/image";
 import { getBookings, getWishlists, session } from "../../action";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin } from "lucide-react";
 import DeleteWishlistButton from "@/components/DeleteWishlistButton";
 import Pagination from "@/components/Pagination";
+import { TablePageSkeleton } from "@/components/skeletons/DashboardSkeletons";
 
 export default function WishlistPage() {
   const [wishlistNotBooked, setWishlistNotBooked] = useState([]);
@@ -67,14 +68,7 @@ export default function WishlistPage() {
   const currentWishlists = wishlistNotBooked.slice(startIndex, endIndex);
 
   if (loading) {
-    return (
-      <div className="w-full px-4 py-8">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 mx-auto animate-spin text-brass-dark" />
-          <p className="mt-4 text-muted">Loading wishlist...</p>
-        </div>
-      </div>
-    );
+    return <TablePageSkeleton />;
   }
 
   return (
