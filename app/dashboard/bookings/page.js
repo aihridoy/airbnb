@@ -16,7 +16,7 @@ export default async function Bookings() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="px-4 py-8">
       <h1 className="font-serif text-3xl text-ink mb-6">My Bookings</h1>
       <BookingDetailsModal bookings={filteredBookings} />
     </div>

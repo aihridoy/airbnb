@@ -19,7 +19,7 @@ export default async function WishlistPage({ searchParams }) {
   } catch (error) {
     console.error("Error fetching data:", error);
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="px-4 py-8">
         <h1 className="font-serif text-2xl text-ink mb-6">My Wishlist</h1>
         <div className="text-center py-12">
           <h2 className="text-xl sm:text-2xl font-semibold text-red-500">
@@ -51,7 +51,7 @@ export default async function WishlistPage({ searchParams }) {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="px-4 py-8">
       <h1 className="font-serif text-2xl text-ink mb-6">My Wishlist</h1>
       <WishlistList wishlistNotBooked={wishlistNotBooked} searchParams={searchParams} />
     </div>

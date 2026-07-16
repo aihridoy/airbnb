@@ -247,7 +247,7 @@ const HotelForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative bg-cream">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative bg-cream">
           <button
             type="submit"
             className={`flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg absolute top-4 right-4 sm:right-6 text-sm sm:text-base transition-colors ${
