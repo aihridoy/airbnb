@@ -173,19 +173,19 @@ export default function Hero({
           Discover handpicked hotels and resorts for your next getaway.
         </p>
 
-        <form onSubmit={handleSearch} className="w-full max-w-4xl">
+        <form onSubmit={handleSearch} className="w-full max-w-4xl lg:w-auto">
           <div
             ref={barRef}
             className="bg-surface/95 backdrop-blur-md rounded-2xl lg:rounded-full border border-hairline shadow-luxe flex flex-col lg:flex-row lg:items-center p-2 lg:p-1.5 gap-1 lg:gap-0"
           >
             {/* WHERE */}
-            <div className="relative flex-1 lg:min-w-0">
+            <div className="relative w-full lg:w-72">
               <div
                 onClick={() => {
                   setActive("where");
                   inputRef.current?.focus();
                 }}
-                className={`px-4 py-1.5 rounded-full cursor-text transition-colors hover:bg-surface-alt ${
+                className={`text-left px-4 py-1.5 rounded-full cursor-text transition-colors hover:bg-surface-alt ${
                   active === "where" ? "bg-surface-alt" : ""
                 }`}
               >
@@ -210,7 +210,7 @@ export default function Hero({
               </div>
 
               {active === "where" && (
-                <div className="absolute z-30 left-0 right-0 lg:w-96 mt-2 bg-surface border border-hairline rounded-xl shadow-luxe overflow-hidden text-left max-h-96 overflow-y-auto">
+                <div className="absolute z-30 animate-popover origin-top left-0 right-0 lg:w-96 mt-2 bg-surface border border-hairline rounded-xl shadow-luxe overflow-hidden text-left max-h-96 overflow-y-auto">
                   {query ? (
                     <>
                       {hotelMatches.length > 0 ? (
@@ -268,7 +268,6 @@ export default function Hero({
                                   onClick={() => {
                                     setLocation(dest);
                                     setActive(null);
-                                    goToSearch(dest);
                                   }}
                                   className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-ink hover:bg-surface-alt transition-colors"
                                 >
@@ -292,7 +291,7 @@ export default function Hero({
             <div className="relative">
               {segment("type", "Type", category ? CATEGORY_LABELS[category] || category : "Any type")}
               {active === "type" && (
-                <div className="absolute z-30 left-0 mt-2 w-56 bg-surface border border-hairline rounded-xl shadow-luxe p-2 text-left">
+                <div className="absolute z-30 animate-popover origin-top left-0 mt-2 w-56 bg-surface border border-hairline rounded-xl shadow-luxe p-2 text-left">
                   <button
                     type="button"
                     onClick={() => {
@@ -326,7 +325,7 @@ export default function Hero({
             <div className="relative">
               {segment("guests", "Guests", `${guests} guest${guests > 1 ? "s" : ""}`)}
               {active === "guests" && (
-                <div className="absolute z-30 left-0 mt-2 w-60 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left">
+                <div className="absolute z-30 animate-popover origin-top left-0 mt-2 w-60 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-ink">Guests</span>
                     <div className="flex items-center gap-3">
@@ -360,7 +359,7 @@ export default function Hero({
             <div className="relative">
               {segment("price", "Price", priceLabel)}
               {active === "price" && (
-                <div className="absolute z-30 right-0 mt-2 w-72 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left">
+                <div className="absolute z-30 animate-popover origin-top right-0 mt-2 w-72 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left">
                   <p className="text-sm text-ink mb-3">Price per night</p>
                   <div className="flex items-center gap-3">
                     <label className="flex-1">
@@ -427,7 +426,7 @@ export default function Hero({
                 )}
               </button>
               {active === "filters" && (
-                <div className="absolute z-30 right-0 mt-2 w-72 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left max-h-80 overflow-y-auto">
+                <div className="absolute z-30 animate-popover origin-top right-0 mt-2 w-72 bg-surface border border-hairline rounded-xl shadow-luxe p-4 text-left max-h-80 overflow-y-auto">
                   <p className="text-sm text-ink mb-2">Minimum rating</p>
                   <div className="flex gap-2 mb-4">
                     {RATING_OPTIONS.map((r) => (
