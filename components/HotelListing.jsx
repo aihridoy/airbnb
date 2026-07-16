@@ -6,7 +6,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Hotel from "./Hotel";
 import HotelGridSkeleton from "./skeletons/HotelGridSkeleton";
-import { fadeUp } from "@/lib/motion";
 
 const PAGE_SIZE = 12;
 
@@ -73,13 +72,7 @@ const HotelListing = ({ initialData = null, initialReviews = [] }) => {
             <HotelGridSkeleton count={PAGE_SIZE} />
           )
         ) : (
-          <motion.div
-            initial={prefersReducedMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {hotels.map((hotel) => {
               const filteredReviews = reviews.filter(
                 (review) => review.hotelId === hotel._id
@@ -93,12 +86,14 @@ const HotelListing = ({ initialData = null, initialReviews = [] }) => {
                     ) / totalReviews
                   : 0;
               return (
-                <motion.div key={hotel._id} variants={fadeUp}>
-                  <Hotel hotel={hotel} averageRating={averageRating} />
-                </motion.div>
+                <Hotel
+                  key={hotel._id}
+                  hotel={hotel}
+                  averageRating={averageRating}
+                />
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
 
