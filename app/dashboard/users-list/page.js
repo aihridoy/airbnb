@@ -153,7 +153,7 @@ export default function UsersList() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
           <Skeleton className="h-8 sm:h-10 w-48 rounded-lg" />
           <Skeleton className="h-4 w-72 mt-2 rounded" />
@@ -173,7 +173,7 @@ export default function UsersList() {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="font-serif text-2xl sm:text-3xl text-ink mb-2">
             Users List
@@ -207,7 +207,7 @@ export default function UsersList() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div className="flex-1">
           <h1 className="font-serif text-2xl sm:text-3xl text-ink mb-1 sm:mb-2">

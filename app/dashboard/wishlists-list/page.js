@@ -68,7 +68,7 @@ export default function WishlistPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full px-4 py-8">
         <div className="text-center">
           <Loader2 className="h-12 w-12 mx-auto animate-spin text-brass-dark" />
           <p className="mt-4 text-muted">Loading wishlist...</p>
@@ -78,7 +78,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full px-4 py-8">
       <h1 className="font-serif text-2xl text-ink mb-6">Wishlists</h1>
       {wishlistNotBooked.length > 0 ? (
         <>

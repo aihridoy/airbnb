@@ -16,7 +16,7 @@ export default async function ManageHotel() {
     const { reviews } = await getReviews();
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-4">
                 <h1 className="font-serif text-2xl sm:text-3xl text-ink">Manage Hotels</h1>
                 <Link
