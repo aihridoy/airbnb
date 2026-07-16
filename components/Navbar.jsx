@@ -212,7 +212,7 @@ const Navbar = () => {
                 ))}
               </ul>
             ) : (
-              <p className="px-4 py-3 text-sm text-muted">No matches for "{searchValue.trim()}"</p>
+              <p className="px-4 py-3 text-sm text-muted">No matches for &quot;{searchValue.trim()}&quot;</p>
             )}
             <button
               type="button"
@@ -220,7 +220,7 @@ const Navbar = () => {
               className="w-full flex items-center gap-2 px-4 py-2.5 border-t border-hairline text-sm text-brass-dark hover:bg-surface-alt transition-colors font-medium"
             >
               <Search className="w-4 h-4" />
-              Search all stays for "{searchValue.trim()}"
+              Search all stays for &quot;{searchValue.trim()}&quot;
             </button>
           </div>
         )}
