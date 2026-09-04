@@ -29,6 +29,12 @@ const userSchema = new Schema({
         type: String,
         enum: ["user", "admin"],
         default: "user",
+      },
+    // Marks the seeded public demo accounts. Authorisation keys off this flag
+    // rather than a hardcoded email so the accounts can be renamed.
+    isDemo: {
+        type: Boolean,
+        default: false,
       }
 }, { timestamps: true });
 

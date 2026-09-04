@@ -36,6 +36,7 @@ export const {
           email: user.email,
           location: user.location,
           role: user.role || "user",
+          isDemo: user.isDemo === true,
         };
       }
 
@@ -84,6 +85,7 @@ export const {
           email: user.email,
           location: user.location,
           role: user.role,
+          isDemo: user.isDemo === true,
         };
       },
     }),

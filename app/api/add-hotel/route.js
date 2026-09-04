@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/service/mongo";
 import { auth } from "@/auth";
+import { denyDemoWrite } from "@/lib/demo-guard";
+import { DEMO_CATALOGUE_BLOCKED } from "@/lib/demo-account";
 import Hotel from "@/models/hotel-model";
 import mongoose from "mongoose";
 
@@ -23,6 +25,9 @@ export async function POST(req) {
     if (!session?.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
+    const denied = denyDemoWrite(session, DEMO_CATALOGUE_BLOCKED);
+    if (denied) return denied;
 
     await dbConnect();
     const body = await req.formData();

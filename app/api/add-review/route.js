@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/service/mongo';
 import { auth } from '@/auth';
+import { denyDemoWrite } from '@/lib/demo-guard';
+import { DEMO_REVIEW_BLOCKED } from '@/lib/demo-account';
 import { Review } from '@/models/review-model';
 
 export async function POST(request) {
@@ -9,6 +11,9 @@ export async function POST(request) {
         if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+
+        const denied = denyDemoWrite(session, DEMO_REVIEW_BLOCKED);
+        if (denied) return denied;
 
         const { hotelId, ratings, review } = await request.json();
 
