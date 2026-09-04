@@ -36,10 +36,22 @@ const LoginModal = () => {
   // Mirrors the demo sign-in on /login. The guest returns to whatever page
   // opened this modal; the admin goes to the dashboard, which is the thing
   // worth seeing and is not reachable from where they were standing.
+  //
+  // The two cases have to leave this modal in different ways. router.back()
+  // pops the history entry that opened the intercepted route, so the @modal
+  // slot resolves back to its default and the modal closes. A router.push()
+  // would not: an unmatched parallel-route slot keeps whatever it is already
+  // rendering across a client navigation, and @modal/default.js only applies
+  // on a full document load. So the admin left the dashboard rendering behind
+  // a login modal that would not go away. Sending the admin off with a
+  // document navigation closes it, and reruns every server component against
+  // the session cookie sign-in just set, which is what we want anyway.
   const signInAsDemo = async (demoEmail, label, destination) => {
     if (isSubmitting || demoLoading) return;
     setDemoLoading(label);
     setError("");
+
+    let leaving = false;
 
     try {
       const formData = new FormData();
@@ -49,6 +61,15 @@ const LoginModal = () => {
 
       if (response?.error) {
         setError(response.error.message);
+        return;
+      }
+
+      if (destination) {
+        // No toast and no session update: the new document is about to
+        // replace this one and will read the cookie itself. The button stays
+        // in its loading state until it does, so the click has visible effect.
+        leaving = true;
+        window.location.assign(destination);
         return;
       }
 
@@ -62,16 +83,12 @@ const LoginModal = () => {
         draggable: true,
       });
 
-      if (destination) {
-        router.push(destination);
-      } else {
-        router.back();
-      }
+      router.back();
     } catch (e) {
       console.error(e);
       setError("Demo sign-in is unavailable right now. Please try again.");
     } finally {
-      setDemoLoading(null);
+      if (!leaving) setDemoLoading(null);
     }
   };
 
