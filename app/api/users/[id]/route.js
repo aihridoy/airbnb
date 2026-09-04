@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { dbConnect } from "@/service/mongo";
 import { User } from "@/models/user-model";
+import { redactUsersForDemo } from "@/lib/demo-account";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export async function GET(request, { params }) {
     await dbConnect();
 
     // Fetch user by ID from the User model
-    const user = await User.findById(id, "-password"); // Exclude password field for security
+    const user = await User.findById(id, "-password").lean(); // Exclude password field for security
 
     // Check if user exists
     if (!user) {
@@ -39,8 +40,17 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Return the user as JSON
-    return NextResponse.json({ user, success: true }, { status: 200 });
+    // A demo admin may look at any profile, but never at the real person
+    // behind it. Its own record is left readable so the account still makes
+    // sense when it opens its own profile page.
+    const isOwnRecord = session.user.id === id;
+    return NextResponse.json(
+      {
+        user: isOwnRecord ? user : redactUsersForDemo([user], session)[0],
+        success: true,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(

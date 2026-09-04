@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Review } from "@/models/review-model";
 import { dbConnect } from "@/service/mongo";
 import { auth } from "@/auth";
+import { denyDemoWrite } from "@/lib/demo-guard";
+import { DEMO_REVIEW_BLOCKED } from "@/lib/demo-account";
 
 export async function DELETE(req, { params }) {
     const { id } = params;
@@ -11,6 +13,9 @@ export async function DELETE(req, { params }) {
         if (!session?.user) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
+
+        const denied = denyDemoWrite(session, DEMO_REVIEW_BLOCKED);
+        if (denied) return denied;
 
         await dbConnect();
         const review = await Review.findById(id);

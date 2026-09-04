@@ -10,6 +10,11 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Loader2 } from "lucide-react";
+import {
+  DEMO_ADMIN_EMAIL,
+  DEMO_GUEST_EMAIL,
+  DEMO_PASSWORD,
+} from "@/lib/demo-account";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -23,16 +28,44 @@ const LoginPage = () => {
     signIn("google", { callbackUrl: "/" });
   };
 
-  // Demo/seed credentials shortcut - disabled for now
-  // const handleDemoCredentials = (type) => {
-  //   if (type === "user") {
-  //     setEmail("abul@gmail.com");
-  //     setPassword("abul123");
-  //   } else if (type === "admin") {
-  //     setEmail("admin@gmail.com");
-  //     setPassword("admin123");
-  //   }
-  // };
+  const [demoLoading, setDemoLoading] = useState(null);
+
+  // Signs in directly rather than filling the form and leaving the visitor to
+  // press Login. Goes through the same server action as a normal sign-in, so
+  // nothing about the auth path is special-cased for the demo.
+  const signInAsDemo = async (demoEmail, label, destination) => {
+    if (isSubmitting || demoLoading) return;
+    setDemoLoading(label);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("email", demoEmail);
+      formData.append("password", DEMO_PASSWORD);
+      const response = await login(formData);
+
+      if (response?.error) {
+        setError(response.error.message);
+        return;
+      }
+
+      await update();
+      toast.success(`Signed in as ${label}`, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+      router.push(destination);
+    } catch (e) {
+      console.error(e);
+      setError("Demo sign-in is unavailable right now. Please try again.");
+    } finally {
+      setDemoLoading(null);
+    }
+  };
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -123,24 +156,31 @@ const LoginPage = () => {
                 required
               />
 
-              {/* Demo/seed credentials shortcut - disabled for now
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleDemoCredentials("user")}
-                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
-                >
-                  Demo User
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoCredentials("admin")}
-                  className="flex-1 bg-surface-alt text-ink rounded-lg py-2 text-sm hover:bg-hairline transition"
-                >
-                  Demo Admin
-                </button>
+              <div className="rounded-2xl border border-dashed border-hairline bg-surface-alt/60 p-4">
+                <p className="text-sm font-medium text-ink">Just looking around?</p>
+                <p className="mt-1 text-xs text-ink/60">
+                  Sign in with a demo account — no signup. The guest can book a
+                  stay; the admin is read-only.
+                </p>
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => signInAsDemo(DEMO_GUEST_EMAIL, "demo guest", "/")}
+                    disabled={isSubmitting || demoLoading !== null}
+                    className="flex-1 rounded-full border border-hairline bg-cream px-4 py-2 text-sm text-ink transition hover:bg-hairline disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {demoLoading === "demo guest" ? "Signing in..." : "Demo guest"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => signInAsDemo(DEMO_ADMIN_EMAIL, "demo admin", "/dashboard")}
+                    disabled={isSubmitting || demoLoading !== null}
+                    className="flex-1 rounded-full border border-brass-dark px-4 py-2 text-sm text-brass-dark transition hover:bg-brass-dark hover:text-cream disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {demoLoading === "demo admin" ? "Signing in..." : "Demo admin (read-only)"}
+                  </button>
+                </div>
               </div>
-              */}
 
               <button
                 type="submit"
