@@ -7,6 +7,10 @@ const nextConfig = {
         optimizePackageImports: ['lucide-react', 'framer-motion', 'swiper'],
     },
     images: {
+        // Bypass /_next/image: the Vercel optimization quota is spent and
+        // uncached transforms return 402. See lib/image-loader.js.
+        loader: 'custom',
+        loaderFile: './lib/image-loader.js',
         formats: ['image/avif', 'image/webp'],
         minimumCacheTTL: 2678400,
         remotePatterns: [
